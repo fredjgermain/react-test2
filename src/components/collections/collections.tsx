@@ -1,20 +1,37 @@
 import React, { useState, useEffect } from 'react'; 
 import {Collection} from '../proxy/collection'; 
 import {IEntry, EnumMode} from '../proxy/interfaces'; 
-import {collections, LoadCollections, Loader} from '../proxy/proxy'; 
+import {collections, LoadCollections} from '../proxy/proxy'; 
 
 import Selector, {IOption} from '../input/selector'; 
 import CollectionTable from './collectiontable'; 
 
 
-
+class Loader { 
+  public ready:boolean; 
+  public LoadFunc:any; 
+  private setReady:any; 
+  
+  constructor(ready:boolean, setReady:any, LoadFunc:any) { 
+    this.ready = ready; 
+    this.setReady = setReady; 
+    this.LoadFunc = LoadFunc; 
+  } 
+  
+  public async Reload() :Promise<void> { 
+    await this.LoadFunc(); 
+    this.setReady(true); 
+    return; 
+  } 
+} 
 
 export const ActiveCollectionContext = React.createContext({} as Collection); 
 // Load all collections, metadata, and datas. 
 // COLLECTIONS ==================================
 export default function CollectionsLoader() { 
   console.log('Collections'); 
-  const collectionsLoader = new Loader(LoadCollections); 
+  const [ready, setReady] = useState(false); 
+  const collectionsLoader = new Loader(ready, setReady, LoadCollections); 
   const [selected, setSelected] = useState(''); 
 
   useEffect( () => { 

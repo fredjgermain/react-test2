@@ -1,7 +1,7 @@
-import {useState} from 'react'; 
+import React, {useState} from 'react'; 
 import {Collection, Column} from './collection'; 
 import {MonGooseMetadata, IEntry} from './interfaces'; 
-import {crud} from '../../../crud'; 
+import {crud} from '../crud'; 
 
 export const collections: Array<Collection> = []; 
 
@@ -21,24 +21,7 @@ console.log(test); */
 
 
 // LOADER =======================================
-export class Loader { 
-  public ready:boolean; 
-  public LoadFunc:any; 
-  private setReady:any; 
-  
-  constructor(LoadFunc:any) { 
-    const [ready, setReady] = useState(false); 
-    this.ready = ready; 
-    this.setReady = setReady; 
-    this.LoadFunc = LoadFunc; 
-  } 
-  
-  public async Reload() :Promise<void> { 
-    await this.LoadFunc(); 
-    this.setReady(true); 
-    return; 
-  } 
-} 
+
 
 // LOAD COLLECTIONS ================================
 export const LoadCollections = async() => { 

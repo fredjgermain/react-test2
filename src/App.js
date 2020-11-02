@@ -1,7 +1,7 @@
 import React from 'react'; 
 //import Collections from './reacttabletest/table/collections/collections'; 
 //import Collections from './typescriptversion/collections/collections.tsx'; 
-import Collections from './typescriptv2/collections/collections.tsx'; 
+import Collections from './components/collections/collections.tsx'; 
 //import TestingInput from './typescriptv2/collections/testinginput.tsx'; 
 
 //table.css
