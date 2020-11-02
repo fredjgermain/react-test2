@@ -1,8 +1,18 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'; 
+//import Collections from './reacttabletest/table/collections/collections'; 
+//import Collections from './typescriptversion/collections/collections.tsx'; 
+import Collections from './typescriptv2/collections/collections.tsx'; 
+//import TestingInput from './typescriptv2/collections/testinginput.tsx'; 
 
-function App() {
-  return (
+//table.css
+import './components/collections/table.css'; 
+//import './App.css'; 
+
+
+export default function App() { 
+  return <Collections />; 
+} 
+  /*return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
@@ -19,7 +29,7 @@ function App() {
         </a>
       </header>
     </div>
-  );
-}
+  );*/
+//}
 
-export default App;
+//export default App; 
