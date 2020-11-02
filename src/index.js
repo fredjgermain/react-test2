@@ -3,6 +3,14 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {crud} from './crud'; 
+
+async function TestCrud() { 
+  let read = await crud.Ids('questions');
+  console.log(read);
+} 
+
+TestCrud();
 
 ReactDOM.render(
   <React.StrictMode>
