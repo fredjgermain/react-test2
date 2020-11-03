@@ -4,7 +4,7 @@ import {IEntry, EnumMode} from '../proxy/interfaces';
 import {collections} from '../proxy/proxy'; 
 
 
-//import {ActiveCollectionContext} from '../collections/collections'; 
+import {ActiveCollectionContext} from '../collections/collections'; 
 import {EntryRowContext} from './entryrow'; 
 
 import Selector, {IOption} from '../input/selector'; 

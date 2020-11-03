@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'; 
+import {Collection} from '../proxy/collection'; 
 import {IEntry, EnumMode, IRow} from '../proxy/interfaces'; 
-import {ActiveDataContext} from '../collections/collections'; 
+import {ActiveCollectionContext} from '../collections/collections'; 
 import EntryBtn from './entrybtn'; 
 import FieldCell from './fieldcell'; 
 
@@ -15,6 +16,8 @@ type EntryRowContextType = {
 
 export const EntryRowContext = React.createContext({} as EntryRowContextType); 
 
+
+
 type Props = { 
   row?:IRow; 
   modearg?:EnumMode; 
@@ -22,14 +25,19 @@ type Props = {
 // ENTRY ROW ====================================
 export default function EntryRow({row, modearg=EnumMode.Read}:Props) { 
   console.log('entryrow'); 
-  const activeData = useContext(ActiveDataContext); 
-  const {activeCollection, modeHook:{mode, setMode}} = useContext(ActiveDataContext); 
+  const activeCollection = useContext(ActiveCollectionContext); 
+  const [mode, setMode] = useState(modearg); 
+  
+  //const [id, setId] = useState(row?.id); 
+  
+  /*if(id != row?.id) 
+    console.log([id, row?.entry._id]); */
+
   const entry = row ? row.entry : activeCollection.GetDefaultEntry(); 
   const entryRowContext = {editableEntry:{...entry}, modeHook:{mode, setMode}} as EntryRowContextType; 
+  
+  //entryRowContext.editableEntry._id
 
-  console.log(activeData.modeHook);
-
-  // Render -------------------------------------
   const entrycols = () => {
     if(mode === EnumMode.New) {
       return activeCollection.columns.map( (c,i) => { 
@@ -41,6 +49,7 @@ export default function EntryRow({row, modearg=EnumMode.Read}:Props) {
     }); 
   } 
 
+  // Render -------------------------------------
   return <EntryRowContext.Provider value={entryRowContext}><tr> 
       <td>{row ? row.id: '+'}</td> 
       {entrycols()} 

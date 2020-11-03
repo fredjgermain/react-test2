@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'; 
 import {Collection} from '../proxy/collection'; 
-import {IEntry, EnumMode, IFeedback} from '../proxy/interfaces'; 
+import {IEntry, EnumMode} from '../proxy/interfaces'; 
 import {collections, LoadCollections} from '../proxy/proxy'; 
 
 import Selector, {IOption} from '../input/selector'; 
@@ -25,15 +25,7 @@ class Loader {
   } 
 } 
 
-
-
-interface IActiveDataContext { 
-  activeCollection: Collection; 
-  activeEntryHook: {activeEntry: IEntry, setActiveEntry:any}; 
-  modeHook: {mode: EnumMode, setMode:any}; 
-  feedbackHook: {feedback: IFeedback, setFeedback:any}; 
-} 
-export const ActiveDataContext = React.createContext({} as IActiveDataContext); 
+export const ActiveCollectionContext = React.createContext({} as Collection); 
 // Load all collections, metadata, and datas. 
 // COLLECTIONS ==================================
 export default function CollectionsLoader() { 
@@ -46,22 +38,7 @@ export default function CollectionsLoader() {
     collectionsLoader.Reload(); 
   }, []); 
 
-  const activeDataContext:IActiveDataContext = { 
-    activeCollection:collections.find( (c:Collection) => c.accessor === selected) ?? {} as Collection, 
-    activeEntryHook:{ 
-      activeEntry:{} as IEntry, 
-      setActiveEntry:() => {return;}, 
-    }, 
-    modeHook:{ 
-      mode: EnumMode.Read, 
-      setMode: () => {return;}, 
-    }, 
-    feedbackHook: { 
-      feedback:{oks:[], errs:[] } as IFeedback, 
-      setFeedback:() => {return;}, 
-    }, 
-  } 
-  
+  const activeCollection = collections.find( (c:Collection) => c.accessor === selected) ?? {} as Collection; 
   if(!collectionsLoader.ready) 
     return <div>Loading ... </div>; 
 
@@ -81,11 +58,11 @@ export default function CollectionsLoader() {
   const table = selected ? <CollectionTable/> : <div>No collection is selected.</div>; 
 
   // Render -------------------------------------
-  return <ActiveDataContext.Provider value={activeDataContext} > 
+  return <ActiveCollectionContext.Provider value={activeCollection} > 
     <h1>CRUD data</h1> 
     <p>Select an active collection from the list to read and/or edit it.</p> 
     {selector} 
     <hr/> 
     {table} 
-  </ActiveDataContext.Provider>; 
+  </ActiveCollectionContext.Provider>; 
 } 
