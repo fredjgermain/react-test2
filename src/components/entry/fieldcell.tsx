@@ -3,7 +3,6 @@ import {Collection, Column} from '../proxy/collection';
 import {IEntry, EnumMode} from '../proxy/interfaces'; 
 import {collections} from '../proxy/proxy'; 
 
-import {ActiveCollectionContext} from '../collections/collections'; 
 import {EntryRowContext} from './entryrow'; 
 
 import Selector, {IOption} from '../input/selector'; 
@@ -22,11 +21,6 @@ function StringInterpolate(pattern:String, args:any) {
   return new Function(...keys, `console.log("${pattern}"); 
   return \`${pattern}\`;`)(...values); 
 } 
-
-
-  /*const result = StringInterpolate(format, {value:'cacaca'}); 
-  //const result = StringInterpolate(format, {value:'cacaca'); 
-  console.log(result); */
 
 // https://gist.github.com/LachlanArthur/bb87bcd2c8825dd499cb71a1176a4c26
 export function sprintf( strings: TemplateStringsArray, ...indices: number[] ) {
@@ -47,6 +41,7 @@ export function GetOptionFromEnum(options:any):Array<IOption> {
     return {value: v, label: v} as IOption; 
   }); 
 } 
+
 
 // Get options from foreign collection
 export function GetOptionsFromForeign(modeltype:string):Array<IOption> { 
@@ -75,12 +70,8 @@ type Props = {
 } 
 // FIELD ========================================
 export default function FieldCell({column}:Props) { 
-  const collection = useContext(ActiveCollectionContext); 
   const {editableEntry, modeHook:{mode}} = useContext(EntryRowContext); 
-  
   const {accessor, type, subtype, modeltype, options} = column; 
-
-
   const elemType = subtype === 'ObjectID' ? modeltype: subtype; 
 
   //let toRender = <span>{editableEntry[accessor]}</span>; 

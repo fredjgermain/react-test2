@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'; 
 import {Collection, Column} from '../proxy/collection'; 
-import {IEntry, EnumMode} from '../proxy/interfaces'; 
-import {collections} from '../proxy/proxy'; 
-import {sprintf, GetAbbreviate, GetOptionFromEnum, GetOptionsFromForeign} from './fieldcell';
+import {sprintf, GetAbbreviate, GetOptionFromEnum, GetOptionsFromForeign} from './fieldcell'; 
 
-import {ActiveCollectionContext} from '../collections/collections'; 
 import {EntryRowContext} from './entryrow'; 
 
 import Selector, {IOption} from '../input/selector'; 

@@ -1,11 +1,13 @@
+// TABLE DESIGN ...
+// https://uxdesign.cc/lets-design-data-tables-bf065a60e588
+
+
 import React, {useState} from 'react'; 
 import {Collection, Column} from './collection'; 
 import {MonGooseMetadata, IEntry} from './interfaces'; 
 import {crud} from '../crud'; 
 
 export const collections: Array<Collection> = []; 
-
-
 
 
 // https://gist.github.com/LachlanArthur/bb87bcd2c8825dd499cb71a1176a4c26
