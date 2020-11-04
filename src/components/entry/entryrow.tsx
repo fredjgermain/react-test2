@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import {Collection} from '../proxy/collection'; 
 import {IEntry, EnumMode, IRow} from '../proxy/interfaces'; 
 import {ActiveCollectionContext} from '../collections/collections'; 
+import {CollectionTableContext} from '../collections/collectiontable'; 
 import EntryBtn from './entrybtn'; 
 import FieldCell from './fieldcell'; 
 
@@ -16,8 +17,6 @@ type EntryRowContextType = {
 
 export const EntryRowContext = React.createContext({} as EntryRowContextType); 
 
-
-
 type Props = { 
   row?:IRow; 
   modearg?:EnumMode; 
@@ -27,6 +26,10 @@ export default function EntryRow({row, modearg=EnumMode.Read}:Props) {
   console.log('entryrow'); 
   const activeCollection = useContext(ActiveCollectionContext); 
   const [mode, setMode] = useState(modearg); 
+
+  /*useEffect(() => { 
+    setMode()
+  },[row]) */
   
   //const [id, setId] = useState(row?.id); 
   
@@ -34,7 +37,7 @@ export default function EntryRow({row, modearg=EnumMode.Read}:Props) {
     console.log([id, row?.entry._id]); */
 
   const entry = row ? row.entry : activeCollection.GetDefaultEntry(); 
-  const entryRowContext = {editableEntry:{...entry}, modeHook:{mode, setMode}} as EntryRowContextType; 
+  const entryRowContext:EntryRowContextType = {editableEntry:{...entry}, modeHook:{mode, setMode}}; 
   
   //entryRowContext.editableEntry._id
 

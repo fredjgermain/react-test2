@@ -9,14 +9,29 @@ import {EntryRowContext} from './entryrow';
 
 export default function EntryBtn() {
   const {editableEntry, modeHook:{mode, setMode}} = useContext(EntryRowContext); 
+  //const {editableEntry} = useContext(EntryRowContext); 
   const activeCollection = useContext(ActiveCollectionContext); 
-  const tableContext = useContext(CollectionTableContext); 
-  const {feedbackHook} = tableContext; 
+  const {activeEntryHook, modeHook, feedbackHook} = useContext(CollectionTableContext); 
 
-  useEffect(() => {
-    if(mode === EnumMode.Update && tableContext.idModified != editableEntry._id) 
+  // editableEntry changed (page change, collection changed) 
+  useEffect(() => { 
+    if(editableEntry._id === activeEntryHook.activeEntry._id && mode != EnumMode.New && mode != modeHook.mode) 
+      setMode(modeHook.mode); 
+  },[editableEntry]); 
+
+  useEffect(() => { 
+    if((mode === EnumMode.Update || mode === EnumMode.Delete) && editableEntry._id != activeEntryHook.activeEntry._id) 
       setMode(EnumMode.Read); 
-  }, [editableEntry._id]); 
+    else if((mode === EnumMode.Create) && editableEntry._id != activeEntryHook.activeEntry._id) 
+      setMode(EnumMode.New); 
+  }, [activeEntryHook]); 
+
+  useEffect(() => { 
+    if(mode === EnumMode.Update || mode === EnumMode.Create || mode === EnumMode.Delete) { 
+      modeHook.setMode(mode); 
+      activeEntryHook.setActiveEntry(editableEntry); 
+    } 
+  }, [mode]); 
 
   //&& tableContext.idModified === editableEntry._id
   //console.log([mode, tableContext.idModified, editableEntry._id, tableContext.idModified === editableEntry._id] ); 
@@ -67,7 +82,6 @@ export default function EntryBtn() {
   if(mode===EnumMode.Read) 
     return <div> 
       <button onClick={() => { 
-        tableContext.idModified = editableEntry._id; 
         setMode(EnumMode.Update); 
       }}>Update</button> 
       <button onClick={() => setMode(EnumMode.Delete)}>Delete</button> 

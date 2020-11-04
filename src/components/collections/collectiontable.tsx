@@ -23,7 +23,8 @@ function IndexData(data:Array<IEntry>) :Array<IRow> {
 } */
 
 type CollectionTableContextType = { 
-  idModified: String; 
+  activeEntryHook: {activeEntry:IEntry, setActiveEntry:any}; 
+  modeHook: {mode:EnumMode, setMode:any}; 
   feedbackHook: IFeedbackHook; 
 } 
 export const CollectionTableContext = React.createContext({} as CollectionTableContextType);
@@ -34,6 +35,8 @@ export default function CollectionTable() {
   console.log('collectionTable'); 
   const [feedBack, setFeedBack] = useState({oks:[], errs:[]}); 
   const feedbackHook = {feedback: feedBack, setFeedBack} as IFeedbackHook; 
+  const [activeEntry, setActiveEntry] = useState({} as IEntry); 
+  const [mode, setMode] = useState(EnumMode.Read); 
 
   //const [refresh, setRefresh] = useState(false); 
   //const refreshHook = {refresh:false, setRefresh:() => { setRefresh(() => !refresh) } } as RefreshHookType; 
@@ -100,8 +103,14 @@ export default function CollectionTable() {
   </tfoot> 
   
   // Render -------------------------------------
-  const collectionTaleContext = {idModified:'', feedbackHook} as CollectionTableContextType; 
+  const collectionTaleContext:CollectionTableContextType = { 
+    activeEntryHook:{activeEntry,setActiveEntry}, 
+    modeHook: {mode, setMode}, 
+    feedbackHook
+  }; 
   return <CollectionTableContext.Provider value={collectionTaleContext}> 
+      <div>|{collectionTaleContext.activeEntryHook.activeEntry._id}|</div> 
+      <div>|{collectionTaleContext.modeHook.mode}|</div> 
       <table> 
         {caption} 
         {header} 

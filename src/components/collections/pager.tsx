@@ -8,7 +8,7 @@ const pageSize = 10;
 export function GetPage(entries:Array<any>, pageIndex:number) {
   const from = PageIndexes(entries)[pageIndex]; 
   return entries.slice(from, from+pageSize); 
-}
+} 
 
 export function ItemsRange(entries:Array<any>, pageIndex:number) { 
   const from = PageIndexes(entries)[pageIndex]; 
