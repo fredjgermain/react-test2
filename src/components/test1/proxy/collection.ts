@@ -1,6 +1,6 @@
 //import React from 'react'; 
 //import {object} from 'prop-types'; 
-import {crud} from '../crud'; 
+import {crud} from '../../crud'; 
 import {IEntry, IResult} from './interfaces'; 
 
 

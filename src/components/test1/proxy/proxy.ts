@@ -1,7 +1,7 @@
 import React, {useState} from 'react'; 
 import {Collection, Column} from './collection'; 
 import {MonGooseMetadata, IEntry} from './interfaces'; 
-import {crud} from '../crud'; 
+import {crud} from '../../crud'; 
 
 export const collections: Array<Collection> = []; 
 

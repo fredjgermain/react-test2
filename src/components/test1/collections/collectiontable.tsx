@@ -33,6 +33,7 @@ export const CollectionTableContext = React.createContext({} as CollectionTableC
 // Collection Table =============================
 export default function CollectionTable() { 
   console.log('collectionTable'); 
+  const activeCollection = useContext(ActiveCollectionContext); 
   const [feedBack, setFeedBack] = useState({oks:[], errs:[]}); 
   const feedbackHook = {feedback: feedBack, setFeedBack} as IFeedbackHook; 
   const [activeEntry, setActiveEntry] = useState({} as IEntry); 
@@ -40,9 +41,6 @@ export default function CollectionTable() {
 
   //const [refresh, setRefresh] = useState(false); 
   //const refreshHook = {refresh:false, setRefresh:() => { setRefresh(() => !refresh) } } as RefreshHookType; 
-
-  const activeCollection = useContext(ActiveCollectionContext); 
-
   const {label, accessor, columns, data} = activeCollection; 
   // pager divides dataHook into pages ... 
   // dataHook can be sorted and/or divided into pages ... 
