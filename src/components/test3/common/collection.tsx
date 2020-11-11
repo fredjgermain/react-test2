@@ -1,7 +1,7 @@
 //import React from 'react'; 
 //import {object} from 'prop-types'; 
 //import {crud} from '../../crud'; 
-import {ICollection, IEntry, IField} from '../tablecomponent/tableinterfaces'; 
+//import {ICollection, IEntry, IField} from '../tablecomponent/tableinterfaces'; 
 import Field from './field'; 
 
 

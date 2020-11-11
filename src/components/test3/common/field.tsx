@@ -1,5 +1,5 @@
 import React from 'react'; 
-import {IField, ICrudTable, IEntry, IRow} from '../tablecomponent/tableinterfaces'; 
+//import {IField, ICrudTable, IEntry, IRow} from '../tablecomponent/tableinterfaces'; 
 
 
 /*import {collection1, collection3} from '../../test2/common/data'; 

@@ -11,8 +11,6 @@ import InputArray from '../input/inputarray';
 import InputData from '../input/inputdata'; 
 import { crud } from '../../crud';
 
-//import {ICollection, IResult, ICrudTable, IEntry, IField} from '../tablecomponent/tableinterfaces'; 
-
 
 export interface IMongooseCollection { 
   accessor:string; 
@@ -21,22 +19,44 @@ export interface IMongooseCollection {
 
 export interface IMongooseField { 
   accessor:string; 
-  instance:string; 
-  options: { 
-    ref?: string; 
-    label?: string; 
-    sortType?: string; 
-    defaultValue?: any; 
-    format?: string; 
-    [key:string]:any; 
-  }; 
-  $embeddedSchemaType?:{ 
+  path: { 
     instance:string; 
-  }; 
-  [key:string]:any; 
+    options: { 
+      ref?: string; 
+      label?: string; 
+      sortType?: string; 
+      defaultValue?: any; 
+      format?: string; 
+      [key:string]:any; 
+    }; 
+    $embeddedSchemaType?:{ 
+      instance:string; 
+    }; 
+    [key:string]:any; 
+  }
 } 
 
+function ParseMockCollections(collections:IMongooseCollection[]):Collection[] { 
+  return collections.map( (c) => { 
+    return new Collection(ParseMockCollection(c)); 
+  }); 
+} 
 
+// create new collections from mock data ... 
+function ParseMockCollection(collection:IMongooseCollection):ICollection { 
+  const icollection:ICollection = {} as ICollection; 
+  icollection.accessor = collection.accessor; 
+  icollection.label = collection.label; 
+  icollection.fields = ParseMockFields( (mockFields as any)[icollection.accessor] ); 
+  icollection.entries = (mockDataCollections as any)[icollection.accessor]; 
+  icollection.fields.forEach( f => { 
+    SetCellMode(f); 
+    //console.log(f.cellMode); 
+  }); 
+
+
+  return icollection; 
+} 
 
 function GetDefaultValue(type:string, options:any):any { 
   if(options['defaultValue']) 
@@ -48,43 +68,17 @@ function GetDefaultValue(type:string, options:any):any {
   return ''; 
 } 
 
-
-export const collections:Collection[] = new Array<Collection>(); 
-
-// const collections:IMongooseCollection[] = (await crud.Read('collections')).data; 
-export async function LoadCollections() { 
-  const mongooseCollections = (await crud.Read('collections')).data as IMongooseCollection[]; 
-  //const loadedCollections = await ParseCollection(loads); 
-  for(let i=0; i<mongooseCollections.length; i++) { 
-    const collection = await ParseCollection(mongooseCollections[i]); 
-    collections.push(collection); 
-  } 
-  //console.log(collections); 
-}
-
-async function ParseCollection(collection:IMongooseCollection):Promise<Collection> { 
-  const icollection:ICollection = {} as ICollection; 
-  icollection.accessor = collection.accessor; 
-  icollection.label = collection.label; 
-  
-  const fields = (await crud.Models(collection.accessor)).data.paths; 
-  const mongooseFields = Object.keys(fields).map( f => { 
-    return {accessor:f, ...fields[f] } as IMongooseField; 
-  }); 
-  icollection.fields = ParseFields(mongooseFields); 
-  icollection.entries = (await crud.Read(collection.accessor)).data; 
-  return new Collection(icollection); 
-}
-
-//async function ParseFields()
-function ParseFields(fields:IMongooseField[]):IField[] { 
-  return fields.map( f => { 
-    const {accessor, instance, $embeddedSchemaType, options} = f; 
+// parse a default IField[]. 
+// cellMode.read and cellMode.edit are still not implemented completely. 
+function ParseMockFields(fields:IMongooseField[]):IField[] { 
+  return fields.map( (f) => { 
     const ifield:IField = {} as IField; 
+    const {instance, $embeddedSchemaType, options} = f.path; 
     
-    ifield.accessor = accessor; 
+    ifield.accessor = f.accessor; 
     ifield.label = options.label ?? ''; 
     ifield.options = options; 
+
     ifield.type = instance; 
     ifield.subtype = $embeddedSchemaType?.instance ?? ''; 
     ifield.modeltype = options.ref ?? ''; 
@@ -131,7 +125,7 @@ function SetCellMode(ifield:IField) {
 
   const RefreshForeignOptions = ():IOption[] => { 
     if(ifield.modeltype) {
-      const foreignCollection = new Collection({} as ICollection); //collections.find(c => c.icollection.accessor === ifield.modeltype); 
+      const foreignCollection = collections.find(c => c.icollection.accessor === ifield.modeltype); 
       return GetForeignOptions(foreignCollection); 
     } 
     return []; 
@@ -185,21 +179,13 @@ function SetCellMode(ifield:IField) {
 
 
 
-/*export async function LoadCollections() { 
-  
-  console.log(loadedCollections); 
-  //loadedCollections.forEach( c => collections.push(c) ); 
-} */
-// AFTER LOADING DATA ... 
-/*const mongooseCollections = LoadCollections(); 
-console.log(mongooseCollections);*/
 
-//export const collections:Collection[] = ParseCollections(mockCollections); // replace mockCollections with real data ... 
+
+// AFTER LOADING DATA ... 
+export const collections:Collection[] = ParseMockCollections(mockCollections); // replace mockCollections with real data ... 
 
 
 
 // ----------------------------------------------
 const selectedCollection:Collection = {} as Collection; 
-
-
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'; 
 import RowData from './rowdata'; 
 import THeader from './theader'; 
-import {IField, ICrudTable, IEntry, IRow} from './tableinterfaces'; 
+//import {IField, ICrudTable, IEntry, IRow} from './tableinterfaces'; 
 
 
 interface ITableDataContext { 
@@ -9,12 +9,12 @@ interface ITableDataContext {
   activeRowHook: { 
     activeRow: any, 
     setActiveRow: any, 
-  }
-  activeModeHook: {
+  } 
+  activeModeHook: { 
     activeMode: string, 
     setActiveMode: any, 
   } 
-  crud: ICrudTable; 
+  crud: ITableDataAction; 
 } 
 export const TableDataContext = React.createContext({} as ITableDataContext); 
 
@@ -23,7 +23,7 @@ export const TableDataContext = React.createContext({} as ITableDataContext);
 interface Props { 
   columnSettings: IField[], 
   rows: any[], 
-  crud: ICrudTable; 
+  crud: ITableDataAction; 
 } 
 // TableData ====================================
 export default function TableData({columnSettings, rows, crud}:Props) { 

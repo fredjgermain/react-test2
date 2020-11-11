@@ -10,9 +10,9 @@
 } */
 
 interface ITableDataAction { 
-  Create: (entry:IEntry) => Boolean; 
-  Update: (entry:IEntry) => Boolean; 
-  Delete: (entry:IEntry) => Boolean; 
+  Create: (entry:IEntry) => Promise<Boolean>; 
+  Update: (entry:IEntry) => Promise<Boolean>; 
+  Delete: (entry:IEntry) => Promise<Boolean>; 
   //Sort?: 
 } 
 

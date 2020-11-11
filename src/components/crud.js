@@ -2,13 +2,13 @@
 import axios from 'axios'; 
 import { AxiosProvider, Request, Get, Delete, Head, Post, Put, Patch, withAxios } from 'react-axios';
 
-class Crud {
+class Crud { 
   constructor(baseUrl) { 
     this.baseUrl = baseUrl; 
-    const axiosInstance = axios.create({
-      baseURL: baseUrl,
-      timeout: 2000
-    });
+    const axiosInstance = axios.create({ 
+      baseURL: baseUrl, 
+      timeout: 2000 
+    }); 
   } 
 
   async Models(modelName) { 
