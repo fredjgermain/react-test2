@@ -18,7 +18,7 @@ export default function InputData({value, setValue, type, size=5, useref,
   attributes, checkDisplay=false, 
   validation=(num:number) => true}:Props) { 
   
-  let adjustSize = Math.max(size, value.toString().length); 
+  let adjustSize = Math.max(size, value?.toString().length ?? 0); 
   adjustSize = Math.max(adjustSize, 4); 
   const sizeNumber = {style:{width:`${adjustSize+3}ch`}}; 
   const sizeString = {size:adjustSize-3}; 

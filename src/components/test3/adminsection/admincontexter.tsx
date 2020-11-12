@@ -1,7 +1,6 @@
-import React, {useEffect, useState} from 'react'; 
-import {crud} from '../../crud'; 
-import {LoadCollections, collections} from '../common/mongoosedata'; 
-import Collection from '../common/collection'; 
+import React, {useEffect, useState, useMemo} from 'react'; 
+//import {crud} from '../../crud'; 
+//import Collection from '../common/collection'; 
 import CollectionSelector from './collectionselector'; 
 import DataAccessObject from '../common/dao'; 
 
@@ -29,7 +28,6 @@ class Loader {
   } 
 } 
 
-
 interface IAdminContext { 
   dao: DataAccessObject; 
   selectedCollection?: string; 
@@ -39,10 +37,14 @@ export const AdminContext = React.createContext({} as IAdminContext);
 
 // ADMIN SECTION ================================
 export default function AdminContexter() { 
-  const adminContext = {dao:new DataAccessObject(), selectedCollection:''}; 
+  //console.log('admin'); 
+  const dao = useMemo(() => new DataAccessObject(), []); 
   const [ready, setReady] = useState(false); 
-  const collectionsLoader = new Loader(ready, setReady, LoadCollections); 
-  const [selected, setSelected] = useState(''); 
+  const collectionsLoader = new Loader(ready, setReady, 
+    async () => { 
+      await dao.LoadCollections(['responses', 'questions', 'instructions', 'forms']) 
+    }); 
+  //const [selected, setSelected] = useState(''); 
   
   useEffect( () => { 
     collectionsLoader.Reload(); 
@@ -51,9 +53,8 @@ export default function AdminContexter() {
   if(!ready) 
     return <div>Loading</div>; 
   
-  adminContext.dao.collections = collections; 
-  console.log(adminContext.dao.collections); 
   
+  const adminContext = {dao:dao, selectedCollection:''}; 
   return <AdminContext.Provider value={adminContext} > 
     <div> 
       <CollectionSelector /> 

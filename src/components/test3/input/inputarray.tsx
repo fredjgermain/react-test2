@@ -5,7 +5,7 @@ import InputData from './inputdata';
 type Props = { 
   values: Array<any>; 
   setValues: any; 
-  defaultValue: any; 
+  defaultValue?: any; 
   type: string; 
   useref?: any; 
   checkDisplay?: boolean; 
@@ -13,7 +13,7 @@ type Props = {
   validation?: any; 
 } 
 
-export default function InputArray({values, setValues, defaultValue, type, useref, 
+export default function InputArray({values=[], setValues, defaultValue='', type, useref, 
   checkDisplay=false, attributes={}, validation=(num:number) => true}:Props) { 
   
   const editableValues = [...values, defaultValue]; 

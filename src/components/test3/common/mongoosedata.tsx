@@ -1,17 +1,5 @@
-import React from 'react'; 
-import {mockCollections, mockFields} from './mockdb/datastructure'; 
-import {mockDataCollections} from './mockdb/data'; 
 import Collection from './collection'; 
-import Field from './field'; 
-import DataAccessObject from './dao'; 
-
-// input ----
-import Selector, {IOption} from '../input/selector'; 
-import InputArray from '../input/inputarray'; 
-import InputData from '../input/inputdata'; 
-import { crud } from '../../crud';
-
-//import {ICollection, IResult, ICrudTable, IEntry, IField} from '../tablecomponent/tableinterfaces'; 
+import { crud } from '../../crud'; 
 
 
 export interface IMongooseCollection { 
@@ -38,31 +26,22 @@ export interface IMongooseField {
 
 
 
-function GetDefaultValue(type:string, options:any):any { 
-  if(options['defaultValue']) 
-    return options['defaultValue']; 
-  if(options['default']) 
-    return options['default']; 
-  if(type === 'Array') 
-    return []; 
-  return ''; 
-} 
-
 
 export const collections:Collection[] = new Array<Collection>(); 
 
 // const collections:IMongooseCollection[] = (await crud.Read('collections')).data; 
-export async function LoadCollections() { 
+export async function LoadCollections(collectionsToFind:string[]):Promise<Collection[]> { 
   const mongooseCollections = (await crud.Read('collections')).data as IMongooseCollection[]; 
-  //const loadedCollections = await ParseCollection(loads); 
-  for(let i=0; i<mongooseCollections.length; i++) { 
-    const collection = await ParseCollection(mongooseCollections[i]); 
-    collections.push(collection); 
+  const foundCollections = mongooseCollections.filter( c => collectionsToFind.includes(c.accessor) ); 
+  const loadedCollections = new Array<Collection>(); 
+  for(let i=0; i<foundCollections.length; i++) { 
+    const collection = await LoadCollection(foundCollections[i]); 
+    loadedCollections.push(collection); 
   } 
-  //console.log(collections); 
-}
+  return loadedCollections; 
+} 
 
-async function ParseCollection(collection:IMongooseCollection):Promise<Collection> { 
+async function LoadCollection(collection:IMongooseCollection):Promise<Collection> { 
   const icollection:ICollection = {} as ICollection; 
   icollection.accessor = collection.accessor; 
   icollection.label = collection.label; 
@@ -73,10 +52,28 @@ async function ParseCollection(collection:IMongooseCollection):Promise<Collectio
   }); 
   icollection.fields = ParseFields(mongooseFields); 
   icollection.entries = (await crud.Read(collection.accessor)).data; 
+  /* icollection.fields.forEach( f => { 
+    SetCellMode(f); 
+    //console.log(f.cellMode); 
+  }); */
   return new Collection(icollection); 
-}
+} 
 
-//async function ParseFields()
+function GetDefaultValue(type:string, options:any):any { 
+  if(options['defaultValue']) 
+    return options['defaultValue']; 
+  if(options['default']) 
+    return options['default']; 
+  if(type === 'Array') 
+    return []; 
+  if(type === 'Boolean') 
+    return false; 
+  if(type === 'Number') 
+    return 0; 
+  return ''; 
+} 
+
+//async function ParseFields() 
 function ParseFields(fields:IMongooseField[]):IField[] { 
   return fields.map( f => { 
     const {accessor, instance, $embeddedSchemaType, options} = f; 
@@ -92,6 +89,7 @@ function ParseFields(fields:IMongooseField[]):IField[] {
     ifield.sort = options.sortType ?? ''; 
 
     ifield.defaultValue = GetDefaultValue(ifield.type, ifield.options); 
+    // set to default cellMode
     ifield.cellMode = { 
       read: (value:any) => JSON.stringify(value), 
       edit: (value:any, setValue:any) => JSON.stringify(value), 
@@ -105,11 +103,12 @@ function ParseFields(fields:IMongooseField[]):IField[] {
 
 
 
-
+/*
 
 function GetForeignOptions(foreignCollection:Collection|void) { 
   if(!foreignCollection) 
     return []; 
+  console.log(foreignCollection); 
   const abvfield = foreignCollection.GetAbbreviateField(); 
   return foreignCollection.icollection.entries?.map( e => { 
     return {value:e._id, label:e[abvfield.accessor]} as IOption; 
@@ -127,11 +126,12 @@ function SetCellMode(ifield:IField) {
     `Is not Array:${!field.IsArray()}`, 
     `Is not Enum:${!field.IsEnum()}`, 
     `Is Data:${field.IsString() || field.IsNumber() || field.IsBoolean()}`, 
-  ]);*/
+  ]);
 
   const RefreshForeignOptions = ():IOption[] => { 
-    if(ifield.modeltype) {
+    if(ifield.modeltype) { 
       const foreignCollection = new Collection({} as ICollection); //collections.find(c => c.icollection.accessor === ifield.modeltype); 
+      console.log(foreignCollection); 
       return GetForeignOptions(foreignCollection); 
     } 
     return []; 
@@ -199,7 +199,7 @@ console.log(mongooseCollections);*/
 
 
 // ----------------------------------------------
-const selectedCollection:Collection = {} as Collection; 
+//const selectedCollection:Collection = {} as Collection; 
 
 
 

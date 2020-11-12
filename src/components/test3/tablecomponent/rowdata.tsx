@@ -1,19 +1,19 @@
 import React, { useContext } from 'react'; 
 import {TableDataContext} from './tabledata'; 
+import RowBtn from './rowbtn'; 
 
 
-
-function GetDefaultEntry(columnSettings:Array<IField>, row?:any) {
+function GetDefaultEntry(ifields:Array<IField>, row?:any) {
   if(row) 
     return row; 
   let entry:any = {}; 
-  columnSettings.forEach( c => {
-    entry[c.accessor] = '' 
+  ifields.forEach( f => { 
+    entry[f.accessor] = f.defaultValue; 
   }) 
   return entry; 
 }
 
-interface IRowData { 
+export interface IRowData { 
   row?: any, 
   mode?: string, 
 } 
@@ -31,7 +31,6 @@ export default function RowData({row, mode}:IRowData ) {
   } 
 
   function DisplayMode (field:IField) { 
-    //console.log(activeRow._id === row._id && editableMode.includes(activeMode)); 
     if(mode === 'new' && activeMode != 'create') 
       return <span></span> 
 
@@ -54,66 +53,9 @@ export default function RowData({row, mode}:IRowData ) {
     </tr> 
 } 
 
-// ROW BTN ======================================
-export function RowBtn({row, mode}:IRowData) { 
-  const {
-    activeRowHook:{activeRow, setActiveRow}, 
-    activeModeHook:{activeMode, setActiveMode}, 
-    crud:{Create, Delete, Update} 
-  } = useContext(TableDataContext); 
-
-  function Confirm(crudMethod:any) { 
-    crudMethod(activeRow); 
-    if(activeMode === 'create') 
-      ModeChange({}, 'new'); 
-    else 
-      ModeChange({}, 'read'); 
-  } 
-
-  function ModeChange(row:any, newMode:string) { 
-    setActiveRow(row); 
-    setActiveMode(newMode); 
-  } 
-
-  // BTN ======================================== 
-  function Btn() { 
-    // confirm create 
-    if(activeRow._id === row._id && activeMode === 'create') 
-      return <span>
-        <button onClick={ () => Confirm(Create) }>Confirm Create</button> 
-        <button onClick={ () => ModeChange({}, 'read') }>Cancel create</button> 
-      </span>; 
-    
-    // confirm update
-    if(activeRow._id === row._id && activeMode === 'update') 
-      return <span>
-        <button onClick={ () => Confirm(Update) }>Confirm update</button> 
-        <button onClick={ () => ModeChange({}, 'read') }>Cancel update</button> 
-      </span>; 
-
-    // confirm delete
-    if(activeRow._id === row._id && activeMode === 'delete') 
-      return <span> 
-        <button onClick={ () => Confirm(Delete) }>Confirm delete</button> 
-        <button onClick={ () => ModeChange({}, 'read') }>Cancel delete</button> 
-      </span>; 
-    
-    if(mode === 'new') 
-      return <span> 
-        <button onClick={ () => ModeChange(row, 'create') }>Create</button> 
-      </span>; 
-
-    return <span> 
-      <button onClick={ () => ModeChange(row, 'update') }>Update</button> 
-      <button onClick={ () => ModeChange(row, 'delete') }>Delete</button> 
-    </span>; 
-  } 
-
-  // RENDER -------------------------------------
-  return <td>{Btn()}</td>; 
-} 
 
 
+/*
 interface ICellData { 
   columnSetting: IField, 
   value: any, 
@@ -123,5 +65,5 @@ export function CellData({columnSetting, value}:ICellData) {
       {columnSetting.cellMode.read(value)} 
     </td>; 
 } 
-
+*/
 

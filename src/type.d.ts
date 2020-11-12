@@ -55,9 +55,16 @@ interface IField {
   } 
 } 
 
+enum EActionType { 
+  CREATE = 'create', 
+  READ = 'read', 
+  UPDATE = 'update', 
+  DELETE = 'delete', 
+}
 
 interface IResponse { 
+  actionType: EActionType
   success: boolean; 
-  data?: any[]; 
+  data?: any; 
   err?: any[]; 
 } 
