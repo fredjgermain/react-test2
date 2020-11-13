@@ -3,8 +3,8 @@ import {TableDataContext} from './tabledata';
 
 
 export default function THeader() { 
-  console.log('THeader'); 
-  const {columnSettings, activeModeHook, activeRowHook} = useContext(TableDataContext); 
+  //console.log('THeader'); 
+  const {cols: columnSettings, activeModeHook, activeRowHook} = useContext(TableDataContext); 
 
   return <thead> 
     <tr> 
@@ -18,4 +18,4 @@ export default function THeader() {
       </th> 
     </tr> 
   </thead>; 
-}
+} 

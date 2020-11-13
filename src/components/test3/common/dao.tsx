@@ -10,12 +10,10 @@ import InputArray from '../input/inputarray';
 import Selector, {IOption} from '../input/selector'; 
 
 
-
 // DataAcessObject ==============================
 export default class DataAccessObject { 
   public collections:Collection[] = []; 
-  public response:IResponse = {} as IResponse; 
-
+  public response?:IResponse = {} as IResponse; 
 
   // Load Collections
   public async LoadCollections(collectionAccessors:string[]) { 

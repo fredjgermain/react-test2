@@ -1,11 +1,10 @@
 import React from 'react'; 
 
-//import CollectionSelector from './components/test2/collections/collectionselector'; 
-//import CollectionSelector from './components/test2/collections/collectionselector'; 
-import AdminSection from './components/test3/adminsection/admincontexter'; 
+//import AdminSection from './components/test3/adminsection/admincontexter'; 
+import Contexter from './components/testHookContext/contexter';
 
 
 export default function App() { 
-  return <AdminSection />; 
-  //return <CollectionSelector />; 
+  //return <AdminSection />; 
+  return <Contexter />; 
 } 

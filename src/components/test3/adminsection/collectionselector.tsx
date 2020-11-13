@@ -15,19 +15,15 @@ export default function CollectionSelector() {
   const options = dao.collections.map( c => { 
     return {value:c.icollection.accessor, label:c.icollection.label} as IOption; 
   }) 
-  const selector = <Selector selected={selected} setSelected={setSelected} options={options} />
+  const selector = <Selector selected={selected} setSelected={setSelected} options={options} /> 
   adminContext.selectedCollection = selected; 
 
-
-  const [values, setValues] = useState([1,2,3]); 
-
-  //const testArray = <InputArray type={'Number'} values={values} setValues={setValues} defaultValue={1} />
   // RENDER -------------------------------------
   return <div> 
     <h1>Admin section</h1> 
     <p>Choose a collection</p> 
     <span>Collection: {selector}</span> 
-    <hr/>
-    <AdminTable />
+    <hr/> 
+    <AdminTable /> 
   </div>; 
 } 

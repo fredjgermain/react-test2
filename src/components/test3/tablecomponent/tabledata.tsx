@@ -5,7 +5,7 @@ import THeader from './theader';
 
 
 interface ITableDataContext { 
-  columnSettings: Array<IField>, 
+  cols: Array<IField>, 
   activeRowHook: { 
     activeRow: any, 
     setActiveRow: any, 
@@ -21,23 +21,24 @@ export const TableDataContext = React.createContext({} as ITableDataContext);
 
 // PROPS
 interface Props { 
-  columnSettings: IField[], 
+  cols: IField[], 
   rows: any[], 
   crud: ITableDataAction; 
 } 
 // TableData ====================================
-export default function TableData({columnSettings, rows, crud}:Props) { 
-  console.log('Table'); 
+export default function TableData({cols, rows, crud}:Props) { 
+  console.log('render: Table'); 
+  console.log(rows[0]._id); 
 
   const [activeRow, setActiveRow] = useState({}); 
   const [activeMode, setActiveMode] = useState('read'); 
 
   const tableDataContext:ITableDataContext = { 
-    columnSettings, 
+    cols: cols, 
     activeRowHook: {activeRow, setActiveRow}, 
     activeModeHook: {activeMode, setActiveMode}, 
     crud, 
-  }; 
+  };   
 
   return <TableDataContext.Provider value={tableDataContext} > 
     <div> 

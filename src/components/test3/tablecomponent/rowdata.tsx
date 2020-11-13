@@ -19,8 +19,8 @@ export interface IRowData {
 } 
 // ROWDATA ======================================
 export default function RowData({row, mode}:IRowData ) { 
-  console.log('Row'); 
-  const {columnSettings, activeModeHook:{activeMode}, activeRowHook:{activeRow, setActiveRow}} = useContext(TableDataContext); 
+  //console.log('Row'); 
+  const {cols: columnSettings, activeModeHook:{activeMode}, activeRowHook:{activeRow, setActiveRow}} = useContext(TableDataContext); 
 
   const data = GetDefaultEntry(columnSettings, row); 
 

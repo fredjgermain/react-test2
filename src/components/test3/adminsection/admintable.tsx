@@ -1,16 +1,15 @@
-import React, { useState, useContext } from 'react'; 
+import React, {useContext, useState} from 'react'; 
 import {AdminContext} from './admincontexter'; 
-import Selector, { IOption } from '../input/selector'; 
-import TableData from '../tablecomponent/tabledata'; 
-import Field from '../common/field';
-import '../common/table.css'; 
 
-// assumes data loaded 
-// assumes data have been parsed from mock data in mongoosedata.tsx 
-// assumes instance of DataAccessObject 
-// accesss instance of DataAccessObject 
-// Initiate TableData ... 
-// pass methods from Create,Update,Delete from DataAccessObject to TableData's props 
+import TableData from '../tablecomponent/tabledata'; 
+import Field from '../common/field'; 
+
+import AdminPager from './adminpager'; 
+import {usePage} from '../customhooks/usePage'; 
+import AdminError from './adminerror'; 
+
+
+import '../common/table.css'; 
 
 // ADMIN TABLE ================================== 
 export default function AdminTable() { 
@@ -19,6 +18,8 @@ export default function AdminTable() {
   // Tabler -------------------------------------
   const activeCollection = dao.collections.find( c => c.icollection.accessor === selectedCollection); 
   const entries = activeCollection?.icollection.entries ?? []; 
+  const {pageIndex, setPageIndex, from, to, pageIndexes} = usePage(entries, 5); 
+  const [refresh, setRefresh] = useState(false); 
 
   /* Column Settings 
       As a default select non hidden fields */ 
@@ -35,17 +36,35 @@ export default function AdminTable() {
   // CRUD METHODS ......
   const crud:ITableDataAction = { 
     Create: async (entry:IEntry) => { 
-      console.log([selectedCollection, entry]); 
-      return await dao.Create(selectedCollection ?? '', entry); 
+      await dao.Create(selectedCollection ?? '', entry)
+      .then( () => { 
+        setRefresh(() => !refresh); 
+        return true; 
+      }) 
+      return true; 
     }, 
     Update: async (entry:IEntry) => { 
-      console.log([selectedCollection, entry]); 
-      return await dao.Update(selectedCollection ?? '', entry); 
+      await dao.Update(selectedCollection ?? '', entry)
+      .then( () => { 
+        setRefresh(() => !refresh); 
+        return true; 
+      }) 
+      return true; 
     }, 
     Delete: async (entry:IEntry) => { 
-      return await dao.Delete(selectedCollection ?? '', entry); 
+      await dao.Delete(selectedCollection ?? '', entry)
+      .then( () => { 
+        setRefresh(() => !refresh); 
+        return true; 
+      }) 
+      return true; 
     }, 
   } 
 
-  return <TableData rows={entries} columnSettings={fields} crud={crud} />; 
+  const page = entries.slice(from, to);
+  return <div>
+    <AdminError /> 
+    <AdminPager data={entries} from={from} to={to} pageIndex={pageIndex} setPageIndex={setPageIndex} pageIndexes={pageIndexes} /> 
+    <TableData cols={fields} rows={page} crud={crud} /> 
+  </div>
 }
