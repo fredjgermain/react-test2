@@ -1,5 +1,5 @@
 import React from 'react'; 
-import {mockCollections, mockFields} from './mockdb/datastructure'; 
+/*import {mockCollections, mockFields} from './mockdb/datastructure'; 
 import {mockDataCollections} from './mockdb/data'; 
 import Collection from './collection'; 
 import Field from './field'; 
@@ -121,7 +121,7 @@ function SetCellMode(ifield:IField) {
     `Is not Array:${!field.IsArray()}`, 
     `Is not Enum:${!field.IsEnum()}`, 
     `Is Data:${field.IsString() || field.IsNumber() || field.IsBoolean()}`, 
-  ]);*/
+  ]);
 
   const RefreshForeignOptions = ():IOption[] => { 
     if(ifield.modeltype) {
@@ -189,3 +189,4 @@ export const collections:Collection[] = ParseMockCollections(mockCollections); /
 // ----------------------------------------------
 const selectedCollection:Collection = {} as Collection; 
 
+*/

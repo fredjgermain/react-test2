@@ -5,9 +5,9 @@ import {crud} from '../../crud';
 import Collection from './collection'; 
 import Field from './field'; 
 
-import InputData from '../input/inputdata'; 
+import InputData from '../input/inputdata/inputdata'; 
 import InputArray from '../input/inputarray'; 
-import Selector, {IOption} from '../input/selector'; 
+import Selector, {IOption} from '../input/inputselect/inputselect'; 
 
 
 // DataAcessObject ==============================
@@ -111,21 +111,21 @@ export default class DataAccessObject {
     if(field.IsArray() && field.IsPrimitive()) { 
       ifield.cellMode.edit = (value:any, setValue:any) => { 
         return <InputArray type={ifield.subtype} 
-          defaultValue={''} values={value} setValues={setValue} />; 
+          defaultValue={''} values={value} onBlur={setValue} />; 
       } 
     } 
   
     // Single Data
     if(!field.IsArray() && field.IsPrimitive()) { 
       ifield.cellMode.edit = (value:any, setValue:any) => { 
-        return <InputData type={ifield.type} value={value} setValue={setValue} />; 
+        return <InputData type={ifield.type} value={value} onBlur={setValue} />; 
       } 
     } 
   
     // Input - ObjectID or Enum edit with options
     if(field.IsObjectID() || field.IsEnum()) {
       ifield.cellMode.edit = (value:any, setValue:any) => { 
-        return <Selector selected={value} setSelected={setValue} options={this.GetOptions(ifield)} isMulti={field.IsArray()} /> 
+        return <Selector value={value} onBlur={setValue} options={this.GetOptions(ifield)} isMulti={field.IsArray()} /> 
       } 
     } 
 

@@ -1,55 +1,70 @@
-import React from 'react'; 
-import InputData from './inputdata'; 
+import React, {useRef, useState} from 'react'; 
+import {InputData, IInputNumber} from './input'; 
 
-
-type Props = { 
-  values: Array<any>; 
-  setValues: any; 
-  defaultValue?: any; 
-  type: string; 
-  useref?: any; 
-  checkDisplay?: boolean; 
-  attributes?: any; 
-  validation?: any; 
+interface IRef { 
+  value: any; 
 } 
 
-export default function InputArray({values=[], setValues, defaultValue='', type, useref, 
-  checkDisplay=false, attributes={}, validation=(num:number) => true}:Props) { 
+interface Props { 
+  values: any[]; 
+  type: string; 
+  formatter?: (value:any) => any; 
+  onChange?: (newValue:any) => void; 
+  onBlur?: (newValue:any) => void; 
+  size?:number; 
+  useref?:any; 
+  attributes?: any; 
+  checkDisplay?: boolean; 
+  validation?: (value:any[]) => boolean; 
+  defaultValue?: any; 
+} 
+// Input Array ==================================
+export default function InputArray({values=[], ...props}:Props) { 
+  const {defaultValue, onChange, onBlur, validation, ...rest} = props; 
+
+  // define default value if not given in attributes ... 
+  const [valuesHook, setValuesHook] = useState([...values]); 
+  const refCreate = useRef<IInputNumber>(null); 
   
-  const editableValues = [...values, defaultValue]; 
-
-  function DeleteValue(indexToRemove:number) { 
-    editableValues.splice(indexToRemove, 1); 
-    editableValues.pop(); 
-    setValues(editableValues); 
+  function Delete(indexToRemove:number) { 
+    const newValues = [...valuesHook]; 
+    newValues.splice(indexToRemove, 1); 
+    setValuesHook(newValues); 
   } 
 
-  function CreateValue(valueToAdd:any) { 
-    editableValues[editableValues.length-1] = valueToAdd; 
-    setValues(editableValues); 
+  // pass onBLur in InputData for new item
+  function Create(valueToAdd:any) { 
+    const newValues = [...valuesHook]; 
+    newValues.push(valueToAdd); 
+    setValuesHook(newValues); 
   } 
 
-  function UpdateValue(i:number, valueToModify:any) { 
-    editableValues[i] = valueToModify; 
-    editableValues.pop(); 
-    setValues(editableValues); 
+  // to as onBlur in InputData
+  function Update(i:number, valueToModify:any) { 
+    const newValues = [...valuesHook];
+    newValues[i] = valueToModify; 
+    setValuesHook(newValues); 
   } 
 
-  return <span> 
-    {editableValues.map( (value:any, i:number) => { 
-      if(i < editableValues.length-1) 
-        return <div key={i} > 
-          <InputData value={value} setValue={(newValue:any) => {UpdateValue(i, newValue)}} 
-            type={type} useref={useref} attributes={attributes} 
-            validation={validation} checkDisplay={checkDisplay} /> 
-          <button onClick={() => {DeleteValue(i)}}>X</button> 
-        </div> 
-      else
-        return <div key={i} > 
-        <InputData value={value} setValue={(newValue:any) => {CreateValue(newValue)}} 
-            type={type} attributes={attributes} useref={useref} 
-            validation={validation} checkDisplay={checkDisplay} /> 
+  function OnBlur() { 
+
+  } 
+
+  return <div> 
+    {JSON.stringify(valuesHook)} 
+    {valuesHook.map((value, i) => { 
+      // editable elements
+      return <div key={i}> 
+        <InputData {...{value, ...rest}} onBlur={(newValue:any) => Update(i, newValue)} /> 
+        <button onClick={() => {Delete(i)}}>X</button> 
       </div> 
     })} 
-  </span> 
-}
+    <InputData value={defaultValue} {...rest} useref={refCreate} /> 
+    <button onClick={() => { 
+      if(refCreate) { 
+        Create(refCreate.current?.value); 
+        if(refCreate.current?.setValue) 
+          (refCreate.current.setValue(defaultValue)); 
+      }}} > + </button> 
+  </div> 
+} 
