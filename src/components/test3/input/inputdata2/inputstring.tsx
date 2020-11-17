@@ -5,12 +5,9 @@ export interface IRefString extends IPropsString {
   setValue?: (value:String) => void; 
 } 
 
+// InputString ==================================
 interface IPropsString extends IPropsInput<string> {} 
-// InputNumber ==================================
 export default function InputString(props:IPropsString) { 
-  const {value, onSendValue, onBlur, onChange, onPressEnter} = useInputHook<string>(props); 
-
-  return <div onBlur={onBlur} onKeyUp={onPressEnter} > 
-    <input type={'text'} value={value} onChange={onChange} />
-  </div> 
-}
+  const {value, setValue, onSendValue, onBlur, onChange, onPressEnter} = useInputHook<string>(props); 
+  return <input type={'text'} value={value} onChange={onChange} onBlur={onBlur} onKeyUp={onPressEnter} /> 
+} 
