@@ -1,5 +1,75 @@
-import React, {useRef, useState} from 'react'; 
-import {InputData, IInputNumber} from './input'; 
+import React, { useRef } from 'react'; 
+import {IPropsInput, InputData, InferDefaultValue, EnumType, useInputHook} from './inputcommon'; 
+
+// INPUTARRAY =================================== 
+interface IPropsArray<T> extends IPropsInput<T[]> { 
+  type?:EnumType; 
+  defaultValue?: T;  
+  elementProps?: IPropsInput<T>; 
+} 
+
+export default function InputArray<T>({defaultValue, type, ...props}:IPropsArray<T>) { 
+  const {value, setValue, onSendValue} = useInputHook<any[]>({...props,...defaultValue}); 
+
+  // element props
+  const elementProps = props.elementProps ?? {} as IPropsInput<any>; 
+  const elementPropsCreate = {...elementProps}; 
+  elementPropsCreate.value = GetDefaultValue(); 
+  elementPropsCreate.useref = useRef<HTMLElement>(null); 
+  elementPropsCreate.onSendValue = (value:T) => {return}; 
+  elementPropsCreate.onPressEnter = () => {
+    Create(elementPropsCreate.useref.current.value as T) 
+    elementPropsCreate.useref.current.setValue(GetDefaultValue()); 
+  }; 
+
+  function Update(at:number, newValue:T) { 
+    const values = [...value]; 
+    values[at] = newValue; 
+    setValue(values as T[]); 
+    onSendValue(values as T[]); 
+  } 
+
+  function Create(newValue:T) { 
+    const values = [...value]; 
+    values.push(newValue); 
+    setValue(values as T[]); 
+    onSendValue(values as T[]); 
+  } 
+
+  function Delete(at:number) { 
+    const values = [...value]; 
+    values.splice(at, 1); 
+    setValue(values as T[]); 
+    onSendValue(values as T[]); 
+  } 
+
+  function GetDefaultValue() { 
+    if(defaultValue) 
+      return defaultValue; 
+    if(Array.isArray(value) && value.length > 0) 
+      return InferDefaultValue(value[0], type); 
+    return InferDefaultValue(value, type); 
+  } 
+
+
+  // RENDER -------------------------------------
+  return <div> 
+    {value.map( (v, i) => { 
+      elementProps.value = v; 
+      elementProps.onSendValue = (value:T) => Update(i, value); 
+      return <div key={i}>
+        <InputData {...elementProps} /> 
+        <button onClick={() => Delete(i)}>X</button>
+      </div>
+    })}
+    <div>
+      <InputData {...elementPropsCreate}  /> 
+      <button onClick={elementPropsCreate.onPressEnter}>+</button> 
+    </div> 
+  </div>; 
+}
+
+/*import {InputData, IInputNumber} from './input'; 
 
 interface IRef { 
   value: any; 
@@ -67,4 +137,4 @@ export default function InputArray({values=[], ...props}:Props) {
           (refCreate.current.setValue(defaultValue)); 
       }}} > + </button> 
   </div> 
-} 
+} */

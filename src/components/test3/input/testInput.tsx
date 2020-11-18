@@ -1,16 +1,5 @@
-import React, {useState, useRef, Component} from 'react';
-
-import {InputArray, 
-  InputData} from './input'; 
-
-import {IOption} from './inputdata2/inputcommon'; 
-import InputNumber from './inputdata2/inputnumber'; 
-import InputString from './inputdata2/inputstring'; 
-import InputBoolean from './inputdata2/inputboolean'; 
-import InputSelect from './inputdata2/inputselect/inputselect'; 
-
-
-import {useKey, KeyEventType} from '../customhooks/customhooks'; 
+import React, {useState, useRef} from 'react'; 
+import {IOption, InputData, InputBoolean, InputString, InputSelect, InputNumber, InputArray, EnumType} from './inputcommon'; 
 
 export default function TestInput() { 
   console.log('Input test'); 
@@ -22,13 +11,17 @@ export default function TestInput() {
   const [numSelect, setSelect] = useState([0]); 
   const [numSelects, setSelects] = useState([0]); 
 
+  const [numArray, setNumArray] = useState<Array<number>>([]); 
+
+
+  /*
   function OnBlurNumber(newValue:number) { 
     setNum(newValue); 
   } 
 
   function OnBlurString(newValue:string) { 
     setStr(newValue); 
-  }
+  } 
 
   function ValidateNum(newValue:number):boolean { 
     return newValue > 5; 
@@ -40,7 +33,8 @@ export default function TestInput() {
 
   function FormatterStr(value:string):string { 
     return `${value}$`; 
-  } 
+  } */
+
 
   const options:IOption[] = [
     {value:0, label:'option 0'}, 
@@ -53,37 +47,78 @@ export default function TestInput() {
   // RENDER -------------------------------------
   return <div> 
     Test input; 
+    <div>Num:|{num}|</div> 
+    <div>Bool:|{JSON.stringify(bool)}|</div> 
+    <div>NumArray:{JSON.stringify(numArray)}</div> 
+    <div>Str:|{str}|</div> 
+
     <div> 
-      <div>|{num}|</div> 
-      <div>|{str}|</div> 
-      <div>|{JSON.stringify(bool)}|</div> 
-      <div>|{numSelect}|</div> 
-      <div>|{numSelects}|</div> 
+      InputData: 
+      <InputData value={bool} onSendValue={(value) => { 
+          console.log(value); 
+          setBool(value); 
+        }} /> 
     </div> 
+
+    <div>
+      InputString:
+      <InputData value={str} onSendValue={(value:string) => { 
+        console.log(value); 
+        setStr(value); 
+      }} /> 
+    </div>
+
+    <div>
+      InputNumber:
+      <InputData value={num} onSendValue={(value) => { 
+        console.log(value); 
+        setNum(value); 
+      }} /> 
+    </div>
+
     <div> 
-
-      <div> 
-        <InputNumber value={0} onSendValue={(value) => setNum(value)} useref={userefNum} /> 
-        {num > 10 && <button onClick={() => console.log(userefNum)} > + </button>} 
-      </div> 
-
-      <div> 
-        <InputBoolean value={false} onSendValue={(value) => {console.log(value); setBool(value)}} /> 
-      </div> 
-
-      <div> 
-        <InputString value={''} onSendValue={(value) => setStr(value)} /> 
-      </div> 
-
-      <div> 
-        <InputSelect value={numSelect} options={options} onSendValue={(value) => console.log(value)} isMulti /> 
-      </div> 
-
-
-    </div> 
+      <div>{JSON.stringify(numArray)}</div> 
+      InputArray: 
+      <InputArray value={numArray} type={EnumType.NUMBER} onSendValue={ 
+        (value:number[]) => { 
+          console.log(value); 
+          setNumArray([...value])
+        }} />
+    </div>
   </div> 
 } 
 
+
+/*
+      /*<div>|{str}|</div> 
+      <div>|{JSON.stringify(bool)}|</div> 
+      <div>|{numSelect}|</div> 
+      <div>|{numSelects}|</div> 
+
+    <div> 
+        InputData: 
+        <InputData value={str} onSendValue={(value) => setStr(value)} /> 
+      </div> 
+
+      <div> 
+        InputData: 
+        <InputData value={bool} onSendValue={(value) => setBool(value)} /> 
+      </div> 
+
+      <div> 
+        <InputSelect value={numSelect} options={options} onSendValue={(value) => setSelect(value)} /> 
+        <InputSelect value={numSelects} options={options} onSendValue={(value) => setSelects(value)} isMulti /> 
+      </div> 
+<div>
+        <div>{JSON.stringify(numArray)}</div>
+        InputArray:
+        <InputArray value={numArray} type={EnumType.NUMBER} onSendValue={
+          (value:number[]) => {
+            console.log(value); 
+            setNumArray([...value] as number[])
+          }} />
+      </div>
+*/
 
 /*
 <InputData value={0} type={'number'} onBlur={OnBlurNumber} validation={ValidateNum} checkDisplay /> 

@@ -1,38 +1,36 @@
-.inputselect { 
+.inputSelect { 
   margin: 2px; 
   cursor: pointer; 
-  min-width: 230px; 
+  min-width: 10ch; 
+  max-width: 30ch; 
   position: relative; 
   display: inline-block; 
   cursor: pointer; 
-  font-size: 1.5ch; 
 } 
 
-.selectheader { 
+.selectHeader { 
   border: 1px solid #000; 
   width: 100%; 
+  min-height: fit-content; 
   text-align: right; 
 } 
 
-.selectheader span { 
+.selectHeader span { 
   display: inline-block; 
 } 
 
-.selectheader .btn { 
-  padding-left: 1ch; 
-  padding-right: 1ch; 
-  margin: 0.2ch; 
-} 
-
-.selectheader .selected { 
-  
-} 
-
-.selectheader .element{ 
+.selectHeader .btn { 
+  /*padding-left: 1ch; 
+  padding-right: 1ch; */ 
+  margin-left: 1ch; 
   margin-right: 1ch; 
 } 
 
-.selectfold { 
+.selectHeader .element{ 
+  margin-right: 1ch; 
+} 
+
+.selectFold { 
   border: 1px solid #000; 
   position: absolute; 
   background-color: #f6f6f6; 

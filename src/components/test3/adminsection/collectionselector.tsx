@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import {AdminContext} from './admincontexter'; 
 //import Selector, { IOption } from '../input/selector'; 
 import AdminTable from './admintable'; 
-import InputSelect, { IOption } from '../input/inputselect/inputselect'; 
+import { IOption, InputSelect } from '../input/inputcommon'; 
 
 import '../common/table.css'; 
 
@@ -30,7 +30,7 @@ export default function CollectionSelector() {
   /*const singleselector = 
     <Selector2 selected={[]} options={testOptions} onChange={ (newValue:any) => console.log(newValue) } /> */
   const multiselector = 
-    <InputSelect options={testOptions} isMulti onChange={ (newValue:any) => console.log(newValue) } />
+    <InputSelect value={[]} options={testOptions} isMulti onSendValue={ (newValue:any) => console.log(newValue) } />
 
   const selector = <div> 
       <select name="cars" id="cars" onChange={(event) => {setSelected(event?.target.value); }} multiple={false} > 
