@@ -1,54 +1,140 @@
-import React from 'react'; 
-import InputData from './inputdata'; 
+import React, { useRef } from 'react'; 
+import {IPropsInput, InputData, InferDefaultValue, EnumType, useInputHook} from './inputcommon'; 
 
-
-type Props = { 
-  values: Array<any>; 
-  setValues: any; 
-  defaultValue?: any; 
-  type: string; 
-  useref?: any; 
-  checkDisplay?: boolean; 
-  attributes?: any; 
-  validation?: any; 
+// INPUTARRAY =================================== 
+interface IPropsArray<T> extends IPropsInput<T[]> { 
+  type?:EnumType; 
+  defaultValue?: T;  
+  elementProps?: IPropsInput<T>; 
 } 
-export default function InputArray({values=[], setValues, defaultValue='', type, useref, 
-  checkDisplay=false, attributes={}, validation=(num:number) => true}:Props) { 
+
+export default function InputArray<T>({defaultValue, type, ...props}:IPropsArray<T>) { 
+  const {value, setValue, onSendValue} = useInputHook<any[]>({...props,...defaultValue}); 
+
+  // element props
+  const elementProps = props.elementProps ?? {} as IPropsInput<any>; 
+  const elementPropsCreate = {...elementProps}; 
+  elementPropsCreate.value = GetDefaultValue(); 
+  elementPropsCreate.useref = useRef<HTMLElement>(null); 
+  elementPropsCreate.onSendValue = (value:T) => {return}; 
+  elementPropsCreate.onPressEnter = () => {
+    Create(elementPropsCreate.useref.current.value as T) 
+    elementPropsCreate.useref.current.setValue(GetDefaultValue()); 
+  }; 
+
+  function Update(at:number, newValue:T) { 
+    const values = [...value]; 
+    values[at] = newValue; 
+    setValue(values as T[]); 
+    onSendValue(values as T[]); 
+  } 
+
+  function Create(newValue:T) { 
+    const values = [...value]; 
+    values.push(newValue); 
+    setValue(values as T[]); 
+    onSendValue(values as T[]); 
+  } 
+
+  function Delete(at:number) { 
+    const values = [...value]; 
+    values.splice(at, 1); 
+    setValue(values as T[]); 
+    onSendValue(values as T[]); 
+  } 
+
+  function GetDefaultValue() { 
+    if(defaultValue) 
+      return defaultValue; 
+    if(Array.isArray(value) && value.length > 0) 
+      return InferDefaultValue(value[0], type); 
+    return InferDefaultValue(value, type); 
+  } 
+
+
+  // RENDER -------------------------------------
+  return <div> 
+    {value.map( (v, i) => { 
+      elementProps.value = v; 
+      elementProps.onSendValue = (value:T) => Update(i, value); 
+      return <div key={i}>
+        <InputData {...elementProps} /> 
+        <button onClick={() => Delete(i)}>X</button>
+      </div>
+    })}
+    <div>
+      <InputData {...elementPropsCreate}  /> 
+      <button onClick={elementPropsCreate.onPressEnter}>+</button> 
+    </div> 
+  </div>; 
+}
+
+/*import {InputData, IInputNumber} from './input'; 
+
+interface IRef { 
+  value: any; 
+} 
+
+interface Props { 
+  values: any[]; 
+  type: string; 
+  formatter?: (value:any) => any; 
+  onChange?: (newValue:any) => void; 
+  onBlur?: (newValue:any) => void; 
+  size?:number; 
+  useref?:any; 
+  attributes?: any; 
+  checkDisplay?: boolean; 
+  validation?: (value:any[]) => boolean; 
+  defaultValue?: any; 
+} 
+// Input Array ==================================
+export default function InputArray({values=[], ...props}:Props) { 
+  const {defaultValue, onChange, onBlur, validation, ...rest} = props; 
+
+  // define default value if not given in attributes ... 
+  const [valuesHook, setValuesHook] = useState([...values]); 
+  const refCreate = useRef<IInputNumber>(null); 
   
-  const editableValues = [...values, defaultValue]; 
-
-  function DeleteValue(indexToRemove:number) { 
-    editableValues.splice(indexToRemove, 1); 
-    editableValues.pop(); 
-    setValues(editableValues); 
+  function Delete(indexToRemove:number) { 
+    const newValues = [...valuesHook]; 
+    newValues.splice(indexToRemove, 1); 
+    setValuesHook(newValues); 
   } 
 
-  function CreateValue(valueToAdd:any) { 
-    editableValues[editableValues.length-1] = valueToAdd; 
-    setValues(editableValues); 
+  // pass onBLur in InputData for new item
+  function Create(valueToAdd:any) { 
+    const newValues = [...valuesHook]; 
+    newValues.push(valueToAdd); 
+    setValuesHook(newValues); 
   } 
 
-  function UpdateValue(i:number, valueToModify:any) { 
-    editableValues[i] = valueToModify; 
-    editableValues.pop(); 
-    setValues(editableValues); 
+  // to as onBlur in InputData
+  function Update(i:number, valueToModify:any) { 
+    const newValues = [...valuesHook];
+    newValues[i] = valueToModify; 
+    setValuesHook(newValues); 
   } 
 
-  return <span> 
-    {editableValues.map( (value:any, i:number) => { 
-      if(i < editableValues.length-1) 
-        return <div key={i} > 
-          <InputData value={value} setValue={(newValue:any) => {UpdateValue(i, newValue)}} 
-            type={type} useref={useref} attributes={attributes} 
-            validation={validation} checkDisplay={checkDisplay} /> 
-          <button onClick={() => {DeleteValue(i)}}>X</button> 
-        </div> 
-      else
-        return <div key={i} > 
-        <InputData value={value} setValue={(newValue:any) => {CreateValue(newValue)}} 
-            type={type} attributes={attributes} useref={useref} 
-            validation={validation} checkDisplay={checkDisplay} /> 
+  function OnBlur() { 
+
+  } 
+
+  return <div> 
+    {JSON.stringify(valuesHook)} 
+    {valuesHook.map((value, i) => { 
+      // editable elements
+      return <div key={i}> 
+        <InputData {...{value, ...rest}} onBlur={(newValue:any) => Update(i, newValue)} /> 
+        <button onClick={() => {Delete(i)}}>X</button> 
       </div> 
     })} 
-  </span> 
-}
+    <InputData value={defaultValue} {...rest} useref={refCreate} /> 
+    <button onClick={() => { 
+      if(refCreate) { 
+        Create(refCreate.current?.value); 
+        if(refCreate.current?.setValue) 
+          (refCreate.current.setValue(defaultValue)); 
+      }}} > + </button> 
+  </div> 
+} */

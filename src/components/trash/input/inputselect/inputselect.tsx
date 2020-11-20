@@ -1,20 +1,15 @@
 import React, {useState} from 'react'; 
-import {IOption, IInput, useInputHook} from '../inputcommon'; 
+import {IOption, IPropsInput, useInputHook} from '../inputcommon'; 
 
 import './inputselect.css'; 
 
 
 // InputSelect ==================================
-interface ISelect extends IInput<Array<any>> { 
+interface IPropsSelect extends IPropsInput<Array<any>> { 
   isMulti?:boolean; 
   options:IOption[]; 
 } 
-export default function InputSelect({isMulti=false, options, ...props}:ISelect) { 
-  const OnSendValue = (value:any) => { 
-    setFold(true); 
-    props.onSendValue(value); 
-  } 
-
+export default function InputSelect({isMulti=false, options, ...props}:IPropsSelect) { 
   const {value, setValue, onSendValue, onBlur, onPressEnter} = useInputHook<Array<any>>(props); 
   const [fold, setFold] = useState(true); 
   

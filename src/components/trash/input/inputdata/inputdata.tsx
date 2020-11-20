@@ -1,11 +1,11 @@
 import React from 'react'; 
-import { IInput, InputNumber, InputString, InputBool } from '../inputcommon'; 
+import {IPropsInput, InputBoolean, InputNumber, InputString} from '../inputcommon'; 
 
 // InputData ====================================
-export default function InputData(props:IInput<any>) { 
+export default function InputData(props:IPropsInput<any>) { 
   // input type check box
   if(typeof props.value === 'boolean') 
-    return <InputBool {...props} /> 
+    return <InputBoolean {...props} /> 
   // input type number 
   if(typeof props.value === 'number') 
     return <InputNumber {...props} /> 

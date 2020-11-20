@@ -1,9 +1,11 @@
 import React from 'react'; 
-import {IPropsInput, useInputHook} from '../inputcommon'; 
+import {IInput, useInputHook, SetSize} from '../inputcommon'; 
 
-// InputString ==================================
-interface IPropsString extends IPropsInput<string> {} 
-export default function InputString(props:IPropsString) { 
-  const {value, onChange, onBlur, onPressEnter} = useInputHook<string>(props); 
-  return <input type={'text'} value={value} onChange={onChange} onBlur={onBlur} onKeyUp={onPressEnter} /> 
+
+// InputString ================================== 
+export default function InputString(props:IInput<string>) { 
+  const {value, target, onChange, onBlur, onPressEnter} = useInputHook<string>(props); 
+  const style = {width:`${SetSize(value)}ch`}; 
+  return <input ref={target} type={'text'} value={value} style={style} 
+    onChange={onChange} onBlur={onBlur} onKeyUp={onPressEnter} /> 
 } 

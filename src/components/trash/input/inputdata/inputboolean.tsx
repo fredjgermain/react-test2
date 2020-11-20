@@ -1,7 +1,7 @@
 import React from 'react'; 
 import {IPropsInput, useInputHook} from '../inputcommon'; 
 
-// InputString ==================================
+// InputBoolean ==================================
 interface IPropsBoolean extends IPropsInput<boolean> {} 
 export default function InputBoolean(props:IPropsBoolean) { 
   const {value, onChange} = useInputHook<boolean>(props); 

@@ -1,9 +1,11 @@
 import React from 'react'; 
-import {IPropsInput, useInputHook} from '../inputcommon'; 
+import {IInput, useInputHook, SetSize} from '../inputcommon'; 
 
-// InputNumber ==================================
-interface IPropsNumber extends IPropsInput<number> {} 
-export default function InputNumber(props:IPropsNumber) { 
-  const {value, onChange, onBlur, onPressEnter} = useInputHook<number>(props); 
-  return <input type={'number'} value={value} onBlur={onBlur} onKeyUp={onPressEnter} onChange={onChange} /> 
+
+// InputNumber ================================== 
+export default function InputNumber(props:IInput<number>) { 
+  const {value, target, onChange, onBlur, onPressEnter} = useInputHook<number>(props); 
+  const style = {width:`${SetSize(value)+2}ch`}; 
+  return <input ref={target} type={'number'} value={value} style={style} 
+    onChange={onChange} onBlur={onBlur} onKeyUp={onPressEnter} /> 
 } 

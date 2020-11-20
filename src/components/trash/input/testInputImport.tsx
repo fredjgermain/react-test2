@@ -1,1 +1,0 @@
-import {Check, IOption, InputArray, InputData, Selector} from './input'; 
