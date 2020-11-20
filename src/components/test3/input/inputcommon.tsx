@@ -1,126 +1,45 @@
-import { useRef, useState } from "react"; 
-
 import InputData from './inputdata/inputdata'; 
 import InputString from './inputdata/inputstring'; 
 import InputNumber from './inputdata/inputnumber'; 
 import InputBool from './inputdata/inputbool'; 
 import InputSelect from './inputselect/inputselect'; 
 import InputArray from './inputarray'; 
+import {useInputHook} from './inputhook'; 
 
-export {InputData, InputBool, InputNumber, InputString, InputSelect, InputArray}; 
+export {useInputHook, InputData, InputBool, InputNumber, InputString, InputSelect, InputArray}; 
 
-export function SetSize(value:any) { 
-    const w = String(value).length; 
-    return w < 5 ? 5 : w; 
-} 
 
-export interface IOption { 
-  value: any; 
-  label: string; 
-} 
 
-export interface IEvent { 
-  target:{ 
-    type:string, 
-    value:string, 
-    valueAsDate: Date | null, 
-    valueAsNumber: number, 
-    checked: boolean | null, 
-  }
-}
+export type InputAction = (event:any) => void; 
+
 
 // Props to be sent from a parent to a Input component 
 export interface IInput<T> { 
   value: T; 
   type?: EnumType; 
   //size?: any; 
-  useref?: any; 
+  useref?: any;                        // gives parent component access to these values and methods
 
+  // Formatting .................................
   formatter?: (value:T) => T; 
-  onSendValue: (value:T) => void; 
-  onChange?: (event:any) => void;      // called when <input> changes 
-  onBlur?: (event:any) => void;        // called when <input> blurs 
-  onPressEnter?: (event:any) => void;  // called when <input> press enter 
+
+  // Editing ....................................
+  onSendValue: (value:T) => void; // defined by parent component 
+  onChange?: InputAction;      // called when <input> changes. 
+  onBlur?: InputAction;        // called when <input> blurs. 
+  onPressEnter?: InputAction;  // called when <input> press enter. 
+  onFocus?: InputAction;       // called when component is being focused on. 
+
+  // Validations ................................
   validation?: (value:T) => boolean; 
+  onValid?: () => void; 
 } 
 
-// Props to be return by useInputHook 
-export interface IInputHook<T> extends IInput<T> { 
-  value: T; 
-  setValue: React.Dispatch<React.SetStateAction<T>>; 
-  //type?: EnumType; 
-  //size?: any; 
 
-  formatter?: (value:T) => T; 
-  onSendValue: (value:T) => void; 
-  onChange: (event:any) => void;      // called when <input> changes 
-  onBlur: (event:any) => void;        // called when <input> blurs 
-  onPressEnter: (event:any) => void;  // called when <input> press enter 
-  validation?: (value:T) => boolean; 
-
-  target: any; 
+export interface IOption { 
+  value: any; 
+  label: string; 
 } 
-
-// Use Input Hook 
-export function useInputHook<T>(props:IInput<T>):IInputHook<T> { 
-  const [value, setValue] = useState<T>(props.value as T); 
-  const target = useRef<HTMLInputElement>(); // target to <input .../> 
-  
-  // onSendValue ................................
-  const onSendValue = props.onSendValue;  //? props.onSendValue: (value:T) => console.log(value); 
-
-  // onChange ...................................
-  const onChange = props.onChange? props.onChange :
-    (event:any) => { 
-      if(!target.current) 
-        return; 
-      const input = target.current; 
-      let value:any; 
-      if(input.type === 'number') 
-        setValue(input.valueAsNumber as any as T); 
-      else if(input.type === 'checkbox') { 
-        value = input.checked; 
-        setValue(value as T); 
-        onSendValue(value as T); 
-      } 
-      else if(input.type === 'text') 
-        setValue(input.value as any as T); 
-      // type date ?? 
-    }; 
-
-  // onPressEnter ...............................
-  const IsPressEnter = (event:any) => event['code'] === 'Enter' || event['code'] === 'NumpadEnter'; 
-
-  const onPressEnter = props.onPressEnter ? 
-    (event:any) => { 
-      if(props.onPressEnter && IsPressEnter(event)) {
-        console.log('create costum enter');
-        props.onPressEnter(event); 
-      } 
-    }: 
-    (event:any) => { 
-      if(IsPressEnter(event)) { 
-        console.log('create default enter');
-        onSendValue(value as T); 
-      } 
-    }; 
-
-  // onBlur .....................................
-  const onBlur = props.onBlur ? props.onBlur : 
-    () => {
-      console.log('create blur'); 
-      onSendValue(value as T);
-    }; 
-
-  const inputHook = {value, setValue, onSendValue, onChange, onBlur, onPressEnter, target}; 
-  if(props.useref) 
-    props.useref.current = inputHook; 
-  
-  return inputHook as IInputHook<T>; 
-} 
-  
-
-
 
 
 export enum EnumType { 
@@ -131,10 +50,18 @@ export enum EnumType {
   DATE = 'date', 
   OBJECT = 'object', 
   ARRAY = 'array', 
-  UNDEFINED = 'undefined', 
+  ANY = 'any', 
   NULL = 'null', 
 } 
 
+  
+// SetSize 
+export function SetSize(value:any) { 
+  const w = String(value).length; 
+  return w < 5 ? 5 : w; 
+} 
+
+// Infer value type
 export function InferValueType(value:any):EnumType { 
   if(Array.isArray(value)) 
     return EnumType.ARRAY; 
@@ -152,6 +79,7 @@ export function InferValueType(value:any):EnumType {
   return EnumType.NULL; 
 } 
 
+// Infer default value
 export function InferDefaultValue(value:any, type?:EnumType) { 
   let foundType = type ?? InferValueType(value); 
   switch(foundType) { 

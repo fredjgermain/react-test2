@@ -1,42 +1,30 @@
 import React, {useState, useRef} from 'react'; 
 import {IInput, IOption, InputData, InputNumber, InputBool, 
-  InputString, InputSelect, InputArray, EnumType} from '../input2/inputcommon'; 
-
-/*
-Testing
-!! inputnumber
-!! inputstring
-!! inputboolean
-!! inputdata
-!! InputArray-Number
-
-
-!! InputSelect-Number
-!! InputSelect-Numbers
-
-
-*/
+  InputString, InputSelect, InputArray, EnumType} from './inputcommon'; 
 
 
 export default function TestInput() { 
   const userefNum = useRef<any>(null); 
 
+  // single num
   const [num, setNum] = useState(0.5); 
+
+  // single string
   const [str, setStr] = useState(''); 
+
+  // single bool
   const [bool, setBool] = useState(false); 
 
+  // array num
+  const [nums, setNums] = useState([]); 
+
+  // array string
+  const [strs, setStrs] = useState([]); 
+
+  // array bool
+  const [bools, setBools] = useState([]); 
+
   // Selection
-  const [numSelect, setSelect] = useState([0]); 
-  const [numSelects, setSelects] = useState([0]); 
-
-  // Array
-  const [numArray, setNumArray] = useState<Array<number>>([]); 
-  const [strArray, setStrArray] = useState<Array<string>>([]); 
-  const [boolArray, setBoolArray] = useState<Array<boolean>>([]); 
-
-  const testValue = [1,2,3]; 
-  //console.log([testValue, typeof testValue]); 
-
   const options:IOption[] = [
     {value:0, label:'option 0'}, 
     {value:1, label:'option 1'}, 
@@ -44,25 +32,93 @@ export default function TestInput() {
     {value:3, label:'option 3'}, 
     {value:4, label:'option 4'}, 
   ]
+  const [numSelect, setSelect] = useState([0]); 
+  const [numSelects, setSelects] = useState([0]); 
   
   const ref = useRef<any>(null); 
 
+  const inputNum = <div> 
+    <h4>Input num:</h4> 
+    <div>|{num}|</div>
+    <InputData value={num} onSendValue={setNum} /> 
+  </div>
+
+  const inputStr = <div> 
+    <h4>Input str:</h4> 
+    <div>|{str}|</div>
+    <InputData value={str} onSendValue={setStr} /> 
+  </div>
+
+  const inputBool = <div> 
+    <h4>Input bool:</h4> 
+    <div>|{JSON.stringify(bool)}|</div> 
+    <InputData value={bool} onSendValue={setBool} /> 
+  </div>
+
+  const inputNums = <div> 
+    <h4>Input nums:</h4> 
+    <div>|{JSON.stringify(nums)}|</div> 
+    <InputArray value={nums} onSendValue={setNums} type={EnumType.NUMBER} /> 
+  </div>
+
+  const inputStrs = <div> 
+    <h4>Input strs:</h4> 
+    <div>|{JSON.stringify(strs)}|</div> 
+    <InputArray value={strs} onSendValue={setStrs} type={EnumType.STRING} /> 
+  </div>
+
+
+  const inputBools = <div> 
+    <h4>Input bools:</h4> 
+    <div>|{JSON.stringify(bools)}|</div> 
+    <InputArray value={bools} onSendValue={setBools} type={EnumType.BOOLEAN} /> 
+  </div>
+
+  const select = <div> 
+    <h4>Input select:</h4> 
+    <div>|{JSON.stringify(numSelect)}|</div> 
+    <InputSelect value={numSelect} onSendValue={setSelect} options={options} /> 
+  </div>
+
+  const selects = <div> 
+    <h4>Input selects:</h4> 
+    <div>|{JSON.stringify(numSelects)}|</div> 
+    <InputSelect value={numSelects} onSendValue={setSelects} options={options} isMulti/> 
+  </div>
+
   // RENDER -------------------------------------
-  return <div> 
-    Test input; 
-    <div>Num:|{num}|</div> 
-    <div>Bool:|{JSON.stringify(bool)}|</div> 
-    <div>NumArray:{JSON.stringify(numArray)}</div> 
-    <div>Str:|{str}|</div> 
-    <div>Select |{numSelect}|</div>
-    <div>Selects |{numSelects}|</div>
-  
+  return <div>
+    {inputNum}
+    {inputStr}
+    {inputBool}
+    {inputNums}
+    {inputStrs}
+    {inputBools}
+    {select}
+    {selects}
+  </div>
+} 
+
+/*
+<div> 
+
+    <h4>Input num: </h4>
+
+    <h4>Input num: </h4>
+
+    <h4>Input num: </h4>
+
+    <h4>Input num: </h4>
+
+    <h4>Input num: </h4>
+
+    <h4>Input num: </h4>
   ########################
     <div> 
       <InputNumber value={12} onSendValue={(value:number) => {console.log(value)}} useref={ref} /> 
       <div onClick={() => console.log(ref)} > 
-        test
-      </div>
+        test 
+      </div> 
     </div> 
   ########################
 
@@ -108,16 +164,4 @@ export default function TestInput() {
     </div>
   </div> 
   
-} 
-
-       
-        
-/*
-<InputData value={0} type={'number'} onBlur={OnBlurNumber} validation={ValidateNum} checkDisplay /> 
-<InputData value={''} type={'string'} onBlur={OnBlurString} validation={ValidateStr} checkDisplay formatter={FormatterStr}/> 
-
-<InputSelect value={numSelect} onBlur={(selection) => {setSelect(selection)}} options={options} /> 
-<InputSelect value={numSelects} isMulti onBlur={(selection) => {setSelects(selection)}} options={options} /> 
-
-<InputArray values={[0,2,3]} defaultValue={0} type={'number'} onBlur={(newValues) => {console.log(newValues)}} /> 
 */
