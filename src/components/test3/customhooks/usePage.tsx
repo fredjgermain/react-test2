@@ -4,14 +4,14 @@ import {useState} from 'react';
 type PageBreakPredicate = { 
   (accumulator:Array<any>, value?:any, index?:number):boolean; 
 } 
-type ReturnType = {
+export interface IPageHook { 
   pageIndex:number, 
   setPageIndex:any, 
-  pageIndexes:number[],
+  pageIndexes:number[], 
   from:number, 
-  to:number
+  to:number 
 }
-export function usePage(data:any[], pageBreak:PageBreakPredicate|number):ReturnType { 
+export function usePage(data:any[], pageBreak:PageBreakPredicate|number):IPageHook { 
   const [pageIndex, setPageIndex] = useState(0); 
 
   function PageBreak(entries:Array<any>, pageBreakPredicate:PageBreakPredicate|number):number[] { 

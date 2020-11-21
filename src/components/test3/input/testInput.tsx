@@ -8,22 +8,16 @@ export default function TestInput() {
 
   // single num
   const [num, setNum] = useState(0.5); 
-
   // single string
   const [str, setStr] = useState(''); 
-
   // single bool
   const [bool, setBool] = useState(false); 
-
   // array num
   const [nums, setNums] = useState([]); 
-
   // array string
   const [strs, setStrs] = useState([]); 
-
   // array bool
   const [bools, setBools] = useState([]); 
-
   // Selection
   const options:IOption[] = [
     {value:0, label:'option 0'}, 
@@ -78,13 +72,13 @@ export default function TestInput() {
     <h4>Input select:</h4> 
     <div>|{JSON.stringify(numSelect)}|</div> 
     <InputSelect value={numSelect} onSendValue={setSelect} options={options} /> 
-  </div>
+  </div> 
 
   const selects = <div> 
     <h4>Input selects:</h4> 
     <div>|{JSON.stringify(numSelects)}|</div> 
     <InputSelect value={numSelects} onSendValue={setSelects} options={options} isMulti/> 
-  </div>
+  </div> 
 
   // RENDER -------------------------------------
   return <div>
@@ -98,70 +92,3 @@ export default function TestInput() {
     {selects}
   </div>
 } 
-
-/*
-<div> 
-
-    <h4>Input num: </h4>
-
-    <h4>Input num: </h4>
-
-    <h4>Input num: </h4>
-
-    <h4>Input num: </h4>
-
-    <h4>Input num: </h4>
-
-    <h4>Input num: </h4>
-  ########################
-    <div> 
-      <InputNumber value={12} onSendValue={(value:number) => {console.log(value)}} useref={ref} /> 
-      <div onClick={() => console.log(ref)} > 
-        test 
-      </div> 
-    </div> 
-  ########################
-
-    <div> 
-      InputData: 
-      <InputData value={bool} onSendValue={(value) => { 
-          console.log(value); 
-          setBool(value); 
-        }} /> 
-    </div> 
-
-    <div>
-      InputString:
-      <InputData value={str} onSendValue={setStr} /> 
-    </div>
-
-    <div>
-      InputNumber:
-      <InputData value={num} onSendValue={setNum} /> 
-    </div>
-
-    <div> 
-      <div>{JSON.stringify(numArray)}</div> 
-      InputArray-Number: 
-      <InputArray value={numArray} type={EnumType.NUMBER} onSendValue={setNumArray} /> 
-    </div> 
-
-    <div> 
-      <div>{JSON.stringify(strArray)}</div> 
-      InputArray-String: 
-      <InputArray value={strArray} type={EnumType.STRING} onSendValue={setStrArray} /> 
-    </div> 
-
-    <div> 
-      <div>{JSON.stringify(boolArray)}</div> 
-      InputArray-Boolean: 
-      <InputArray value={strArray} type={EnumType.BOOLEAN} onSendValue={setStrArray} /> 
-    </div> 
-
-    <div> 
-      <InputSelect value={numSelect} options={options} onSendValue={setSelect} /> 
-      <InputSelect value={numSelects} options={options} onSendValue={setSelects} isMulti /> 
-    </div>
-  </div> 
-  
-*/

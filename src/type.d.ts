@@ -48,11 +48,11 @@ interface IField {
   format: any; 
   sort?: any; 
 
-  cellMode:{ 
+  /*cellMode:{ 
     read:(value:any) => any, 
     edit:(value:any, setValue:any) => any, 
     //hover: defaultDisplay, 
-  } 
+  } */
 } 
 
 enum EActionType { 

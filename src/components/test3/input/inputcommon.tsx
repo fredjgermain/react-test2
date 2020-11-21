@@ -7,16 +7,13 @@ import InputArray from './inputarray';
 import {useInputHook} from './inputhook'; 
 
 export {useInputHook, InputData, InputBool, InputNumber, InputString, InputSelect, InputArray}; 
-
-
-
 export type InputAction = (event:any) => void; 
 
 
 // Props to be sent from a parent to a Input component 
 export interface IInput<T> { 
   value: T; 
-  type?: EnumType; 
+  type?: string; 
   //size?: any; 
   useref?: any;                        // gives parent component access to these values and methods
 
@@ -80,7 +77,7 @@ export function InferValueType(value:any):EnumType {
 } 
 
 // Infer default value
-export function InferDefaultValue(value:any, type?:EnumType) { 
+export function InferDefaultValue(value:any, type?:string) { 
   let foundType = type ?? InferValueType(value); 
   switch(foundType) { 
     case EnumType.STRING: 

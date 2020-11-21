@@ -4,9 +4,9 @@ import {IInput, useInputHook, SetSize, EnumType} from '../inputcommon';
 
 // InputNumber ================================== 
 export default function InputNumber(props:IInput<number>) { 
-  const {value, target, onChange, onBlur, onPressEnter} = useInputHook<number>({...props, type:EnumType.NUMBER}); 
+  const {value, onChange, onBlur, onPressEnter} = useInputHook<number>({...props, type:EnumType.NUMBER}); 
 
   const style = {width:`${SetSize(value)+2}ch`}; 
-  return <input ref={target} type={'number'} value={value} style={style} 
+  return <input type={'number'} value={value} style={style} 
     onChange={onChange} onBlur={onBlur} onKeyUp={onPressEnter} /> 
 } 

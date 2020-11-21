@@ -32,7 +32,6 @@ export default function AdminTable() {
   if(!selectedCollection) 
     return <div>No collection selected. </div> 
 
-    
   // CRUD METHODS ......
   const crud:ITableDataAction = { 
     Create: async (entry:IEntry) => { 

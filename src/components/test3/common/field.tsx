@@ -7,7 +7,6 @@ export default class Field {
     this.ifield = ifield; 
   } 
 
-
   public GetEnumOptions() { 
     if(!this.IsEnum()) 
       return []; 

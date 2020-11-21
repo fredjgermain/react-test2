@@ -3,7 +3,7 @@ import {IInput, InputData, InferDefaultValue, EnumType, useInputHook} from './in
 
 // INPUTARRAY =================================== 
 interface IPropsArray<T> extends IInput<T[]> { 
-  type:EnumType; 
+  type:string; 
   defaultValue?: T; 
   elementProps?: IInput<T>; 
 } 

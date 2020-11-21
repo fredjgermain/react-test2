@@ -7,7 +7,7 @@ import Field from './field';
 
 /*import InputData from '../input/inputdata/inputdata'; 
 import InputArray from '../input/inputarray'; */
-import { IOption, InputSelect, InputData } from '../input/inputcommon'; 
+import { IOption, InputSelect, InputArray, InputData } from '../input/inputcommon'; 
 
 
 // DataAcessObject ==============================
@@ -19,7 +19,7 @@ export default class DataAccessObject {
   public async LoadCollections(collectionAccessors:string[]) { 
     const loadedCollections = await LoadCollections(collectionAccessors); 
     this.collections = loadedCollections; 
-    this.SetCollectionCellModes(); 
+    //this.SetCollectionCellModes(); 
   } 
 
   public GetCollection(accessor:string):Collection|void { 
@@ -65,7 +65,6 @@ export default class DataAccessObject {
     return this.response.success; 
   } 
 
-
   // SET CELL MODES -----------------------------
   public GetOptions(ifield:IField):IOption[] { 
     const field = new Field(ifield); 
@@ -85,69 +84,4 @@ export default class DataAccessObject {
       return {value:e._id, label:e[abvfield.accessor]} as IOption; 
     }); 
   } 
-
-  // --------------------------------------------
-  public SetCollectionCellModes() { 
-    this.collections.forEach( c => { 
-      c.icollection.fields.forEach( f => { 
-        this.SetCellMode(f); 
-      }); 
-    }) 
-  } 
-
-  public SetCellMode(ifield:IField) { 
-    const field = new Field(ifield); 
-  
-    // Array Read
-    if(field.IsArray()) { 
-      ifield.cellMode.read = (value:any) => { 
-        const elementtype = field.GetElementType(); 
-        const n = value?.length ?? 0; 
-        return <span> ({elementtype}x{n}) </span>; 
-      }; 
-    } 
-  
-    // Array Data 
-    /*if(field.IsArray() && field.IsPrimitive()) { 
-      ifield.cellMode.edit = (value:any, setValue:any) => { 
-        return <InputArray type={ifield.subtype} 
-          defaultValue={''} values={value} onBlur={setValue} />; 
-      } 
-    } */
-  
-    // Single Data
-    /*if(!field.IsArray() && field.IsPrimitive()) { 
-      ifield.cellMode.edit = (value:any, setValue:any) => { 
-        return <InputData type={ifield.type} value={value} onBlur={setValue} />; 
-      } 
-    } */
-  
-    // Input - ObjectID or Enum edit with options
-    /*if(field.IsObjectID() || field.IsEnum()) {
-      ifield.cellMode.edit = (value:any, setValue:any) => { 
-        return <Selector value={value} onBlur={setValue} options={this.GetOptions(ifield)} isMulti={field.IsArray()} /> 
-      } 
-    } */
-
-    // Input - Array - ObjectID
-    if(field.IsObjectID()) { 
-      ifield.cellMode.read = (value:any) => { 
-        const foreignLabel = this.GetOptions(ifield).find(o => o.value === value)?.label ?? ''; 
-        return <span>{JSON.stringify(foreignLabel)}</span>; 
-      } 
-      /*ifield.cellMode.edit = (value:any, setValue:any) => { 
-        return <Selector selected={value} setSelected={setValue} options={this.GetOptions(ifield)} isMulti={field.IsArray()} /> 
-      } */
-    } 
-  
-    // Input - Array - Enum
-    if(field.IsEnum()) { 
-      ifield.cellMode.read = (value:any) => { 
-        return <span>{value}</span>; 
-      } 
-      /*ifield.cellMode.edit = (value:any, setValue:any) => { 
-        return <Selector selected={value} setSelected={setValue} options={this.GetOptions(ifield)} isMulti={field.IsArray()} /> 
-      } */
-    } 
-  }
 } 

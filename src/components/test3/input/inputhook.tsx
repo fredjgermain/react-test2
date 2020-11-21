@@ -1,9 +1,7 @@
-import {useState, useRef} from 'react'; 
+import {useState, useRef, useEffect} from 'react'; 
 import {IInput, EnumType, InputAction} from './inputcommon'; 
 
-// Props to be return by useInputHook 
-
-
+// IEvent ---------------------------------------
 export interface IEvent { 
   target:{ 
     type:string, 
@@ -15,6 +13,7 @@ export interface IEvent {
   code?:any, 
 }
 
+// InputHook -----------------------------------
 export interface IInputHook<T> extends IInput<T> { 
   value: T; 
   setValue: React.Dispatch<React.SetStateAction<T>>; 
@@ -22,42 +21,38 @@ export interface IInputHook<T> extends IInput<T> {
   //type?: EnumType; 
   //size?: any; 
 
-  // Formatting .................................
+  // Formatting .........
   formatter?: (value:T) => T; 
   
-  // Editing ....................................
+  // Editing ............
   onSendValue: (value:T) => void;   // defined by parent component 
   onChange: InputAction;      // called when <input> changes 
   onBlur: InputAction;        // called when <input> blurs 
   onPressEnter: InputAction;  // called when <input> press enter 
-  
-  target: any; 
 } 
-
-
-/* Use Input Hook 
-- Receives IInput properties. 
-
-
-*/
 export function useInputHook<T>(props:IInput<T>):IInputHook<T> { 
   const [value, setValue] = useState<T>(props.value as T); 
-  const target = useRef<HTMLInputElement>(); // target to <input .../> 
+  //console.log('inputHook'); 
+  // To synchronize with parent changes (page changes). 
+  useEffect(() => { 
+    if(props.value != value) 
+      setValue(props.value); 
+  },[props.value]); 
 
+  // Allows access to child component 
   const type = props.type ? props.type: EnumType.ANY; 
-
   const onSendValue = props.onSendValue; 
-  const onChange = props.onChange? props.onChange : DefaultOnChange({type, value, setValue, onSendValue} as IInputHook<T>); 
-  const onPressEnter = DefaultOnPressEnter({type, value, setValue, onSendValue, onPressEnter:props.onPressEnter } as IInputHook<T>); 
-  const onBlur = props.onBlur ? props.onBlur : DefaultOnBlur({type, value, setValue, onSendValue} as IInputHook<T>); 
+  const args = {value, setValue, type, onSendValue}; 
 
-  const inputHook = {value, type, setValue, onSendValue, onChange, onBlur, onPressEnter}; 
+  const onChange = props.onChange? props.onChange : DefaultOnChange({...args} as IInputHook<T>); 
+  const onPressEnter = DefaultOnPressEnter({...args, onPressEnter:props.onPressEnter } as IInputHook<T>); 
+  const onBlur = props.onBlur ? props.onBlur : DefaultOnBlur({...args} as IInputHook<T>); 
+  const inputHook = {...args, onChange, onBlur, onPressEnter}; 
   // gives parent component access to these values and methods
   if(props.useref) 
     props.useref.current = {...props, ...inputHook}; 
-  return {...inputHook, target} as IInputHook<T>; 
+  return {...inputHook} as IInputHook<T>; 
 } 
-
 
 // default onBlur method ...............................
 function DefaultOnBlur<T>(inputHook:IInputHook<T>):InputAction { 
