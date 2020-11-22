@@ -1,4 +1,4 @@
-import {IMongooseField, IMongooseCollection} from '../mongoosedata'; 
+import {IMongooseField, IMongooseCollection} from '../mongoose/mongoosedata'; 
 //import { IEntry } from '../../tablecomponent/tableinterfaces'; 
 
 export interface IPlayer extends IEntry { 

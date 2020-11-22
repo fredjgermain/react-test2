@@ -1,6 +1,6 @@
 import React from 'react'; 
 import TestInput from './components/test3/input/testInput'; 
-import AdminSection from './components/test3/adminsection/admincontexter'; 
+import AdminSection from './components/test3/adminsection/adminsection'; 
 
 
 export default function App() { 

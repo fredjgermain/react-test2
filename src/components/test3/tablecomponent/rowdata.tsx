@@ -3,7 +3,7 @@ import {TableDataContext} from './tabledata';
 import RowBtn from './rowbtn'; 
 
 
-function GetDefaultEntry(ifields:Array<IField>, row?:any) {
+function GetDefaultEntry(ifields:Array<IField>, row?:any) { 
   if(row) 
     return row; 
   let entry:any = {}; 
@@ -11,7 +11,7 @@ function GetDefaultEntry(ifields:Array<IField>, row?:any) {
     entry[f.accessor] = f.defaultValue; 
   }) 
   return entry; 
-}
+} 
 
 export interface IRowData { 
   row?: any, 
@@ -31,7 +31,7 @@ export default function RowData({row, mode}:IRowData ) {
   } 
 
   function DisplayMode (field:IField) { 
-    if(mode === 'new' && activeMode != 'create') 
+    /*if(mode === 'new' && activeMode != 'create') 
       return <span></span> 
 
     if(activeRow._id === data._id && (activeMode === 'update' || activeMode === 'create') ) 
@@ -40,7 +40,8 @@ export default function RowData({row, mode}:IRowData ) {
         (newValue:any) => OnEdit(field, newValue) 
       )} 
       </span>; 
-    return <span>{field.cellMode.read(data[field.accessor])} </span>; 
+    return <span>{field.cellMode.read(data[field.accessor])} </span>; */
+    return <span></span> 
   } 
   
   return <tr> 

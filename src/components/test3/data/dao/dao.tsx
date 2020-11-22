@@ -1,13 +1,10 @@
-import React from 'react'; 
-import {LoadCollections} from './mongoosedata'; 
-import {crud} from '../../crud'; 
-
+import {LoadCollections} from '../mongoose/mongoosedata'; 
+import {crud} from '../../../crud'; 
 import Collection from './collection'; 
 import Field from './field'; 
+import { IOption } from '../../input/inputcommon'; 
 
-/*import InputData from '../input/inputdata/inputdata'; 
-import InputArray from '../input/inputarray'; */
-import { IOption, InputSelect, InputArray, InputData } from '../input/inputcommon'; 
+export {Collection, Field}; 
 
 
 // DataAcessObject ==============================
@@ -19,17 +16,22 @@ export default class DataAccessObject {
   public async LoadCollections(collectionAccessors:string[]) { 
     const loadedCollections = await LoadCollections(collectionAccessors); 
     this.collections = loadedCollections; 
-    //this.SetCollectionCellModes(); 
   } 
 
-  public GetCollection(accessor:string):Collection|void { 
+  public GetICollection(accessor:string):ICollection|void { 
+    if(!accessor) 
+      return; 
+    return this.collections.find( c => c.icollection.accessor === accessor)?.icollection; 
+  } 
+
+  private GetCollection(accessor:string):Collection|void { 
     if(!accessor) 
       return; 
     return this.collections.find( c => c.icollection.accessor === accessor); 
   } 
 
   // CREATE .....................................  
-  public async Create(accessor:string, entry:IEntry):Promise<Boolean> { 
+  public async Create(accessor:string, entry:IEntry):Promise<boolean> { 
     const selectedCollection = this.GetCollection(accessor); 
     if(!selectedCollection) 
       return false; 
@@ -42,7 +44,7 @@ export default class DataAccessObject {
   } 
 
   // UPDATE .....................................
-  public async Update(accessor:string, entry:IEntry):Promise<Boolean> { 
+  public async Update(accessor:string, entry:IEntry):Promise<boolean> { 
     const selectedCollection = this.GetCollection(accessor); 
     if(!selectedCollection) 
       return false; 
@@ -54,7 +56,7 @@ export default class DataAccessObject {
   } 
 
   // DELETE .....................................
-  public async Delete(accessor:string, entry:IEntry):Promise<Boolean> { 
+  public async Delete(accessor:string, entry:IEntry):Promise<boolean> { 
     const selectedCollection = this.GetCollection(accessor); 
     if(!selectedCollection) 
       return false; 
@@ -65,8 +67,26 @@ export default class DataAccessObject {
     return this.response.success; 
   } 
 
-  // SET CELL MODES -----------------------------
-  public GetOptions(ifield:IField):IOption[] { 
+  // GET FOREIGN INFO -----------------------------
+  public GetForeignElements(ifield:IField): [ICollection, IField] | [] { 
+    const foreignCollection = this.GetCollection(ifield.modeltype); 
+    const foreignField = foreignCollection? foreignCollection.GetAbbreviateField(): null; 
+    if(!foreignCollection || !foreignField) 
+      return []; 
+    return [foreignCollection.icollection, foreignField]; 
+  } 
+
+  public GetForeignOptions(ifield:IField):IOption[] { 
+    const [foreignCollection, foreignField] = this.GetForeignElements(ifield); 
+    if(!foreignCollection || !foreignField) 
+      return [] as IOption[]; 
+    return foreignCollection.entries?.map( e => { 
+      return {value:e._id, label:e[foreignField.accessor]} as IOption; 
+    }); 
+  } 
+} 
+
+/*public GetOptions(ifield:IField):IOption[] { 
     const field = new Field(ifield); 
     if(field.IsEnum()) 
       return field.GetEnumOptions(); 
@@ -74,14 +94,20 @@ export default class DataAccessObject {
       return this.GetForeignOptions(ifield.modeltype); 
     return []; 
   } 
-
-  public GetForeignOptions(accessor:string):IOption[] { 
-    const foreignCollection = this.GetCollection(accessor); 
-    if(!foreignCollection) 
-      return [] as IOption[]; 
-    const abvfield = foreignCollection.GetAbbreviateField(); 
-    return foreignCollection.icollection.entries?.map( e => { 
-      return {value:e._id, label:e[abvfield.accessor]} as IOption; 
-    }); 
+  
+  public GetForeignCollection(ifield:IField):ICollection|void {
+    const field = new Field(ifield); 
+    const foreignCollection = this.GetCollection(ifield.modeltype); 
+    if(!field.IsObjectID() || !foreignCollection) 
+      return; 
+    return foreignCollection.icollection; 
   } 
-} 
+
+  public GetForeignField(ifield:IField):IField|void { 
+    const foreignCollection = this.GetForeignCollection(ifield);
+    if(!foreignCollection) 
+      return; 
+    return new Collection(foreignCollection).GetAbbreviateField(); 
+  } 
+
+  */

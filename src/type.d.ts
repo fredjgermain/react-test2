@@ -1,13 +1,19 @@
 
-/*interface ICrudContext { 
-  collections: Array<Collection>; // local store of all data. 
-  selectedCollection?: ICollection; // selected collection. 
-  result?: IResult; 
 
-  Create: (entry:IEntry) => Boolean; 
-  Update: (entry:IEntry) => Boolean; 
-  Delete: (entry:IEntry) => Boolean; 
-} */
+type ColumnPredicate = (ifield:IField) => boolean; 
+type ReadFunc = (ifield:IField, value:any) => any; 
+type EditFunc = (ifield:IField, value:any, setValue:any) => any; 
+interface ICellFormat { 
+  ifield:IField; 
+  readFunc?:ReadFunc; 
+  editFunc?:EditFunc; 
+} 
+type CrudFunc = (entry:IEntry) => Promise<boolean> 
+interface ICrudSettings { 
+  Create:CrudFunc; 
+  Update:CrudFunc; 
+  Delete:CrudFunc; 
+}
 
 interface ITableDataAction { 
   Create: (entry:IEntry) => Promise<Boolean>; 

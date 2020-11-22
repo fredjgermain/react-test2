@@ -4,7 +4,7 @@ import InputNumber from './inputdata/inputnumber';
 import InputBool from './inputdata/inputbool'; 
 import InputSelect from './inputselect/inputselect'; 
 import InputArray from './inputarray'; 
-import {useInputHook} from './inputhook'; 
+import {useInputHook} from './inputhooks/inputhook'; 
 
 export {useInputHook, InputData, InputBool, InputNumber, InputString, InputSelect, InputArray}; 
 export type InputAction = (event:any) => void; 

@@ -2,7 +2,7 @@ import React, {useEffect, useState, useMemo} from 'react';
 //import {crud} from '../../crud'; 
 //import Collection from '../common/collection'; 
 import CollectionSelector from './collectionselector'; 
-import DataAccessObject from '../common/dao'; 
+import DataAccessObject from '../data/dao/dao'; 
 import {useLoad} from '../customhooks/useLoad'; 
 
 
@@ -10,7 +10,6 @@ interface IAdminContext {
   dao: DataAccessObject; 
   selectedCollection?: string; 
 } 
-
 export const AdminContext = React.createContext({} as IAdminContext); 
 
 // ADMIN SECTION ================================
