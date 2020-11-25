@@ -1,5 +1,5 @@
 import React from 'react'; 
-import DAO, {Collection, Field} from '../data/dao/dao'; 
+import DAO, {Collection, Field} from '../common/dao/dao'; 
 import {IOption, InputData, InputArray, InputSelect} from '../input/inputcommon'; 
 import Check from '../input/check'; 
 
@@ -201,5 +201,5 @@ const ReadArray:ReadFunc = (ifield:IField, value:any):any => {
 
 // Edit Array Data 
 const EditArrayData:EditFunc = (ifield:IField, value:any, setValue:any):any => { 
-    return <InputArray type={ifield.type} value={value} onSendValue={setValue} /> 
+    return <InputArray type={ifield.type} value={value} onSendValue={setValue} defaultValue={ifield.defaultValue}/> 
   } 

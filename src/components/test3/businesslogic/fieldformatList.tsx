@@ -1,8 +1,24 @@
 import React from 'react'; 
-import DAO, {Field} from '../data/dao/dao'; 
+import DAO, {Field} from '../common/dao/dao'; 
 import {IOption, InputData, InputArray, InputSelect} from '../input/inputcommon'; 
 import Check from '../input/check'; 
-import {FieldFormatMapper} from '../data/dao/tableSetter'; 
+import {FieldFormatMapper} from '../common/tableSetter'; 
+import CrudInlineBtn from '../tablecomponent/crudinlinebtn'; 
+
+
+
+// INLINE CRUD ----------------------------------
+const InLineCrud = (field:Field, ifieldFormat:IFieldFormat, dao:DAO) => { 
+  if(field.ifield.accessor === 'inlinecrud') { 
+    ifieldFormat.readFunc = (ifield:IField, value:any):any => { 
+      return <CrudInlineBtn /> 
+    } 
+    ifieldFormat.editFunc = (ifield:IField, value:any):any => { 
+      return <CrudInlineBtn /> 
+    } 
+  } 
+} 
+
 
 
 // DISPLAY COMPONENT ............................
@@ -11,18 +27,19 @@ function SimpleDisplay({ifield, value}:{ifield:IField, value:any}) {
   if(field.IsArray()) { 
     const N = value as any[]; 
     return <span>{field.GetElementType()} x {N.length}</span> 
-  }
+  } 
   if(field.IsBoolean()) 
     return <Check ok={value} />; 
   if(typeof value === 'object') 
     return <span>{JSON.stringify(value)}</span> 
   return <span>{value}</span>;  // add formatting ?? 
-}
+} 
+
 
 
 // LIST OF READ / EDIT FUNCs ####################
 // read/edit single primitive 
-const ReadEdit_Primitive = (field:Field, ifieldFormat:ICellFormat, dao:DAO) => { 
+const ReadEdit_Primitive = (field:Field, ifieldFormat:IFieldFormat, dao:DAO) => { 
   if(!field.IsArray() && field.IsPrimitive()) { 
     ifieldFormat.readFunc = ReadSinglePrimitive; 
     ifieldFormat.editFunc = EditSinglePrimitive; 
@@ -30,7 +47,7 @@ const ReadEdit_Primitive = (field:Field, ifieldFormat:ICellFormat, dao:DAO) => {
 }
 
 // read/edit single enum
-const ReadEdit_SingleEnum = (field:Field, ifieldFormat:ICellFormat, dao:DAO) => { 
+const ReadEdit_SingleEnum = (field:Field, ifieldFormat:IFieldFormat, dao:DAO) => { 
   if(!field.IsArray() && field.IsEnum()) { 
     ifieldFormat.readFunc = ReadSingleEnum; 
     ifieldFormat.editFunc = EditSingleEnum; 
@@ -38,14 +55,14 @@ const ReadEdit_SingleEnum = (field:Field, ifieldFormat:ICellFormat, dao:DAO) => 
 }
 
 // edit array enum
-const Edit_ArrayEnum = (field:Field, ifieldFormat:ICellFormat, dao:DAO) => {
+const Edit_ArrayEnum = (field:Field, ifieldFormat:IFieldFormat, dao:DAO) => {
   if(field.IsArray() && field.IsEnum()) { 
     ifieldFormat.editFunc = EditMultiEnum; 
   } 
 }
 
 // read/edit single foreign object
-const ReadEdit_SingleForeign = (field:Field, ifieldFormat:ICellFormat, dao:DAO) => {
+const ReadEdit_SingleForeign = (field:Field, ifieldFormat:IFieldFormat, dao:DAO) => {
   if(!field.IsArray() && field.IsObjectID()) { 
     ifieldFormat.readFunc = ReadSingleForeign(dao); 
     ifieldFormat.editFunc = EditSingleForeign(dao); 
@@ -53,32 +70,34 @@ const ReadEdit_SingleForeign = (field:Field, ifieldFormat:ICellFormat, dao:DAO) 
 }
 
 // edit multi foreign object
-const Edit_MultiForeign = (field:Field, ifieldFormat:ICellFormat, dao:DAO) => {
+const Edit_MultiForeign = (field:Field, ifieldFormat:IFieldFormat, dao:DAO) => {
   if(field.IsArray() && field.IsObjectID()) { 
     ifieldFormat.editFunc = EditMultiForeign(dao); 
   } 
 }
 
 // read array any
-const Read_ArrayForeign = (field:Field, ifieldFormat:ICellFormat, dao:DAO) => {
+const Read_ArrayForeign = (field:Field, ifieldFormat:IFieldFormat, dao:DAO) => {
   if(field.IsArray()) 
     ifieldFormat.readFunc = ReadArray; 
 }
 // edit array primitive
-const Edit_ArrayPrimitive = (field:Field, ifieldFormat:ICellFormat, dao:DAO) => {
+const Edit_ArrayPrimitive = (field:Field, ifieldFormat:IFieldFormat, dao:DAO) => {
   if(field.IsArray() && field.IsPrimitive()) 
     ifieldFormat.editFunc = EditArrayData; 
 }
 
-export const CellFormatMapper:FieldFormatMapper[] = [ 
+export const fieldFormatMappers:FieldFormatMapper[] = [ 
   ReadEdit_Primitive, 
   ReadEdit_SingleEnum, 
   Edit_ArrayEnum, 
   ReadEdit_SingleForeign, 
   Edit_MultiForeign, 
   Read_ArrayForeign, 
-  Edit_ArrayPrimitive 
-]
+  Edit_ArrayPrimitive, 
+  InLineCrud, 
+] 
+
 
 // Read Single primitive
 const ReadSinglePrimitive:ReadFunc = (ifield:IField, value:any):any => { 
@@ -111,8 +130,8 @@ const EditMultiEnum:EditFunc = (ifield:IField, value:any, setValue:any):any => {
 const ReadSingleForeign = (dao:DAO):ReadFunc => { 
   return (ifield:IField, value:any):any => { 
     const options:IOption[] = dao.GetForeignOptions(ifield); 
-    const foreignLabel = options.find(o => o.value)?.label; 
-    return <SimpleDisplay {...{ifield, value}} /> 
+    const foreignLabel = options.find(o => o.value === value)?.label; 
+    return <SimpleDisplay {...{ifield, value:foreignLabel}} /> 
   } 
 } 
 
@@ -139,5 +158,5 @@ const ReadArray:ReadFunc = (ifield:IField, value:any):any => {
 
 // Edit Array Data 
 const EditArrayData:EditFunc = (ifield:IField, value:any, setValue:any):any => { 
-    return <InputArray type={ifield.type} value={value} onSendValue={setValue} /> 
+    return <InputArray type={ifield.type} value={value} onSendValue={setValue} defaultValue={ifield.defaultValue} /> 
   } 

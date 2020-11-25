@@ -1,4 +1,4 @@
-import {LoadCollections} from '../mongoose/mongoosedata'; 
+import {LoadCollections} from '../../data/mongoose/mongoosedata'; 
 import {crud} from '../../../crud'; 
 import Collection from './collection'; 
 import Field from './field'; 
@@ -16,6 +16,10 @@ export default class DataAccessObject {
   public async LoadCollections(collectionAccessors:string[]) { 
     const loadedCollections = await LoadCollections(collectionAccessors); 
     this.collections = loadedCollections; 
+  } 
+
+  public GetEmptyEntry(icollection:ICollection):IEntry { 
+    return new Collection(icollection).GetDefaultEntry(); 
   } 
 
   public GetICollection(accessor:string):ICollection|void { 

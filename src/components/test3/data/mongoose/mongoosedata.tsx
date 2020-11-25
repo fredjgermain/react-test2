@@ -1,4 +1,4 @@
-import Collection from '../dao/collection'; 
+import Collection from '../../common/dao/collection'; 
 import { crud } from '../../../crud'; 
 
 

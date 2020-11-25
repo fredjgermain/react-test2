@@ -30,7 +30,7 @@ export default function AdminTable() {
     return <div>No collection selected. </div> 
 
   // CRUD METHODS ......
-  const crud:ITableDataAction = { 
+  const crud:ICrudSettings = { 
     Create: async (entry:IEntry) => { 
       await dao.Create(selectedCollection ?? '', entry)
       .then( () => { 

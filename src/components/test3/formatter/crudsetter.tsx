@@ -1,4 +1,4 @@
-import DAO from '../data/dao/dao'; 
+import DAO from '../common/dao/dao'; 
 
 
 // TO move to CrudTable ...

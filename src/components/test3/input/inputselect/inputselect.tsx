@@ -4,17 +4,21 @@ import {IOption, IInput, useInputHook} from '../inputcommon';
 import './inputselect.css'; 
 
 
+
 // InputSelect ==================================
-interface ISelect extends IInput<Array<any>> { 
+interface ISelect extends IInput<any|Array<any>> { 
   isMulti?:boolean; 
   options:IOption[]; 
 } 
 export default function InputSelect({isMulti=false, options, ...props}:ISelect) { 
-  const OnSendValue = (value:any) => { 
-    setFold(true); 
-    props.onSendValue(value); 
-  } 
+  const value = [props.value].flat(); 
+  const onSendValue = isMulti ? props.onSendValue: (value:any[]) => props.onSendValue(value[0]); 
+  return <InputSelectMulti {...{...props, value, options, onSendValue, isMulti}} /> 
+}
 
+
+//
+export function InputSelectMulti({isMulti=false, options, ...props}:ISelect) { 
   const {value, setValue, onSendValue, onBlur, onPressEnter} = useInputHook<Array<any>>(props); 
   const [fold, setFold] = useState(true); 
   
@@ -27,6 +31,10 @@ export default function InputSelect({isMulti=false, options, ...props}:ISelect) 
     else 
       selection = isMulti? [...selection, newValue] : [newValue]; 
     setValue(selection); 
+    if(!isMulti) { 
+      onSendValue(selection); 
+      setFold(true); 
+    }
   } 
 
   // On Blur

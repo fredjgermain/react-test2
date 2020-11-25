@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react'; 
-import DAO from '../data/dao/dao'; 
+import DAO from '../common/dao/dao'; 
 import {useLoad} from '../customhooks/useLoad'; 
 import {InputSelect, IOption} from '../input/inputcommon'; 
 import AdminTable from './admintable'; 
@@ -16,7 +16,7 @@ export const AdminContext = React.createContext({} as IAdminContext);
 // ADMIN SECTION =================================
 export default function AdminSection() { 
   const dao = useMemo(() => new DAO(), []); 
-  const [selected, setSelected] = useState<Array<string>>([]); 
+  const [selected, setSelected] = useState<string>(''); 
   const {status, Reload} = useLoad(async () => { 
     await dao.LoadCollections(['responses', 'questions', 'instructions', 'forms']); 
   }); 
@@ -30,11 +30,11 @@ export default function AdminSection() {
   }); 
 
   const adminTable = selected[0] ? <AdminTable /> : <p>Please choose a collection from the selector above.</p>; 
-  const adminContext = {dao:dao, activeCollection:dao.GetICollection(selected[0]??'')} as IAdminContext; 
+  const adminContext = {dao:dao, activeCollection:dao.GetICollection(selected)} as IAdminContext; 
   return <AdminContext.Provider value={adminContext}> 
     <h2>Admin Section</h2> 
     <p>Choose a collection to create/read/update/delete items from it.</p> 
-    <InputSelect value={selected} onSendValue={setSelected} options={options} />
+    <InputSelect value={selected} onSendValue={setSelected} options={options} /> 
     {adminTable} 
   </AdminContext.Provider> 
 } 

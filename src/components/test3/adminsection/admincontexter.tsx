@@ -2,7 +2,7 @@ import React, {useEffect, useState, useMemo} from 'react';
 //import {crud} from '../../crud'; 
 //import Collection from '../common/collection'; 
 import CollectionSelector from './collectionselector'; 
-import DataAccessObject from '../data/dao/dao'; 
+import DataAccessObject from '../common/dao/dao'; 
 import {useLoad} from '../customhooks/useLoad'; 
 
 

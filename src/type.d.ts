@@ -1,9 +1,9 @@
 
 
-type ColumnPredicate = (ifield:IField) => boolean; 
+type FieldPredicate = (ifield:IField) => boolean; 
 type ReadFunc = (ifield:IField, value:any) => any; 
 type EditFunc = (ifield:IField, value:any, setValue:any) => any; 
-interface ICellFormat { 
+interface IFieldFormat { 
   ifield:IField; 
   readFunc?:ReadFunc; 
   editFunc?:EditFunc; 
@@ -14,14 +14,6 @@ interface ICrudSettings {
   Update:CrudFunc; 
   Delete:CrudFunc; 
 }
-
-interface ITableDataAction { 
-  Create: (entry:IEntry) => Promise<Boolean>; 
-  Update: (entry:IEntry) => Promise<Boolean>; 
-  Delete: (entry:IEntry) => Promise<Boolean>; 
-  //Sort?: 
-} 
-
 
 interface IRow { 
   id:number; 

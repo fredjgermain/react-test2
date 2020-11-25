@@ -14,7 +14,7 @@ interface ITableDataContext {
     activeMode: string, 
     setActiveMode: any, 
   } 
-  crud: ITableDataAction; 
+  crud: ICrudSettings; 
 } 
 export const TableDataContext = React.createContext({} as ITableDataContext); 
 
@@ -23,7 +23,7 @@ export const TableDataContext = React.createContext({} as ITableDataContext);
 interface Props { 
   cols: IField[], 
   rows: any[], 
-  crud: ITableDataAction; 
+  crud: ICrudSettings; 
 } 
 // TableData ====================================
 export default function TableData({cols, rows, crud}:Props) { 

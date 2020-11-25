@@ -1,4 +1,4 @@
-import DataAccessObject, {Collection, Field} from '../data/dao/dao';
+import DataAccessObject, {Collection, Field} from '../common/dao/dao';
 // default exclude hidden fields ... 
 
 type ColPredicate = (ifield:IField) => boolean; 
