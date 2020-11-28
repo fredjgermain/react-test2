@@ -1,6 +1,53 @@
-import React, { useState, useRef } from 'react'; 
-import ReactDom from 'react-dom'; 
-import { renderToString } from 'react-dom/server'; 
+import React, { useState } from 'react'; 
+
+// INPUT TABLE HOOK =============================
+export interface ITableHook {
+  entries: IEntry[]; 
+  activeEntry:IEntry; 
+  setActiveEntry:any; 
+  activeRow:number; 
+  setActiveRow: any; 
+  activeMode:string; 
+  setActiveMode:any; 
+  GetActiveMode: (row?:number) => string; 
+  ActivateHook: (mode?:string, row?:number) => void; 
+  ResetActiveHooks: () => void; 
+} 
+
+export function useInputTableHook(entries:IEntry[]):ITableHook { 
+  const [activeEntry, setActiveEntry] = useState<IEntry>({} as IEntry); 
+  const [activeRow, setActiveRow] = useState(-1); 
+  const [activeMode, setActiveMode] = useState('read'); 
+
+  /*const GetActiveMode = (row:number) => { 
+    if(row != undefined || row === -1) 
+      return ''; 
+    if(activeRow === row) 
+      return activeMode; 
+    return ''; 
+  }; */
+
+  const GetActiveMode = (row?:number) => { 
+    if(row != undefined && activeRow === row) 
+      return activeMode; 
+    return ''; 
+  }
+
+  const ActivateHook = (mode:string = 'read', row:number =-1) => { 
+    const entry = entries[row] ?? {}; 
+    setActiveMode(mode); 
+    setActiveRow(row); 
+    setActiveEntry(entry); 
+  } 
+
+  const ResetActiveHooks = () => { 
+    setActiveEntry({} as IEntry); 
+    setActiveRow(-1); 
+    setActiveMode('read'); 
+  }
+
+  return {entries, activeEntry, setActiveEntry, activeRow, setActiveRow, activeMode, setActiveMode, GetActiveMode, ActivateHook, ResetActiveHooks}; 
+} 
 
 
 type RenderFunc = (value:any, onSendValue:any) => any; 
@@ -8,38 +55,20 @@ interface RenderMap {
   handle: string; 
   renderFunc: RenderFunc; 
 } 
-/*interface IColumnSetting { 
-  ifield:IField; 
-  RenderMap: RenderMap[]; 
-}*/
 export interface IColumnSetting { 
   field: string; 
-  renderFunc: RenderFunc; 
   defaultValue?: any; 
+  renderFunc: RenderFunc; 
 } 
 
 interface IInputTableContext{ 
-  entriesHook:{ 
-    Entries:any[]; 
-    setEntries:any; 
-  } 
-  activeEntryHook:{ 
-    activeEntry:any[]; 
-    setActiveEntry:any; 
-  } 
-  activeRowHook:{ 
-    activeRow:number; 
-    setActiveRow: any; 
-  } 
-  activeModeHook: {
-    activeMode:string, 
-    setActiveMode:any
-  };
+  tableHook:ITableHook; 
   columnSettings: { 
     read:IColumnSetting[]; 
     edit:IColumnSetting[]; 
   } 
 } 
+
 export const InputTableContext = React.createContext({} as IInputTableContext); 
 interface IInputTable{ 
   entries: any[]; 
@@ -47,26 +76,18 @@ interface IInputTable{
     read:IColumnSetting[]; 
     edit:IColumnSetting[]; 
   } 
-  onSendValue: (newEntries:any[]) => void; 
-  //crudSettings: 
-}
+} 
 // INPUT TABLE ==================================
-export default function InputTable({entries, columnSettings, onSendValue, children}: React.PropsWithChildren<IInputTable>) { 
+export default function InputTable({entries, columnSettings, children}: React.PropsWithChildren<IInputTable>) { 
   console.log('InputTable'); 
-  const [Entries, setEntries] = useState(entries); 
-  const [activeEntry, setActiveEntry] = useState({}); 
-  const [activeRow, setActiveRow] = useState(-1); 
-  const [activeMode, setActiveMode] = useState('read'); 
+  //const [Entries, setEntries] = useState(entries); 
+  const tableHook = useInputTableHook(entries); 
 
   // RENDER -------------------------------------
-  const entriesHook = {Entries, setEntries}; 
-  const activeEntryHook = {activeEntry, setActiveEntry}; 
-  const activeRowHook = {activeRow, setActiveRow}; 
-  const activeModeHook = {activeMode, setActiveMode}; 
-  const context = {entriesHook, activeEntryHook, activeRowHook, activeModeHook, columnSettings} as IInputTableContext; 
+  const context = {tableHook, columnSettings} as IInputTableContext; 
   
   return <InputTableContext.Provider value={context} > 
-      <div>{JSON.stringify(activeEntryHook.activeEntry)}</div> 
+      <div>{JSON.stringify(tableHook.activeEntry)}</div> 
       <table>{children}</table> 
     </InputTableContext.Provider> 
 }

@@ -4,7 +4,7 @@ import {IInput, IOption, InputData, InputNumber, InputBool,
 import InputTable, {IColumnSetting} from './inputtable/inputtable'; 
 import InputRows from './inputtable/inputrow'; 
 import InputCells from './inputtable/inputcells'; 
-import InputRowBtn from './inputtable/inputrowbtn'; 
+import InputRowBtn from './inputtable/inputbtn/inputrowbtn'; 
 
 export default function TestInput() { 
 
