@@ -1,22 +1,22 @@
 import React, { useContext } from 'react'; 
-import {InputTableContext, IColumnSetting} from './inputtable'; 
+import {InputTableContext, IColumnSetting, IColumnSettings} from './inputtable'; 
 import {InputRowContext} from './inputrow'; 
 
 
 interface IInputCellsContext{} 
 const InputCellsContext = React.createContext({} as IInputCellsContext); 
-
+// INPUT CELLS ==================================
 interface IInputCells { 
-  columns?: IColumnSetting[]; 
+  optionalColumnSettings?: IColumnSettings[]; 
 } 
-export default function InputCells({columns=[]}: React.PropsWithChildren<IInputCells>) { 
-  const {tableHook:{activeRow, activeMode}, columnSettings} = useContext(InputTableContext); 
+export default function InputCells({optionalColumnSettings}: React.PropsWithChildren<IInputCells>) { 
+  const {tableHook:{GetColumnSettings}} = useContext(InputTableContext); 
   const {row} = useContext(InputRowContext); 
-  const RowIsActive = () => {return row != undefined && row === activeRow}; 
 
-  // pick the righ column setting depending on activeRow and ModeHook
-  const ColumnsSetting = RowIsActive() && (activeMode === 'update' || activeMode === 'create') ? columnSettings.edit : columnSettings.read; 
+  // pick the right column setting depending on activeRow and ModeHook 
+  const ColumnsSetting = GetColumnSettings(row, optionalColumnSettings); 
 
+  // RENDER -------------------------------------
   return <InputCellsContext.Provider value={{}}> 
       {ColumnsSetting.map( (column, i) => { 
       return <InputCell key={i} {...{column}} /> 
@@ -25,28 +25,22 @@ export default function InputCells({columns=[]}: React.PropsWithChildren<IInputC
 } 
 
 
-
+// INPUT CELL ====================================
 interface IInputCell { 
   column: IColumnSetting; 
 } 
 function InputCell({column}: IInputCell) { 
-  const {tableHook:{entries, activeEntry, setActiveEntry}} = useContext(InputTableContext);
-  //const {entries, activeEntryHook:{activeEntry,setActiveEntry}} = useContext(InputTableContext); 
+  const {tableHook:{entries, SetActiveEntry}} = useContext(InputTableContext); 
   const {row} = useContext(InputRowContext); 
   
-  //{row} {column.field} 
   let value; 
   if(row != undefined && row >=0) 
     value = entries[row][column.field];  // or default value as given by colsettings 
   value = value ?? column.defaultValue; 
 
-  /* onSendValue = modify activeEntryHook */ 
-  const onSendValue = (newValue:any) => { 
-    const newEntries = {...activeEntry}; 
-    newEntries[column.field as any] = newValue; 
-    setActiveEntry(newEntries); 
-  }
+  const onSendValue = (newValue:any) => SetActiveEntry(newValue, column); 
 
+  // RENDER -------------------------------------
   return <td> 
     {column.renderFunc(value, onSendValue)} 
   </td> 

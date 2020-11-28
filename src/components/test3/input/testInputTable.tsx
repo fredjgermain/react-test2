@@ -1,7 +1,7 @@
 import React, {useState, useRef} from 'react'; 
 import {IInput, IOption, InputData, InputNumber, InputBool, 
   InputString, InputSelect, InputArray, EnumType} from './inputcommon'; 
-import InputTable, {IColumnSetting} from './inputtable/inputtable'; 
+import InputTable, {IColumnSetting, IColumnSettings, ITableHook} from './inputtable/inputtable'; 
 import InputRows, {InputRow} from './inputtable/inputrow'; 
 import InputCells from './inputtable/inputcells'; 
 import InputRowBtn from './inputtable/inputbtn/inputrowbtn'; 
@@ -28,21 +28,50 @@ export default function TestInputTable() {
   const {pageIndex, setPageIndex, from, to, pageIndexes} = usePage(tableEntries, 5); 
   const page = tableEntries.slice(from, to); 
 
+  const emptyfunc = (value:any, onSendValue:any) => {return <span></span>}; 
   const readfunc = (value:any, onSendValue:any) => {return <span>{value}</span>}; 
   const editfunc = (value:any, onSendValue:any) => {return <InputData {...{value, onSendValue}} />}; 
 
-  const colsettingsRead = [ 
-    {field:'_id', defaultValue:'', renderFunc:readfunc}, 
-    {field:'v1', defaultValue:0, renderFunc:readfunc}, 
-    {field:'v2', defaultValue:0, renderFunc:readfunc}, 
-  ] as IColumnSetting[]; 
 
-  const colsettingsEdit = [ 
-    {field:'_id', defaultValue:'', renderFunc:editfunc}, 
-    {field:'v1', defaultValue:0, renderFunc:editfunc}, 
-    {field:'v2', defaultValue:0, renderFunc:editfunc}, 
-  ] as IColumnSetting[]; 
-  const colsettings = {read:colsettingsRead, edit:colsettingsEdit}; 
+  // Colsettings Empty ----------------------------------
+  const colsettingsEmpty:IColumnSettings = {columnSettings:
+    [ 
+      {field:'_id', defaultValue:'', renderFunc:readfunc}, 
+      {field:'v1', defaultValue:0, renderFunc:readfunc}, 
+      {field:'v2', defaultValue:0, renderFunc:readfunc}, 
+    ] as IColumnSetting[] 
+  } 
+
+  // Colsettings Read ---------------------------
+  const predicateReadable = (tableHook:ITableHook, row?:number) => { 
+    return tableHook.GetActiveMode(row) === 'read'; 
+  }; 
+
+  const colsettingsRead:IColumnSettings = {
+    predicate: predicateReadable, 
+    columnSettings:    
+    [ 
+      {field:'_id', defaultValue:'', renderFunc:readfunc}, 
+      {field:'v1', defaultValue:0, renderFunc:readfunc}, 
+      {field:'v2', defaultValue:0, renderFunc:readfunc}, 
+    ] as IColumnSetting[] 
+  } 
+
+  // Colsettings Edit ---------------------------
+  const predicateEditable = (tableHook:ITableHook, row?:number) => { 
+    return tableHook.GetActiveMode(row) === 'update' || tableHook.GetActiveMode(row) === 'create'; 
+  }; 
+
+  const colsettingsEdit:IColumnSettings = { 
+    predicate: predicateEditable, 
+    columnSettings: [ 
+      {field:'_id', defaultValue:'', renderFunc:editfunc}, 
+      {field:'v1', defaultValue:0, renderFunc:editfunc}, 
+      {field:'v2', defaultValue:0, renderFunc:editfunc}, 
+    ] as IColumnSetting[] 
+  } 
+  const colsettings = [colsettingsRead, colsettingsEdit, colsettingsEmpty]; 
+
 
   // CRUD functionality
   const onCreate = (entry:any) => { 

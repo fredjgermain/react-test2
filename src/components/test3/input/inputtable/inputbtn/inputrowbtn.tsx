@@ -1,26 +1,19 @@
 import React, { useContext } from 'react'; 
 import {InputTableContext} from '../inputtable'; 
 import {InputRowContext} from '../inputrow'; 
+import {CrudFunc} from '../inputtablehook';
 
 
-
-type crudFunc = (entry:IEntry) => boolean; 
-
+// INPUT ROW BTN ================================
 interface IInputRowBtn { 
   label?: string; 
-  onCreate: crudFunc; 
-  onUpdate: crudFunc; 
-  onDelete: crudFunc; 
+  onCreate: CrudFunc; 
+  onUpdate: CrudFunc; 
+  onDelete: CrudFunc; 
 } 
-
-export default function InputTableBtn({label, onCreate, onUpdate, onDelete}:IInputRowBtn) { 
-  const {tableHook:{activeEntry, GetActiveMode, ActivateHook, ResetActiveHooks}} = useContext(InputTableContext); 
+export default function InputRowBtn({label, onCreate, onUpdate, onDelete}:IInputRowBtn) { 
+  const {tableHook:{CrudAction, GetActiveMode, ActivateHook}} = useContext(InputTableContext); 
   const {row} = useContext(InputRowContext); 
-
-  const Confirm = (func:crudFunc) => { 
-    if(func(activeEntry)) 
-      ResetActiveHooks(); 
-  }; 
 
   // RENDER -------------------------------------
   if(row === -1 && GetActiveMode(row) !='create') 
@@ -30,19 +23,19 @@ export default function InputTableBtn({label, onCreate, onUpdate, onDelete}:IInp
   
   if(row === -1 && GetActiveMode(row) ==='create') 
     return <td> 
-      <button onClick={() => Confirm(onCreate)}>Confirm Create</button> 
+      <button onClick={() => CrudAction(onCreate)}>Confirm Create</button> 
       <button onClick={() => ActivateHook()}>Cancel Create</button> 
     </td> 
   
   if(GetActiveMode(row) ==='update') 
     return <td> 
-      <button onClick={() => Confirm(onUpdate)}>Confirm Update</button> 
+      <button onClick={() => CrudAction(onUpdate)}>Confirm Update</button> 
       <button onClick={() => ActivateHook()}>Cancel Update</button> 
     </td> 
 
   if(GetActiveMode(row) ==='delete') 
     return <td> 
-      <button onClick={() => Confirm(onDelete)}>Confirm Delete</button> 
+      <button onClick={() => CrudAction(onDelete)}>Confirm Delete</button> 
       <button onClick={() => ActivateHook()}>Cancel Delete</button> 
     </td> 
   
