@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'; 
-import {InputTableContext, IColumnSetting, IColumnSettings} from './inputtable'; 
+import {InputTableContext, IColumnSetting} from './inputtable'; 
 
 
 // INPUT HEADER ROW =============================
@@ -23,8 +23,8 @@ interface IInputHeader {
 } 
 
 export function InputHeader() { 
-  const {columnSettings} = useContext(InputTableContext); 
-  const ColumnSettings = columnSettings[0].columnSettings; 
+  const {tableHook:{GetColumnSettings}} = useContext(InputTableContext); 
+  const ColumnSettings = GetColumnSettings(); 
 
   return <InputHeaderContext.Provider value={{}}> 
     {ColumnSettings.map( (column, i) => { 

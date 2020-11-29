@@ -1,17 +1,16 @@
 import React from 'react'; 
-import {ITableHook, useInputTableHook, IColumnSetting, IColumnSettings, CrudFunc, RenderFunc} from './inputtablehook'; 
+import {ITableHook, useInputTableHook, IColumnSetting, CrudFunc, RenderFunc} from './inputtablehook'; 
 export {useInputTableHook}; 
-export type {ITableHook, IColumnSetting, IColumnSettings, CrudFunc, RenderFunc}; 
+export type {ITableHook, IColumnSetting, CrudFunc, RenderFunc}; 
 
 interface IInputTableContext{ 
   tableHook:ITableHook; 
-  columnSettings:IColumnSettings[]; 
 } 
 
 export const InputTableContext = React.createContext({} as IInputTableContext); 
 interface IInputTable{ 
   entries: any[]; 
-  columnSettings: IColumnSettings[]; 
+  columnSettings: IColumnSetting[]; 
 } 
 // INPUT TABLE ==================================
 export default function InputTable({entries, columnSettings, children}: React.PropsWithChildren<IInputTable>) { 

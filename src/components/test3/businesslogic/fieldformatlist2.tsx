@@ -4,7 +4,7 @@ import {IOption, InputData, InputArray, InputSelect} from '../input/inputcommon'
 import Check from '../input/check'; 
 import {FieldFormatMapper} from '../common/tableSetter'; 
 import CrudInlineBtn from '../tablecomponent/crudinlinebtn'; 
-import {ITableHook, IColumnSetting, IColumnSettings, CrudFunc, RenderFunc} from '../input/inputtable/inputtable'; 
+import {ITableHook, IColumnSetting, CrudFunc, RenderFunc} from '../input/inputtable/inputtable'; 
 
 
 // DISPLAY COMPONENT ............................
@@ -30,80 +30,150 @@ IColumnSettings
   columnSettings: IColumnSetting[]; 
 
 IColumnSetting { 
-  field: string; 
-  defaultValue?: any; 
+  ifield: IField; 
   renderFunc: RenderFunc; 
 } 
 */
 const predicateEditable = (tableHook:ITableHook, row?:number) => { 
   return tableHook.GetActiveHook(row) === 'update' || tableHook.GetActiveHook(row) === 'create'; 
 }; 
-const colsettingsEdit:IColumnSettings = { 
-  predicate: predicateEditable, 
-  columnSettings: [ 
-    /*{ifield:ifields[0], renderFunc:editfunc}, 
-    {ifield:ifields[1], renderFunc:editfunc}, 
-    {ifield:ifields[2], renderFunc:editfunc}, */
-  ] as IColumnSetting[] 
-} 
 
 
+// column predicates 
+const SinglePrimitive = (field:Field) => !field.IsArray() && field.IsPrimitive(); 
+const SingleEnum = (field:Field) => !field.IsArray() && field.IsEnum(); 
+const SingleForeign = (field:Field) => !field.IsArray() && field.IsObjectID(); 
+const ArrayPrimitive = (field:Field) => field.IsArray() && field.IsPrimitive(); 
+const ArrayEnum = (field:Field) => field.IsArray() && field.IsEnum(); 
+const ArrayForeign = (field:Field) => field.IsArray() && field.IsObjectID(); 
 
-
-// RENDER FUNC ==================================
-// type RenderFunc = (ifield:IField, value:any, onSendValue:any) => any;  ... html
+// default READ COLUMN SETTINGS ======================
 
 
 // Read Single primitive
-const ReadSinglePrimitive:RenderFunc = (ifield:IField, value:any, setValue:any):any => { 
-  return <SimpleDisplay {...{ifield, value}} /> 
-} 
-
-// Edit Single primitive 
-const EditSinglePrimitive:RenderFunc = (ifield:IField, value:any, setValue:any):any => { 
-  return <InputData type={ifield.type} value={value} onSendValue={setValue} /> 
-} 
+const ReadSinglePrimitive = (ifield:IField, dao:DAO):IColumnSetting|undefined => {
+  if(SinglePrimitive(new Field(ifield))) 
+    return {ifield, renderFunc: (value:any, setValue:any):any => { 
+        return <SimpleDisplay {...{ifield, value}} /> 
+      }} as IColumnSetting; 
+  return;
+}
 
 // Read Single enum 
-const ReadSingleEnum:RenderFunc = (ifield:IField, value:any, setValue:any):any => { 
-  return <SimpleDisplay {...{ifield, value}} /> 
+const ReadSingleEnum = (ifield:IField, dao:DAO):IColumnSetting|undefined => {
+  if(SingleEnum(new Field(ifield)))
+    return {ifield, renderFunc: (value:any, setValue:any):any => { 
+      return <SimpleDisplay {...{ifield, value}} />     
+      }} as IColumnSetting; 
+  return; 
 } 
 
-// Edit single enum 
-const EditSingleEnum:RenderFunc = (ifield:IField, value:any, setValue:any):any => { 
-  const options:IOption[] = new Field(ifield).GetEnumOptions(); 
-  return <InputSelect value={value} options={options} onSendValue={setValue} />; 
-} 
-
-// Edit Multi enum 
-const EditMultiEnum:RenderFunc = (ifield:IField, value:any, setValue:any):any => { 
-  const options:IOption[] = new Field(ifield).GetEnumOptions(); 
-  return <InputSelect value={value} options={options} onSendValue={setValue} isMulti />; 
-} 
-
-// Edit Single Foreign 
-const EditSingleForeign = (dao:DAO):EditFunc => { 
-  return (ifield:IField, value:any, setValue:any):any => { 
-    const options:IOption[] = dao.GetForeignOptions(ifield); 
-    return <InputSelect value={[value]} options={options} onSendValue={setValue} />; 
-  } 
-} 
-
-// Edit Multi Foreign 
-const EditMultiForeign = (dao:DAO):EditFunc => { 
-  return (ifield:IField, value:any, setValue:any):any => { 
-    const options:IOption[] = dao.GetForeignOptions(ifield); 
-    return <InputSelect value={value} options={options} onSendValue={setValue} isMulti/>; 
-  } 
+// Read Single Foreign 
+const ReadSingleForeign = (ifield:IField, dao:DAO):IColumnSetting|undefined => {
+  if(SingleForeign(new Field(ifield))) 
+    return {ifield, renderFunc: (value:any, setValue:any):any => { 
+      const options:IOption[] = dao.GetForeignOptions(ifield); 
+      const foreignLabel = options.find(o => o.value === value)?.label; 
+      return <SimpleDisplay {...{ifield, value:foreignLabel}} /> 
+    }} as IColumnSetting; 
+  return;
 } 
 
 // Read Array 
-const ReadArray:RenderFunc = (ifield:IField, value:any, setValue:any):any => { 
-  return <SimpleDisplay {...{ifield, value}} /> 
-} 
+const ReadArray = (ifield:IField, dao:DAO):IColumnSetting|undefined => {
+  if(new Field(ifield).IsArray())
+    return {ifield, renderFunc: (value:any, setValue:any):any => { 
+      return <SimpleDisplay {...{ifield, value}} /> 
+    }} as IColumnSetting; 
+  return;
+}
+
+const colSettingReadFuncs = [
+  ReadSinglePrimitive, 
+  ReadSingleEnum, 
+  ReadArray, 
+]
+
+
+
+// default EDIT COLUMN SETTINGS ======================
+// Edit Single primitive 
+const EditSinglePrimitive = (ifield:IField, dao:DAO):IColumnSetting|undefined => {
+  if(SinglePrimitive(new Field(ifield))) 
+    return {ifield, renderFunc: (value:any, setValue:any):any => { 
+        return <InputData type={ifield.type} value={value} onSendValue={setValue} />     
+      }} as IColumnSetting; 
+  return;
+}
+
+
+// Edit single enum 
+const EditSingleEnum = (ifield:IField, dao:DAO):IColumnSetting|undefined => {
+  if(SingleEnum(new Field(ifield)))
+    return {ifield, renderFunc: (value:any, setValue:any):any => { 
+      const options:IOption[] = new Field(ifield).GetEnumOptions(); 
+      return <InputSelect value={value} options={options} onSendValue={setValue} />;    
+    }} as IColumnSetting; 
+  return;
+}
+
+// Edit Multi enum 
+const EditMultiEnum = (ifield:IField, dao:DAO):IColumnSetting|undefined => {
+  if(ArrayEnum(new Field(ifield)))
+    return {ifield, renderFunc: (value:any, setValue:any):any => { 
+      const options:IOption[] = new Field(ifield).GetEnumOptions(); 
+      return <InputSelect value={value} options={options} onSendValue={setValue} isMulti />;   
+    }} as IColumnSetting; 
+  return; 
+}
+
+// Edit Single Foreign 
+const EditSingleForeign = (ifield:IField, dao:DAO):IColumnSetting|undefined => {
+  if(SingleForeign(new Field(ifield)))
+    return {ifield, renderFunc: (value:any, setValue:any):any => { 
+      const options:IOption[] = dao.GetForeignOptions(ifield); 
+      return <InputSelect value={[value]} options={options} onSendValue={setValue} />;  
+    }} as IColumnSetting; 
+  return; 
+}
+
+// Edit Multi Foreign 
+const EditMultiForeign = (ifield:IField, dao:DAO):IColumnSetting|undefined => {
+  if(ArrayForeign(new Field(ifield)))
+    return {ifield, renderFunc: (value:any, setValue:any):any => { 
+      const options:IOption[] = dao.GetForeignOptions(ifield); 
+      return <InputSelect value={value} options={options} onSendValue={setValue} isMulti/>; 
+    }} as IColumnSetting; 
+  return; 
+}
+
 
 // Edit Array Data 
-const EditArrayData:RenderFunc = (ifield:IField, value:any, setValue:any):any => { 
-  return <InputArray type={ifield.type} value={value} onSendValue={setValue} defaultValue={ifield.defaultValue} /> 
+const EditArray = (ifield:IField, dao:DAO):IColumnSetting|undefined => {
+  if(ArrayPrimitive(new Field(ifield)))
+    return {ifield, renderFunc: (value:any, setValue:any):any => { 
+      return <InputArray type={ifield.type} value={value} onSendValue={setValue} defaultValue={ifield.defaultValue} /> 
+    }} as IColumnSetting; 
+  return; 
+}
+
+
+const colSettingEditFuncs = [
+  EditSinglePrimitive, 
+  EditSingleEnum, 
+  EditMultiEnum,
+  EditSingleForeign, 
+  EditMultiForeign, 
+  EditArray, 
+]
+
+
+// IColumnSettings ===============================
+function MakeIColumSettings(ifields:IField[], dao:DAO) { 
+  // calls collSettingReadFuncs, collSettingEditFuncs to generate ColumnSettingS[] 
+  // must return 2 complete sets of ColumnSettings, one 'Read' the other 'Edit'. 
 } 
 
+const colsettingRead = {}; 
+
+const colsettingEdit = {}; 

@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'; 
-import {InputTableContext, IColumnSetting, IColumnSettings} from './inputtable'; 
+import {InputTableContext, IColumnSetting} from './inputtable'; 
 import {InputRowContext} from './inputrow'; 
 
 
@@ -7,7 +7,7 @@ interface IInputCellsContext{}
 const InputCellsContext = React.createContext({} as IInputCellsContext); 
 // INPUT CELLS ==================================
 interface IInputCells { 
-  optionalColumnSettings?: IColumnSettings[]; 
+  optionalColumnSettings?: IColumnSetting[]; 
 } 
 export default function InputCells({optionalColumnSettings}: React.PropsWithChildren<IInputCells>) { 
   const {tableHook:{GetColumnSettings}} = useContext(InputTableContext); 
@@ -38,13 +38,10 @@ function InputCell({column}: IInputCell) {
   if(row != undefined && row >=0) 
     value = entries[row][ifield.accessor];  // or default value as given by colsettings 
   value = value ?? ifield.defaultValue; 
-
+  
   const onSendValue = (newValue:any) => SetActiveEntry(newValue, column); 
-
-  console.log( ); 
-
   // RENDER -------------------------------------
   return <td> 
-    {renderFunc(ifield, value, onSendValue)}
+    {renderFunc(value, onSendValue)} 
   </td> 
 } 

@@ -1,5 +1,5 @@
 import DAO, {Field} from './dao/dao'; 
-import {IColumnSetting, IColumnSettings, ITableHook} from '../input/inputtable/inputtable'; 
+import {IColumnSetting, ITableHook} from '../input/inputtable/inputtable'; 
 
 
 export type FieldFormatMapper = (field:Field, ifieldFormat:IFieldFormat, dao:DAO) => void; 

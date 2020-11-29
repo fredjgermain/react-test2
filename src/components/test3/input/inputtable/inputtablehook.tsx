@@ -1,20 +1,14 @@
 import { useState } from 'react'; 
 
 
+// Interface Render Func ========================
+export type RenderFunc = (value:any, onSendValue:any) => any; 
 
-// Interface COLUMN SETTTING ====================
-export type RenderFunc = (ifield:IField, value:any, onSendValue:any) => any; 
-interface RenderMap { 
-  handle: string; 
-  renderFunc: RenderFunc; 
-} 
-
-export interface IColumnSettings { 
+// Interface COLUMN SETTING ====================
+export interface IColumnSetting { 
   // if 'undefined' it will be assumed as a default column setting if no other column setting predicate is passes. 
   predicate?: (tableHook:ITableHook, row?:number) => boolean; 
-  columnSettings: IColumnSetting[]; 
-} 
-export interface IColumnSetting { 
+  order?:number; 
   ifield: IField; 
   renderFunc: RenderFunc; 
 } 
@@ -38,10 +32,10 @@ export interface ITableHook extends ITableStatus{
   GetActiveHook: (row?:number) => string; 
   ActivateHook: (mode?:string, row?:number) => void; 
   ResetActiveHooks: () => void; 
-  GetColumnSettings: (row?:number, optionalColumnSettings?:IColumnSettings[]) => IColumnSetting[]; 
+  GetColumnSettings: (row?:number, optionalColumnSettings?:IColumnSetting[]) => IColumnSetting[]; 
 } 
 
-export function useInputTableHook(entries:IEntry[], columnSettings:IColumnSettings[]):ITableHook { 
+export function useInputTableHook(entries:IEntry[], columnSettings:IColumnSetting[]):ITableHook { 
   const [activeEntry, setActiveEntry] = useState<IEntry>({} as IEntry); 
   const [activeRow, setActiveRow] = useState(-1); 
   const [activeMode, setActiveMode] = useState('read'); 
@@ -79,21 +73,36 @@ export function useInputTableHook(entries:IEntry[], columnSettings:IColumnSettin
   const tableHook = {entries, activeEntry, setActiveEntry, activeRow, setActiveRow, activeMode, setActiveMode, 
     SetActiveEntry, CrudAction, GetActiveHook, ActivateHook, ResetActiveHooks} as ITableHook; 
 
-  const GetColumnSettings = (row?:number, optionalColumnSettings?:IColumnSettings[]) => { 
-    const fromOptional = FindApplicableColumnSettings(row, optionalColumnSettings); 
-    if(fromOptional != undefined && fromOptional.length > 0) 
-      return fromOptional; 
+  const GetColumnSettings = (row?:number, optionalColumnSettings?:IColumnSetting[]) => { 
     const fromTable = FindApplicableColumnSettings(row, columnSettings); 
     return fromTable ?? [] as IColumnSetting[]; 
-  }
+  } 
 
-  const FindApplicableColumnSettings = (row?:number, columnSettings?:IColumnSettings[]) => { 
+  const FindApplicableColumnSettings = (row?:number, columnSettings?:IColumnSetting[]) => { 
     if(columnSettings === undefined) 
       return undefined; 
-    const defaultColumnSetting = columnSettings.find( cols => cols.predicate === undefined); 
-    const applicableColumnSetting = columnSettings.find( cols => cols.predicate && cols.predicate(tableHook, row)); 
-    return applicableColumnSetting?.columnSettings ?? defaultColumnSetting?.columnSettings; 
-  }
+    const defaultColumnSetting = columnSettings.filter( cols => cols.predicate === undefined); 
+    const applicableColumnSetting = columnSettings.filter( cols => cols.predicate && cols.predicate(tableHook, row)); 
+    
+    const foundColumSetting:IColumnSetting[] = []; 
+    applicableColumnSetting.forEach( c => { 
+      const fieldAccessor = foundColumSetting.map(fc => fc.ifield.accessor); 
+      if(!fieldAccessor.includes(c.ifield.accessor)) 
+        foundColumSetting.push(c); 
+    }) 
+    defaultColumnSetting.forEach( c => { 
+      const fieldAccessor = foundColumSetting.map(fc => fc.ifield.accessor); 
+      if(!fieldAccessor.includes(c.ifield.accessor)) 
+        foundColumSetting.push(c); 
+    }) 
+    return OrderColumnSettings(foundColumSetting); 
+  } 
+
+  const OrderColumnSettings = (columnSettings:IColumnSetting[]) => { 
+    return columnSettings.sort((a,b) => { 
+      return (a.order ?? 0) - (b.order ?? 0) 
+    }); 
+  } 
 
   return {...tableHook, GetColumnSettings}; 
 } 
