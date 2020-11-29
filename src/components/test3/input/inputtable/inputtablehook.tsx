@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 
 // Interface COLUMN SETTTING ====================
-type RenderFunc = (value:any, onSendValue:any) => any; 
+export type RenderFunc = (ifield:IField, value:any, onSendValue:any) => any; 
 interface RenderMap { 
   handle: string; 
   renderFunc: RenderFunc; 
@@ -15,13 +15,12 @@ export interface IColumnSettings {
   columnSettings: IColumnSetting[]; 
 } 
 export interface IColumnSetting { 
-  field: string; 
-  defaultValue?: any; 
+  ifield: IField; 
   renderFunc: RenderFunc; 
 } 
 
 // INPUT TABLE HOOK =============================
-export type CrudFunc = (entry:IEntry) => boolean; 
+export type CrudFunc = (entry:IEntry) => Promise<boolean>; 
 
 
 export interface ITableStatus { 
@@ -34,9 +33,9 @@ export interface ITableHook extends ITableStatus{
   setActiveEntry:any; 
   setActiveRow: any; 
   setActiveMode:any; 
-  CrudAction: (crudFunc:CrudFunc) => void; 
+  CrudAction: (crudFunc:CrudFunc) => Promise<void>; 
   SetActiveEntry: (newValue:any, columnSetting:IColumnSetting) => void; 
-  GetActiveMode: (row?:number) => string; 
+  GetActiveHook: (row?:number) => string; 
   ActivateHook: (mode?:string, row?:number) => void; 
   ResetActiveHooks: () => void; 
   GetColumnSettings: (row?:number, optionalColumnSettings?:IColumnSettings[]) => IColumnSetting[]; 
@@ -47,18 +46,18 @@ export function useInputTableHook(entries:IEntry[], columnSettings:IColumnSettin
   const [activeRow, setActiveRow] = useState(-1); 
   const [activeMode, setActiveMode] = useState('read'); 
 
-  const CrudAction = (crudFunc:CrudFunc) => { 
-    if(crudFunc(activeEntry)) 
+  const CrudAction = async (crudFunc:CrudFunc) => { 
+    if(await crudFunc(activeEntry)) 
       ResetActiveHooks(); 
   } 
 
   const SetActiveEntry = (newValue:any, columnSetting:IColumnSetting) => { 
     const newEntries = {...activeEntry}; 
-    newEntries[columnSetting.field as any] = newValue; 
+    newEntries[columnSetting.ifield.accessor as any] = newValue; 
     setActiveEntry(newEntries); 
   } 
 
-  const GetActiveMode = (row?:number) => { 
+  const GetActiveHook = (row?:number) => { 
     if(row != undefined && activeRow === row) 
       return activeMode; 
     return ''; 
@@ -75,10 +74,10 @@ export function useInputTableHook(entries:IEntry[], columnSettings:IColumnSettin
     setActiveEntry({} as IEntry); 
     setActiveRow(-1); 
     setActiveMode('read'); 
-  }
+  } 
 
   const tableHook = {entries, activeEntry, setActiveEntry, activeRow, setActiveRow, activeMode, setActiveMode, 
-    SetActiveEntry, CrudAction, GetActiveMode, ActivateHook, ResetActiveHooks} as ITableHook; 
+    SetActiveEntry, CrudAction, GetActiveHook, ActivateHook, ResetActiveHooks} as ITableHook; 
 
   const GetColumnSettings = (row?:number, optionalColumnSettings?:IColumnSettings[]) => { 
     const fromOptional = FindApplicableColumnSettings(row, optionalColumnSettings); 

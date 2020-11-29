@@ -2,14 +2,47 @@ import React, {useState, useRef} from 'react';
 import {IInput, IOption, InputData, InputNumber, InputBool, 
   InputString, InputSelect, InputArray, EnumType} from './inputcommon'; 
 import InputTable, {IColumnSetting, IColumnSettings, ITableHook} from './inputtable/inputtable'; 
+import {InputHeaderRow, InputHeader} from './inputtable/inputtableheader'; 
 import InputRows, {InputRow} from './inputtable/inputrow'; 
 import InputCells from './inputtable/inputcells'; 
-import InputRowBtn from './inputtable/inputbtn/inputrowbtn'; 
+import InputRowBtn, {CreateBtn, UpdateDeleteBtn} from './inputtable/inputbtn/inputrowbtn'; 
 import {usePage, IPageHook} from '../customhooks/usePage'; 
 
 
 export default function TestInputTable() { 
 
+  const ifields: IField[] = [
+    {
+      accessor:'_id', 
+      label:'ID', 
+      defaultValue: '', 
+      type:'string', 
+      format:'', 
+      subtype:'', 
+      modeltype:'', 
+      options:{}, 
+    },
+    {
+      accessor:'v1', 
+      label:'Var1', 
+      defaultValue: 0, 
+      type:'number', 
+      format:'', 
+      subtype:'', 
+      modeltype:'', 
+      options:{}, 
+    },
+    {
+      accessor:'v2', 
+      label:'Var2', 
+      defaultValue: 0, 
+      type:'number', 
+      format:'', 
+      subtype:'', 
+      modeltype:'', 
+      options:{}, 
+    }
+  ]
   const tableData:IEntry[] = [
     {_id:'1', v1:1, v2:2},
     {_id:'2', v1:5, v2:9},
@@ -28,53 +61,54 @@ export default function TestInputTable() {
   const {pageIndex, setPageIndex, from, to, pageIndexes} = usePage(tableEntries, 5); 
   const page = tableEntries.slice(from, to); 
 
-  const emptyfunc = (value:any, onSendValue:any) => {return <span></span>}; 
-  const readfunc = (value:any, onSendValue:any) => {return <span>{value}</span>}; 
-  const editfunc = (value:any, onSendValue:any) => {return <InputData {...{value, onSendValue}} />}; 
+  const emptyfunc = (ifield:IField, value:any, onSendValue:any) => {return <span></span>}; 
+  const readfunc = (ifield:IField, value:any, onSendValue:any) => {return <span>{value}</span>}; 
+  const editfunc = (ifield:IField, value:any, onSendValue:any) => {return <InputData {...{value, onSendValue}} />}; 
 
 
   // Colsettings Empty ----------------------------------
   const colsettingsEmpty:IColumnSettings = {columnSettings:
     [ 
-      {field:'_id', defaultValue:'', renderFunc:readfunc}, 
-      {field:'v1', defaultValue:0, renderFunc:readfunc}, 
-      {field:'v2', defaultValue:0, renderFunc:readfunc}, 
+      {ifield:ifields[0], renderFunc:emptyfunc}, 
+      {ifield:ifields[1], renderFunc:emptyfunc}, 
+      {ifield:ifields[2], renderFunc:emptyfunc}, 
     ] as IColumnSetting[] 
   } 
 
   // Colsettings Read ---------------------------
-  const predicateReadable = (tableHook:ITableHook, row?:number) => { 
-    return tableHook.GetActiveMode(row) === 'read'; 
-  }; 
+  /*const predicateReadable = (tableHook:ITableHook, row?:number) => { 
+    return tableHook.GetActiveHook(row) === 'read'; 
+  }; */
 
   const colsettingsRead:IColumnSettings = {
-    predicate: predicateReadable, 
-    columnSettings:    
+    //predicate: predicateReadable, 
+    columnSettings: 
     [ 
-      {field:'_id', defaultValue:'', renderFunc:readfunc}, 
-      {field:'v1', defaultValue:0, renderFunc:readfunc}, 
-      {field:'v2', defaultValue:0, renderFunc:readfunc}, 
+      {ifield:ifields[0], renderFunc:readfunc}, 
+      {ifield:ifields[1], renderFunc:readfunc}, 
+      {ifield:ifields[2], renderFunc:readfunc}, 
     ] as IColumnSetting[] 
   } 
 
   // Colsettings Edit ---------------------------
   const predicateEditable = (tableHook:ITableHook, row?:number) => { 
-    return tableHook.GetActiveMode(row) === 'update' || tableHook.GetActiveMode(row) === 'create'; 
+    return tableHook.GetActiveHook(row) === 'update' || tableHook.GetActiveHook(row) === 'create'; 
   }; 
 
   const colsettingsEdit:IColumnSettings = { 
     predicate: predicateEditable, 
     columnSettings: [ 
-      {field:'_id', defaultValue:'', renderFunc:editfunc}, 
-      {field:'v1', defaultValue:0, renderFunc:editfunc}, 
-      {field:'v2', defaultValue:0, renderFunc:editfunc}, 
+      {ifield:ifields[0], renderFunc:editfunc}, 
+      {ifield:ifields[1], renderFunc:editfunc}, 
+      {ifield:ifields[2], renderFunc:editfunc}, 
     ] as IColumnSetting[] 
   } 
   const colsettings = [colsettingsRead, colsettingsEdit, colsettingsEmpty]; 
 
 
   // CRUD functionality
-  const onCreate = (entry:any) => { 
+  const createLabel = {action:'Create', confirm:'Confirm create', cancel:'Cancel create'}; 
+  const onCreate = async (entry:any) => { 
     const entries = [...tableEntries]; 
     const index = entries.findIndex(e => e._id === entry._id); 
     if(index >= 0) 
@@ -83,20 +117,19 @@ export default function TestInputTable() {
     setTableEntries(entries); 
     return true; 
   }; 
-  const onUpdate = (entry:any) => { 
+  const updateLabel = {action:'Update', confirm:'Confirm update', cancel:'Cancel update'}; 
+  const onUpdate = async (entry:any) => { 
     const entries = [...tableEntries]; 
     const index = entries.findIndex(e => e._id === entry._id); 
-    console.log('Update '+index); 
     if(index >= 0)  { 
-      console.log(entries[index]); 
       entries[index] = entry; 
-      console.log(entries[index]); 
       setTableEntries(entries); 
       return true; 
     } 
     return false; 
   }; 
-  const onDelete = (entry:any) => { 
+  const deleteLabel = {action:'Delete', confirm:'Confirm delete', cancel:'Cancel delete'}; 
+  const onDelete = async (entry:any) => { 
     const entries = [...tableEntries]; 
     const index = entries.findIndex(e => e._id === entry._id); 
     if(index >= 0)  { 
@@ -107,27 +140,33 @@ export default function TestInputTable() {
     return false; 
   }; 
 
+
+  // <InputRowBtn {...{onCreate, onDelete, onUpdate}}/> 
   return <div> 
     <h4>Input table:</h4> 
     <InputTable entries={page} columnSettings={colsettings} > 
+      <thead>
+        <InputHeaderRow>
+          <InputHeader /><th>BTN</th>
+        </InputHeaderRow>
+      </thead>
       <tbody> 
         <InputRows> 
           <InputCells /> 
-          <InputRowBtn {...{onCreate, onDelete, onUpdate}}/> 
+          <UpdateDeleteBtn {...{updateLabel, deleteLabel, onUpdate, onDelete}}  />
+          
         </InputRows> 
       </tbody> 
       <tfoot> 
         <InputRow row={-1}> 
           <InputCells /> 
-          <InputRowBtn {...{onCreate, onDelete, onUpdate}}/> 
+          <CreateBtn {...{label:createLabel, onCreate}} /> 
         </InputRow> 
       </tfoot> 
     </InputTable> 
     <Paging {...{pageIndex, setPageIndex, from, to, pageIndexes}} />
   </div> 
 }
-
-
 
 function Paging({from, to, pageIndex, setPageIndex, pageIndexes}:IPageHook) { 
   return <div>

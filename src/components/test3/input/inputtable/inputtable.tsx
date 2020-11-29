@@ -1,6 +1,7 @@
 import React from 'react'; 
-import {IColumnSetting, CrudFunc, IColumnSettings, ITableHook, useInputTableHook} from './inputtablehook';
-export type {IColumnSetting, CrudFunc, IColumnSettings, ITableHook}; 
+import {ITableHook, useInputTableHook, IColumnSetting, IColumnSettings, CrudFunc, RenderFunc} from './inputtablehook'; 
+export {useInputTableHook}; 
+export type {ITableHook, IColumnSetting, IColumnSettings, CrudFunc, RenderFunc}; 
 
 interface IInputTableContext{ 
   tableHook:ITableHook; 

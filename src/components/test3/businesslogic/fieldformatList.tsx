@@ -44,7 +44,7 @@ const ReadEdit_Primitive = (field:Field, ifieldFormat:IFieldFormat, dao:DAO) => 
     ifieldFormat.readFunc = ReadSinglePrimitive; 
     ifieldFormat.editFunc = EditSinglePrimitive; 
   } 
-}
+} 
 
 // read/edit single enum
 const ReadEdit_SingleEnum = (field:Field, ifieldFormat:IFieldFormat, dao:DAO) => { 

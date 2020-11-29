@@ -1,7 +1,7 @@
 import React, {useState, useRef} from 'react'; 
 import {IInput, IOption, InputData, InputNumber, InputBool, 
   InputString, InputSelect, InputArray, EnumType} from './inputcommon'; 
-import InputTable, {IColumnSetting} from './inputtable/inputtable'; 
+//import InputTable, {IColumnSetting} from './inputtable/inputtable'; 
 import InputRows from './inputtable/inputrow'; 
 import InputCells from './inputtable/inputcells'; 
 import InputRowBtn from './inputtable/inputbtn/inputrowbtn'; 
@@ -45,18 +45,6 @@ export default function TestInput() {
   const [tableNum, setTableNum] = useState(tableData); 
 
   const [activeRow, setActiveRow] = useState(0); 
-
-  const colsettings = [ 
-    {field:'_id'}, 
-    {field:'v1'}, 
-    {field:'v2'}, 
-  ] as IColumnSetting[]; 
-
-  const colsettingsEdit = [ 
-    {field:'_id'}, 
-    {field:'v1'}, 
-    {field:'v2'}, 
-  ] as IColumnSetting[];
 
   
   const ref = useRef<any>(null); 
@@ -108,17 +96,6 @@ export default function TestInput() {
     <div>|{JSON.stringify(numSelects)}|</div> 
     <InputSelect value={numSelects} onSendValue={setSelects} options={options} isMulti/> 
   </div> 
-
-//<InputCells columns={colsettings} /> 
-  const indexes = tableNum.map( (v,i) => i); 
-  const section = []; 
-  if(activeRow === 0) 
-  { 
-    section.push(indexes.slice(activeRow,activeRow)); 
-    section.push(indexes.slice(activeRow+1)) 
-    console.log(activeRow); 
-  } 
-
 
 /*
 {inputNum}

@@ -32,16 +32,19 @@ interface IInputCell {
 function InputCell({column}: IInputCell) { 
   const {tableHook:{entries, SetActiveEntry}} = useContext(InputTableContext); 
   const {row} = useContext(InputRowContext); 
+  const {ifield, renderFunc} = column; 
   
   let value; 
   if(row != undefined && row >=0) 
-    value = entries[row][column.field];  // or default value as given by colsettings 
-  value = value ?? column.defaultValue; 
+    value = entries[row][ifield.accessor];  // or default value as given by colsettings 
+  value = value ?? ifield.defaultValue; 
 
   const onSendValue = (newValue:any) => SetActiveEntry(newValue, column); 
 
+  console.log( ); 
+
   // RENDER -------------------------------------
   return <td> 
-    {column.renderFunc(value, onSendValue)} 
+    {renderFunc(ifield, value, onSendValue)}
   </td> 
 } 
