@@ -30,6 +30,9 @@ interface IInputRow {
   children?: React.ReactNode; 
 } 
 export function InputRow({row, children}:IInputRow) { 
+  const {tableHook:{entries}} = useContext(InputTableContext); 
+  
+
 
   const context = {row} as IInputRowContext; 
   return <InputRowContext.Provider value={context}> 

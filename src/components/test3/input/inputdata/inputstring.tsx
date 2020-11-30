@@ -4,6 +4,7 @@ import {IInput, useInputHook, SetSize, EnumType} from '../inputcommon';
 
 // InputString ================================== 
 export default function InputString(props:IInput<string>) { 
+  console.log('string');
   const {value, onChange, onBlur, onPressEnter} = useInputHook<string>({...props, type:EnumType.STRING}); 
   const style = {width:`${SetSize(value)}ch`}; 
   return <input type={'text'} value={value} style={style} 

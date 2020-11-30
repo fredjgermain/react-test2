@@ -19,6 +19,7 @@ export default function InputSelect({isMulti=false, options, ...props}:ISelect) 
 
 //
 export function InputSelectMulti({isMulti=false, options, ...props}:ISelect) { 
+  //console.log('Select');
   const {value, setValue, onSendValue, onBlur, onPressEnter} = useInputHook<Array<any>>(props); 
   const [fold, setFold] = useState(true); 
   

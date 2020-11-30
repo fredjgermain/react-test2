@@ -4,12 +4,12 @@ import { useState } from 'react';
 // Interface Render Func ========================
 export type RenderFunc = (value:any, onSendValue:any) => any; 
 
-// Interface COLUMN SETTING ====================
+// Interface COLUMN SETTING ===================
 export interface IColumnSetting { 
   // if 'undefined' it will be assumed as a default column setting if no other column setting predicate is passes. 
   predicate?: (tableHook:ITableHook, row?:number) => boolean; 
-  order?:number; 
   ifield: IField; 
+  order?:number; 
   renderFunc: RenderFunc; 
 } 
 

@@ -21,6 +21,7 @@ export default function InputTable({entries, columnSettings, children}: React.Pr
   const context = {tableHook, columnSettings} as IInputTableContext; 
   
   return <InputTableContext.Provider value={context} > 
+      <div>{JSON.stringify([tableHook.activeMode, tableHook.activeRow])}</div> 
       <div>{JSON.stringify(tableHook.activeEntry)}</div> 
       <table>{children}</table> 
     </InputTableContext.Provider> 

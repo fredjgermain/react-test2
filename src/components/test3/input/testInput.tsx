@@ -2,9 +2,9 @@ import React, {useState, useRef} from 'react';
 import {IInput, IOption, InputData, InputNumber, InputBool, 
   InputString, InputSelect, InputArray, EnumType} from './inputcommon'; 
 //import InputTable, {IColumnSetting} from './inputtable/inputtable'; 
-import InputRows from './inputtable/inputrow'; 
+/*import InputRows from './inputtable/inputrow'; 
 import InputCells from './inputtable/inputcells'; 
-import InputRowBtn from './inputtable/inputbtn/inputrowbtn'; 
+import InputRowBtn from './inputtable/inputbtn/inputrowbtn'; */
 
 export default function TestInput() { 
 
@@ -51,33 +51,33 @@ export default function TestInput() {
 
   const inputNum = <div> 
     <h4>Input num:</h4> 
-    <div>|{num}|</div>
+    <div>|{num}|</div> 
     <InputData value={num} onSendValue={setNum} /> 
-  </div>
+  </div> 
 
   const inputStr = <div> 
     <h4>Input str:</h4> 
-    <div>|{str}|</div>
-    <InputData value={str} onSendValue={setStr} /> 
-  </div>
+    <div>|{str}|</div> 
+    <InputData value={'str'} onSendValue={setStr} /> 
+  </div> 
 
   const inputBool = <div> 
     <h4>Input bool:</h4> 
     <div>|{JSON.stringify(bool)}|</div> 
     <InputData value={bool} onSendValue={setBool} /> 
-  </div>
+  </div> 
 
   const inputNums = <div> 
     <h4>Input nums:</h4> 
     <div>|{JSON.stringify(nums)}|</div> 
     <InputArray<number> value={nums} onSendValue={setNums} type={EnumType.NUMBER} defaultValue={0 as any} /> 
-  </div>
+  </div> 
 
   const inputStrs = <div> 
     <h4>Input strs:</h4> 
     <div>|{JSON.stringify(strs)}|</div> 
     <InputArray<string> type={EnumType.STRING} value={strs} onSendValue={setStrs} defaultValue={''} /> 
-  </div>
+  </div> 
 
   const inputBools = <div> 
     <h4>Input bools:</h4> 
@@ -98,7 +98,6 @@ export default function TestInput() {
   </div> 
 
 /*
-{inputNum}
     {inputStr}
     {inputBool}
     {inputNums}
@@ -106,8 +105,10 @@ export default function TestInput() {
     {inputBools}
 */
   // RENDER -------------------------------------
-  return <div>
-    {select}
-    {selects}
-  </div>
+  return <div> 
+    {inputNum} 
+    {inputStr} 
+    {select} 
+    {selects} 
+  </div> 
 } 

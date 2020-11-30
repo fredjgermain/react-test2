@@ -5,14 +5,12 @@ import InputRows, {InputRow} from './inputtable/inputrow';
 import InputCells from './inputtable/inputcells'; 
 import {CreateBtn, UpdateDeleteBtn} from './inputtable/inputbtn/inputrowbtn'; 
 import {usePage, IPageHook} from '../customhooks/usePage'; 
-import {data, columnSettings} from './testinputtable_businesslogic';
-
+import {data, columnSettings} from './testinputtable_businesslogic'; 
 
 export default function TestInputTable() { 
-  const [tableEntries, setTableEntries] = useState(data);   
+  const [tableEntries, setTableEntries] = useState(data); 
   const {pageIndex, setPageIndex, from, to, pageIndexes} = usePage(tableEntries, 5); 
-  const page = tableEntries.slice(from, to); 
-
+  const page = Array.from({length: to-from}, (v, k) => k+from); 
 
   // CRUD functionality
   const createLabel = {action:'Create', confirm:'Confirm create', cancel:'Cancel create'}; 
@@ -48,21 +46,19 @@ export default function TestInputTable() {
     return false; 
   }; 
 
-
   // <InputRowBtn {...{onCreate, onDelete, onUpdate}}/> 
   return <div> 
     <h4>Input table:</h4> 
-    <InputTable entries={page} columnSettings={columnSettings} > 
+    <InputTable entries={tableEntries} columnSettings={columnSettings} > 
       <thead>
         <InputHeaderRow>
           <InputHeader /><th>BTN</th>
         </InputHeaderRow>
       </thead>
       <tbody> 
-        <InputRows> 
+        <InputRows rows={page}> 
           <InputCells /> 
           <UpdateDeleteBtn {...{updateLabel, deleteLabel, onUpdate, onDelete}}  />
-          
         </InputRows> 
       </tbody> 
       <tfoot> 

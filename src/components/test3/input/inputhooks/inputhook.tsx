@@ -1,4 +1,5 @@
 import {useState, useRef, useEffect} from 'react'; 
+import {usePrevious} from 'react-hanger'; 
 import {IInput, EnumType, InputAction} from '../inputcommon'; 
 
 // IEvent ---------------------------------------
@@ -32,12 +33,30 @@ export interface IInputHook<T> extends IInput<T> {
 } 
 export function useInputHook<T>(props:IInput<T>):IInputHook<T> { 
   const [value, setValue] = useState<T>(props.value as T); 
-  //console.log('inputHook'); 
+  //const previousValue = usePrevious(props.value); // compare with previous value
+  
   // To synchronize with parent changes (page changes). 
+  // 
   useEffect(() => { 
+    console.log([props.value]); 
+
+    if (props.value != value) { 
+      setValue(props.value); 
+  }
+  },[JSON.stringify(props.value)])
+  
+  
+  
+  
+  
+  
+  
+  
+  /*useEffect(() => { 
+    console.log([props.value, value]); 
     if(props.value != value) 
       setValue(props.value); 
-  },[props.value]); 
+  }, [props.value]); */
 
   // Allows access to child component 
   const type = props.type ? props.type: EnumType.ANY; 
@@ -51,6 +70,8 @@ export function useInputHook<T>(props:IInput<T>):IInputHook<T> {
   // gives parent component access to these values and methods
   if(props.useref) 
     props.useref.current = {...props, ...inputHook}; 
+
+  //console.log(value); 
   return {...inputHook} as IInputHook<T>; 
 } 
 
@@ -123,3 +144,8 @@ function DefaultOnChangeString<T>(inputHook:IInputHook<T>):InputAction {
     setValue(newValue); 
   }; 
 }
+
+/*function DeepCompare(a:any, b:any):boolean { 
+  JSON.stringify(a) === JSON.stringify(b); 
+  return false; 
+}*/
