@@ -1,8 +1,10 @@
 import React from 'react'; 
-import TestInputTable from './components/test3/input/testInputTable'; 
-import TestInput from './components/test3/input/testInput'; 
-import TestInput2 from './components/test3/input/testInput2'; 
-import AdminSection from './components/test3/adminsection/adminsection'; 
+import TestInputTable from './testinput/testInputTable'; 
+/*import TestInput from './components/testinput/input/testInput'; 
+import TestInput2 from './components/testinput/input/testInput2'; 
+import AdminSection from './components/adminsection/adminsection'; */
+
+
 
 export default function App() { 
   //return <TestInput /> 
