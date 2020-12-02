@@ -72,14 +72,6 @@ export default class DataAccessObject {
   } 
 
   // GET FOREIGN INFO -----------------------------
-  public GetForeignElements(ifield:IField): [ICollection, IField] | [] { 
-    const foreignCollection = this.GetCollection(ifield.modeltype); 
-    const foreignField = foreignCollection? foreignCollection.GetAbbreviateField(): null; 
-    if(!foreignCollection || !foreignField) 
-      return []; 
-    return [foreignCollection.icollection, foreignField]; 
-  } 
-
   public GetForeignValue(ifield:IField, id:string):any|undefined { 
     const [foreignCollection, foreignField] = this.GetForeignElements(ifield); 
     const foreignEntry = foreignCollection?.entries.find( e => e._id === id); 
@@ -96,6 +88,15 @@ export default class DataAccessObject {
       return {value:e._id, label:e[foreignField.accessor]} as IOption; 
     }); 
   } 
+
+  public GetForeignElements(ifield:IField): [ICollection, IField] | [] { 
+    const foreignCollection = this.GetCollection(ifield.modeltype); 
+    const foreignField = foreignCollection? foreignCollection.GetAbbreviateField(): null; 
+    if(!foreignCollection || !foreignField) 
+      return []; 
+    return [foreignCollection.icollection, foreignField]; 
+  } 
+
 } 
 
 /*public GetOptions(ifield:IField):IOption[] { 

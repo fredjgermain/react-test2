@@ -1,59 +1,82 @@
 import React, {useState} from 'react'; 
 
 // INPUT TABLE
-import InputTable from './inputtable/inputtable'; 
+import {IOption} from './input/inputcommon'; 
+import InputTable, {IForeignDao, ColumnSetter} from './inputtable/inputtable'; 
 import {InputHeader, InputHeaderRow} from './inputtable/inputtableheader'; 
 import {CreateBtn, UpdateDeleteBtn} from './inputtable/inputrowbtn'; 
 import {InputRows, InputRow} from './inputtable/inputrows'; 
 import {InputCells, InputCell} from './inputtable/inputcells'; 
+
 import './inputtable/table.css'; 
 
 // PAGE 
 import {usePage, IPageHook} from '../customhooks/customhooks'; 
 
 // MOCK DATA 
-import {data, columnSettings} from './testinputtable_businesslogic'; 
+import {ifields, data} from './testinputtable_data'; 
+import {ColumnSettingRules, options} from './testinputtable_businesslogic';
 
 
-
+// TEST INPUT TABLE
 export default function TestInputTable() { 
   const [tableEntries, setTableEntries] = useState(data); 
   const {pageIndex, setPageIndex, from, to, pageIndexes} = usePage(tableEntries, 5); 
   const page = Array.from({length: to-from}, (v, k) => k+from); 
 
+  // ============================================
+  const Dao:IForeignDao = { 
+    Create: async (entry:any):Promise<boolean> => { 
+      const entries = [...tableEntries]; 
+      const index = entries.findIndex(e => e._id === entry._id); 
+      if(index >= 0) 
+        return false; 
+      entries.push(entry); 
+      setTableEntries(entries); 
+      return true; 
+    }, 
+    
+    Update: async (entry:any):Promise<boolean> => { 
+      const entries = [...tableEntries]; 
+      const index = entries.findIndex(e => e._id === entry._id); 
+      if(index >= 0)  { 
+        entries[index] = entry; 
+        setTableEntries(entries); 
+        return true; 
+      } 
+      return false; 
+    }, 
+
+    Delete: async (entry:any):Promise<boolean> => { 
+      const entries = [...tableEntries]; 
+      const index = entries.findIndex(e => e._id === entry._id); 
+      if(index >= 0)  { 
+        entries.splice(index, 1); 
+        setTableEntries(entries); 
+        return true; 
+      } 
+      return false; 
+    }, 
+
+    GetForeignOptions: (ifield:IField):IOption[] => { 
+      return options; 
+    }, 
+
+    GetForeignValue: (ifield:IField, id:string) => { 
+      return options.find( o => o.value === id)?.label; 
+    }, 
+  }; 
+
+  const colSetter = new ColumnSetter(); 
+  const columnSettings = colSetter.BuildColumnSettings(Dao, ifields, ColumnSettingRules); 
+
   // CRUD functionality
   const createLabel = {action:'Create', confirm:'Confirm create', cancel:'Cancel create'}; 
-  const onCreate = async (entry:any) => { 
-    const entries = [...tableEntries]; 
-    const index = entries.findIndex(e => e._id === entry._id); 
-    if(index >= 0) 
-      return false; 
-    entries.push(entry); 
-    setTableEntries(entries); 
-    return true; 
-  }; 
+  const onCreate = Dao.Create;
   const updateLabel = {action:'Update', confirm:'Confirm update', cancel:'Cancel update'}; 
-  const onUpdate = async (entry:any) => { 
-    const entries = [...tableEntries]; 
-    const index = entries.findIndex(e => e._id === entry._id); 
-    if(index >= 0)  { 
-      entries[index] = entry; 
-      setTableEntries(entries); 
-      return true; 
-    } 
-    return false; 
-  }; 
+  const onUpdate = Dao.Update;
   const deleteLabel = {action:'Delete', confirm:'Confirm delete', cancel:'Cancel delete'}; 
-  const onDelete = async (entry:any) => { 
-    const entries = [...tableEntries]; 
-    const index = entries.findIndex(e => e._id === entry._id); 
-    if(index >= 0)  { 
-      entries.splice(index, 1); 
-      setTableEntries(entries); 
-      return true; 
-    } 
-    return false; 
-  }; 
+  const onDelete = Dao.Delete; 
 
   // <InputRowBtn {...{onCreate, onDelete, onUpdate}}/> 
   return <div> 

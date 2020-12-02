@@ -27,8 +27,13 @@ export type CrudFunc = (entry:IEntry) => Promise<boolean>;
 
 // FOREIGN DAO ==================================
 export interface IForeignDao { 
+  Create: (entry:IEntry) => Promise<boolean>; 
+  Update: (entry:IEntry) => Promise<boolean>; 
+  Delete: (entry:IEntry) => Promise<boolean>; 
+
   GetForeignOptions: (ifield:IField) => IOption[]; 
   GetForeignValue: (ifield:IField, id:string) => any|undefined; 
+
   [key:string]:any; 
 } 
 

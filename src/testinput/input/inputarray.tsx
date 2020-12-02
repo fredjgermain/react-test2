@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'; 
-import {IInput, InputData, InferDefaultValue, EnumType, useInputHook} from './inputcommon'; 
+import {IInput, InputData, useInputHook} from './inputcommon'; 
 
 // INPUTARRAY =================================== 
 interface IPropsArray<T> extends IInput<T[]> { 
@@ -9,18 +9,19 @@ interface IPropsArray<T> extends IInput<T[]> {
 } 
 
 export default function InputArray<T>({defaultValue, type, ...props}:IPropsArray<T>) { 
-  const {value, setValue, onSendValue} = useInputHook<any[]>({...props,...defaultValue}); 
+  props.value = props.value ? props.value: [] as Array<T>; 
+  const {value, setValue, onSendValue} = useInputHook<any[]>({...props, ...defaultValue}); 
 
   // element props
   const elementProps = props.elementProps ?? {} as IInput<any>; 
   const elementPropsCreate = {...elementProps}; 
-  elementPropsCreate.value = GetDefaultValue(); 
+  elementPropsCreate.value = defaultValue; 
   elementPropsCreate.useref = useRef<HTMLElement>(null); 
   elementPropsCreate.onBlur = (value:T) => {return}; 
   elementPropsCreate.onSendValue = (value:T) => {return}; 
   elementPropsCreate.onPressEnter = (event:any) => { 
     Create(elementPropsCreate.useref.current.value as T) 
-    elementPropsCreate.useref.current.setValue(GetDefaultValue()); 
+    elementPropsCreate.useref.current.setValue(defaultValue); 
   }; 
 
   function Update(at:number, newValue:T) { 
@@ -44,15 +45,6 @@ export default function InputArray<T>({defaultValue, type, ...props}:IPropsArray
     setValue(values as T[]); 
     onSendValue(values as T[]); 
   } 
-
-  function GetDefaultValue() { 
-    if(defaultValue) 
-      return defaultValue; 
-    if(Array.isArray(value) && value.length > 0) 
-      return InferDefaultValue(value[0], type); 
-    return InferDefaultValue(value, type); 
-  } 
-
 
   // RENDER -------------------------------------
   return <div> 

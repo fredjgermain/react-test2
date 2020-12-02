@@ -21,6 +21,16 @@ const ifields: IField[] = [
     options:{}, 
   },
   {
+    accessor:'vbool', 
+    label:'Var bool', 
+    defaultValue: false, 
+    type:'boolean', 
+    format:'', 
+    subtype:'', 
+    modeltype:'', 
+    options:{}, 
+  },
+  {
     accessor:'v2', 
     label:'Var2', 
     defaultValue: 0, 
@@ -41,6 +51,48 @@ const ifields: IField[] = [
     options:{ 
       enum: ['t1','t2','t3','t4'] 
     }, 
+  }, 
+  {
+    accessor:'arrayenum', 
+    label:'Array enum', 
+    defaultValue: '', 
+    type:'Array', 
+    format:'', 
+    subtype:'string', 
+    modeltype:'', 
+    options:{ 
+      enum: ['t1','t2','t3','t4'] 
+    }, 
+  }, 
+  { 
+    accessor:'arraynum', 
+    label:'Array num', 
+    defaultValue: 0, 
+    type:'Array', 
+    format:'', 
+    subtype:'number', 
+    modeltype:'', 
+    options:{}, 
+  }, 
+  { 
+    accessor:'foreign', 
+    label:'Foreign', 
+    defaultValue: '', 
+    type:'ObjectID', 
+    format:'', 
+    subtype:'', 
+    modeltype:'Test', 
+    options:{}, 
+  },
+  { 
+    accessor:'foreign many', 
+    label:'Foreign many', 
+    defaultValue: '', 
+    type:'Array', 
+    format:'', 
+    subtype:'ObjectID', 
+    modeltype:'Testb', 
+    options:{}, 
   }
 ]
 
