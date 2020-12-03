@@ -11,17 +11,17 @@ export default class Collection {
   // Get default Entry --------------------------
   public GetDefaultEntry():IEntry { 
     const entry:IEntry = {} as IEntry; 
-    this.icollection.fields.forEach( (f) => { 
+    this.icollection.ifields.forEach( (f) => { 
       entry[f.accessor] = f.defaultValue; 
     }); 
     return entry; 
   } 
 
   public GetAbbreviateField():IField { 
-    let foundAbvField = this.icollection.fields.find(c => c.options['abbreviate']); 
+    let foundAbvField = this.icollection.ifields.find(c => c.options['abbreviate']); 
     if(foundAbvField) 
       return foundAbvField; 
-    foundAbvField = this.icollection.fields.find( f => new Field(f).IsAbbreviable() ); 
+    foundAbvField = this.icollection.ifields.find( f => new Field(f).IsAbbreviable() ); 
     //console.log(foundAbvField); 
     return foundAbvField as IField; 
   } 

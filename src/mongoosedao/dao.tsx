@@ -9,7 +9,7 @@ export {Collection, Field};
 
 // DataAcessObject ==============================
 export default class DataAccessObject { 
-  public collections:Collection[] = []; 
+  public iCollections:ICollection[] = []; 
   public response?:IResponse = {} as IResponse; 
 
   // Load Collections
@@ -25,13 +25,14 @@ export default class DataAccessObject {
   public GetICollection(accessor:string):ICollection|void { 
     if(!accessor) 
       return; 
-    return this.collections.find( c => c.icollection.accessor === accessor)?.icollection; 
+    return this.iCollections.find( ic => ic.accessor === accessor); 
   } 
 
   private GetCollection(accessor:string):Collection|void { 
-    if(!accessor) 
+    const iCollection = this.GetICollection(accessor); 
+    if(!iCollection) 
       return; 
-    return this.collections.find( c => c.icollection.accessor === accessor); 
+    return new Collection(iCollection); 
   } 
 
   // CREATE .....................................  
@@ -75,8 +76,8 @@ export default class DataAccessObject {
   public GetForeignValue(ifield:IField, id:string):any|undefined { 
     const [foreignCollection, foreignField] = this.GetForeignElements(ifield); 
     const foreignEntry = foreignCollection?.entries.find( e => e._id === id); 
-    if(foreignEntry) 
-      return foreignEntry[ifield.accessor]; 
+    if(foreignEntry && foreignField) 
+      return foreignEntry[foreignField.accessor]; 
     return; 
   }
 
@@ -98,29 +99,3 @@ export default class DataAccessObject {
   } 
 
 } 
-
-/*public GetOptions(ifield:IField):IOption[] { 
-    const field = new Field(ifield); 
-    if(field.IsEnum()) 
-      return field.GetEnumOptions(); 
-    if(field.IsObjectID()) 
-      return this.GetForeignOptions(ifield.modeltype); 
-    return []; 
-  } 
-  
-  public GetForeignCollection(ifield:IField):ICollection|void {
-    const field = new Field(ifield); 
-    const foreignCollection = this.GetCollection(ifield.modeltype); 
-    if(!field.IsObjectID() || !foreignCollection) 
-      return; 
-    return foreignCollection.icollection; 
-  } 
-
-  public GetForeignField(ifield:IField):IField|void { 
-    const foreignCollection = this.GetForeignCollection(ifield);
-    if(!foreignCollection) 
-      return; 
-    return new Collection(foreignCollection).GetAbbreviateField(); 
-  } 
-
-  */

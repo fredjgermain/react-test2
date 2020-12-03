@@ -26,7 +26,7 @@ interface IColumn {}
 interface ICollection {
   accessor:string; 
   label: string; 
-  fields: Array<IField>; 
+  ifields: Array<IField>; 
   entries: Array<IEntry>; 
 }
 

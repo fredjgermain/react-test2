@@ -14,13 +14,15 @@ import './inputtable/table.css';
 import {usePage, IPageHook} from '../customhooks/customhooks'; 
 
 // MOCK DATA 
-import {ifields, data} from './testinputtable_data'; 
-import {ColumnSettingRules, options} from './testinputtable_businesslogic';
+import {dao} from './testinputtable_data'; 
+import {ColumnSettingRules} from './testinputtable_businesslogic'; 
+
 
 
 // TEST INPUT TABLE
 export default function TestInputTable() { 
-  const [tableEntries, setTableEntries] = useState(data); 
+  const activeCollection = dao.GetICollection('collection1') as ICollection; 
+  const [tableEntries, setTableEntries] = useState(activeCollection?.entries ?? []); 
   const {pageIndex, setPageIndex, from, to, pageIndexes} = usePage(tableEntries, 5); 
   const page = Array.from({length: to-from}, (v, k) => k+from); 
 
@@ -59,22 +61,22 @@ export default function TestInputTable() {
     }, 
 
     GetForeignOptions: (ifield:IField):IOption[] => { 
-      return options; 
+      return dao.GetForeignOptions(ifield); 
     }, 
 
     GetForeignValue: (ifield:IField, id:string) => { 
-      return options.find( o => o.value === id)?.label; 
+      return dao.GetForeignValue(ifield, id); 
     }, 
   }; 
 
   const colSetter = new ColumnSetter(); 
-  const columnSettings = colSetter.BuildColumnSettings(Dao, ifields, ColumnSettingRules); 
+  const columnSettings = colSetter.BuildColumnSettings(Dao, activeCollection.ifields, ColumnSettingRules); 
 
   // CRUD functionality
   const createLabel = {action:'Create', confirm:'Confirm create', cancel:'Cancel create'}; 
-  const onCreate = Dao.Create;
+  const onCreate = Dao.Create; 
   const updateLabel = {action:'Update', confirm:'Confirm update', cancel:'Cancel update'}; 
-  const onUpdate = Dao.Update;
+  const onUpdate = Dao.Update; 
   const deleteLabel = {action:'Delete', confirm:'Confirm delete', cancel:'Cancel delete'}; 
   const onDelete = Dao.Delete; 
 
@@ -96,7 +98,7 @@ export default function TestInputTable() {
       <tfoot> 
         <InputRow row={-1}> 
           <InputCells /> 
-          <CreateBtn {...{label:createLabel, onCreate}} /> 
+          <CreateBtn {...{createLabel, onCreate}} /> 
         </InputRow> 
       </tfoot> 
     </InputTable> 

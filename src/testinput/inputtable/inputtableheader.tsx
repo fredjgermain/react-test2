@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'; 
 import {InputTableContext} from './inputtable'; 
-import {IColumnSetting} from './columsetting/columsetter'; 
+import {IFieldSetting} from './columsetting/columsetter'; 
 
 
 // INPUT HEADER ROW =============================
@@ -20,7 +20,7 @@ export function InputHeaderRow({children}:React.PropsWithChildren<IInputHeaderRo
 interface IInputHeaderContext {} 
 export const InputHeaderContext = React.createContext({} as IInputHeaderRowContext); 
 interface IInputHeader {   
-  columnSetting?:IColumnSetting;
+  columnSetting?:IFieldSetting;
 } 
 
 export function InputHeader() { 

@@ -1,8 +1,11 @@
 import React from 'react'; 
 import {InputArray, InputData, IOption} from './input/inputcommon'; 
-import {ColumnSetter, IColumnSetting, IColumnSettingRule, IForeignDao, ITableHook} from './inputtable/inputtable'; 
-import Field from '../components/common/dao/field'; 
 import InputSelect from './input/inputselect/inputselect'; 
+
+import { ITableHook } from './inputtable/inputtablehook'; 
+import {IFieldSettingRule, IForeignDao} from './inputtable/columsetting/columsetter';
+import Field from '../components/common/dao/field'; 
+
 
 /*export interface IColumnSettingRule { 
   ifieldPredicate: (ifield:IField) => boolean; 
@@ -20,12 +23,12 @@ const ManyEnum = (ifield:IField) => new Field(ifield).IsArray() && new Field(ifi
 const ManyForeign = (ifield:IField) => new Field(ifield).IsArray() && new Field(ifield).IsObjectID(); 
 const OneTestForeign = (ifield:IField) => ifield.accessor === '_id'; 
 
-// Application Predicate ======================================
+// icolumn Predicate ======================================
 const editable = (tableHook:ITableHook, row?:number) => { 
   return tableHook.GetActiveHook(row) === 'update' || tableHook.GetActiveHook(row) === 'create'; 
 }; 
 
-// BuildRenderFunc ================================
+// BuildRenderFunc =====================================
 const ReadMany = (ifield:IField, value:any) => { 
   const N = Array.isArray(value) ? value: []; 
   return <span>{new Field(ifield).GetElementType()} x {N.length}</span> 
@@ -115,33 +118,22 @@ const EditManyForeign = (ifield:IField, foreign:IForeignDao) => {
 
 
 // Column Setting Rules -------------------------
-export const ColumnSettingRules:IColumnSettingRule[] = [ 
+export const ColumnSettingRules:IFieldSettingRule[] = [ 
   // Primitive
   {ifieldPredicate:OnePrimitive, buildRenderFunc: ReadOnePrimitive}, 
-  {ifieldPredicate:OnePrimitive, icolumnPredicate:editable, buildRenderFunc: EditOnePrimitive}, 
+  {ifieldPredicate:OnePrimitive, cellPredicate:editable, buildRenderFunc: EditOnePrimitive}, 
   {ifieldPredicate:ManyPrimitive, buildRenderFunc: ReadManyPrimitive}, 
-  {ifieldPredicate:ManyPrimitive, icolumnPredicate:editable,buildRenderFunc: EditManyPrimitive}, 
+  {ifieldPredicate:ManyPrimitive, cellPredicate:editable,buildRenderFunc: EditManyPrimitive}, 
 
   // Enum
   {ifieldPredicate:OneEnum, buildRenderFunc: ReadOneEnum}, 
-  {ifieldPredicate:OneEnum, icolumnPredicate:editable, buildRenderFunc: EditOneEnum}, 
+  {ifieldPredicate:OneEnum, cellPredicate:editable, buildRenderFunc: EditOneEnum}, 
   {ifieldPredicate:ManyEnum, buildRenderFunc: ReadManyEnum}, 
-  {ifieldPredicate:ManyEnum, icolumnPredicate:editable, buildRenderFunc: EditManyEnum}, 
+  {ifieldPredicate:ManyEnum, cellPredicate:editable, buildRenderFunc: EditManyEnum}, 
 
   // Foreign
   {ifieldPredicate:OneForeign, buildRenderFunc: ReadOneForeign}, 
-  {ifieldPredicate:OneForeign, icolumnPredicate:editable, buildRenderFunc: EditOneForeign}, 
+  {ifieldPredicate:OneForeign, cellPredicate:editable, buildRenderFunc: EditOneForeign}, 
   {ifieldPredicate:ManyForeign, buildRenderFunc: ReadManyForeign}, 
-  {ifieldPredicate:ManyForeign, icolumnPredicate:editable, buildRenderFunc: EditManyForeign}, 
+  {ifieldPredicate:ManyForeign, cellPredicate:editable, buildRenderFunc: EditManyForeign}, 
 ] 
-
-export const options = [ 
-  {value:'1', label:'foreign option1'}, 
-  {value:'2', label:'foreign option2'}, 
-  {value:'3', label:'foreign option3'}, 
-  {value:'4', label:'foreign option4'}, 
-  {value:'5', label:'foreign option5'}, 
-  {value:'6', label:'foreign option6'}, 
-  {value:'7', label:'foreign option7'}, 
-  {value:'8', label:'foreign option8'}, 
-] as IOption[]; 

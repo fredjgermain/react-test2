@@ -13,7 +13,7 @@ export default class CrudTableSetter{
   } 
 
   private GetVisibleFields():Field[] { 
-    const fields = this.activeCollection.fields.map( f => new Field(f) ).filter( f => !f.IsHiddenField()) ?? [] as Field[]; 
+    const fields = this.activeCollection.ifields.map( f => new Field(f) ).filter( f => !f.IsHiddenField()) ?? [] as Field[]; 
     return fields; 
   }
 

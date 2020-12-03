@@ -1,23 +1,22 @@
 import { IOption } from "../../input/inputcommon"; 
 import { ITableHook } from '../inputtablehook'; 
 
-
 // Interface Render Func ========================
 export type RenderFunc = (value:any, onSendValue:any) => any; 
 
-// Interface COLUMN SETTING ===================
-export interface IColumnSetting { 
+// Interface IFIELD SETTING ===================
+export interface IFieldSetting { 
   // if 'undefined' it will be assumed as a default column setting if no other column setting predicate is passes. 
-  predicate?: (tableHook:ITableHook, row?:number) => boolean; 
+  cellPredicate?: (tableHook:ITableHook, row?:number) => boolean; 
   ifield: IField; 
   order?:number; 
   renderFunc: RenderFunc; 
 } 
 
-// Interface COLUMN SETTING RULE ================
-export interface IColumnSettingRule { 
+// Interface FIELD SETTER ================
+export interface IFieldSettingRule { 
   ifieldPredicate: (ifield:IField) => boolean; 
-  icolumnPredicate?: (tableHook:ITableHook, row?:number) => boolean; 
+  cellPredicate?: (tableHook:ITableHook, row?:number) => boolean; 
   order?: number; 
   buildRenderFunc: (ifield:IField, foreign:IForeignDao) => RenderFunc; 
 } 
@@ -44,15 +43,15 @@ export class ColumnSetter {
   to build render function capable of accessing foreign collections. 
   */ 
 
-  public BuildColumnSettings(foreignDao:IForeignDao, ifields:IField[], iColumnSettingRules:IColumnSettingRule[]):IColumnSetting[] { 
-    let columnSettings:IColumnSetting[] = []; 
+  public BuildColumnSettings(foreignDao:IForeignDao, ifields:IField[], iColumnSettingRules:IFieldSettingRule[]):IFieldSetting[] { 
+    let columnSettings:IFieldSetting[] = []; 
     function byiField(ifield:IField) { 
       return iColumnSettingRules.filter( cb => cb.ifieldPredicate(ifield) ) 
       .map(rule => { 
         return {ifield, 
           order:rule.order, 
-          predicate:rule.icolumnPredicate, 
-          renderFunc:rule.buildRenderFunc(ifield, foreignDao) } as IColumnSetting; 
+          cellPredicate:rule.cellPredicate, 
+          renderFunc:rule.buildRenderFunc(ifield, foreignDao) } as IFieldSetting; 
       }) 
     } 
 

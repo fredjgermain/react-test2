@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'; 
 import {InputTableContext} from './inputtable'; 
-import {IColumnSetting} from './columsetting/columsetter'; 
+import {IFieldSetting} from './columsetting/columsetter'; 
 import {InputRowContext} from './inputrows'; 
 
 
@@ -8,7 +8,7 @@ interface IInputCellsContext{}
 const InputCellsContext = React.createContext({} as IInputCellsContext); 
 // INPUT CELLS ==================================
 interface IInputCells { 
-  optionalColumnSettings?: IColumnSetting[]; 
+  optionalColumnSettings?: IFieldSetting[]; 
 } 
 export function InputCells({optionalColumnSettings}: React.PropsWithChildren<IInputCells>) { 
   const {tableHook:{GetColumnSettings}} = useContext(InputTableContext); 
@@ -28,7 +28,7 @@ export function InputCells({optionalColumnSettings}: React.PropsWithChildren<IIn
 
 // INPUT CELL ====================================
 interface IInputCell { 
-  column: IColumnSetting; 
+  column: IFieldSetting; 
 } 
 export function InputCell({column}: IInputCell) { 
   const {tableHook:{entries, SetActiveEntry}} = useContext(InputTableContext); 

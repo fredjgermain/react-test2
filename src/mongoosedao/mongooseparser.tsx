@@ -50,7 +50,7 @@ async function LoadCollection(collection:IMongooseCollection):Promise<Collection
   const mongooseFields = Object.keys(fields).map( f => { 
     return {accessor:f, ...fields[f] } as IMongooseField; 
   }); 
-  icollection.fields = ParseFields(mongooseFields); 
+  icollection.ifields = ParseFields(mongooseFields); 
   icollection.entries = (await crud.Read(collection.accessor)).data; 
   /* icollection.fields.forEach( f => { 
     SetCellMode(f); 

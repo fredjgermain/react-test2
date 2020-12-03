@@ -6,7 +6,7 @@ import {CrudFunc} from './columsetting/columsetter';
 
 // CREATE BTN ===================================
 interface ICreateBtn { 
-  label: { 
+  createLabel: { 
     action: string; 
     confirm: string; 
     cancel: string; 
@@ -14,7 +14,7 @@ interface ICreateBtn {
   onCreate: CrudFunc; 
 } 
 
-export function CreateBtn({label, onCreate}:ICreateBtn) { 
+export function CreateBtn({createLabel, onCreate}:ICreateBtn) { 
   const {tableHook:{CrudAction, GetActiveHook: GetActiveMode, ActivateHook}} = useContext(InputTableContext); 
   const {row} = useContext(InputRowContext); 
   const mode = 'create'; 
@@ -22,12 +22,12 @@ export function CreateBtn({label, onCreate}:ICreateBtn) {
   // RENDER -------------------------------------
   if(GetActiveMode(row) === mode) 
     return <td> 
-      <button onClick={() => CrudAction(onCreate)}>{label.confirm}</button> 
-      <button onClick={() => ActivateHook()}>{label.cancel}</button> 
+      <button onClick={() => CrudAction(onCreate)}>{createLabel.confirm}</button> 
+      <button onClick={() => ActivateHook()}>{createLabel.cancel}</button> 
     </td> 
 
   return <td> 
-      <button onClick={() => {ActivateHook(mode, row)}}>{label.action}</button> 
+      <button onClick={() => {ActivateHook(mode, row)}}>{createLabel.action}</button> 
     </td> 
 } 
 
