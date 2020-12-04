@@ -1,8 +1,8 @@
-import InputTable from './inputtable'; 
-import {InputHeader, InputHeaderRow} from './inputtableheader'; 
-import {InputCells, InputCell} from './inputcells'; 
-import {InputRows, InputRow} from './inputrows'; 
-import {CreateBtn, UpdateDeleteBtn} from './inputrowbtn'; 
+import InputTable from './components/inputtable'; 
+import {InputHeader, InputHeaderRow} from './components/inputtableheader'; 
+import {InputCells, InputCell} from './components/inputcells'; 
+import {InputRows, InputRow} from './components/inputrows'; 
+import {CreateBtn, UpdateDeleteBtn} from './components/inputrowbtn'; 
 import {BuildColumnSetting, IColumnSetting, IColumnSettingRule, ITableHook} from './colsetting/columnsetting'; 
 
 export {InputTable, InputHeader, InputHeaderRow, 

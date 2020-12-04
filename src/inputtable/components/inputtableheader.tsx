@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'; 
 import {InputTableContext} from './inputtable'; 
-import {IColumnSetting} from './colsetting/columnsetting'; 
-//import {IFieldSetting} from './columsetting/columsetter'; 
+import {IColumnSetting} from '../colsetting/columnsetting'; 
 
 // INPUT HEADER ROW =============================
 interface IInputHeaderRowContext {} 
@@ -33,7 +32,3 @@ export function InputHeader() {
     })} 
   </InputHeaderContext.Provider> 
 } 
-
-/*
-    
-*/

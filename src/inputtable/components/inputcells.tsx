@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'; 
 import {InputTableContext} from './inputtable'; 
-import {IColumnSetting} from './tablecommon'; 
+import {IColumnSetting} from '../tablecommon'; 
 //import {I} from './columsetter'; 
 import {InputRowContext} from './inputrows'; 
 

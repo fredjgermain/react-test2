@@ -8,9 +8,6 @@ import {InputTable, InputHeader, InputHeaderRow,
 import {useCrud, IDao} from '../inputtable/hook/useCrud'; 
 import '../inputtable/table.css'; 
 
-
-
-
 // PAGE 
 import {usePage, IPageHook} from '../customhooks/customhooks'; 
 

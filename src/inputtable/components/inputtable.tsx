@@ -1,11 +1,11 @@
 import React from 'react'; 
-import {ITableHook, useInputTable} from './hook/usetable'; 
+import {ITableHook, useInputTable} from '../hook/usetable'; 
 import {InputHeader, InputHeaderContext, InputHeaderRow, InputHeaderRowContext} from './inputtableheader'; 
 import {InputRows, InputRow, InputRowContext} from './inputrows'; 
 import {InputCells, InputCell} from './inputcells'; 
 
-import {useColumnSetting} from './hook/useColumnSetting'; 
-import {IColumnSetting, IColumnSettingRule} from './colsetting/columnsetting'; 
+import {useColumnSetting} from '../hook/useColumnSetting'; 
+import {IColumnSetting, IColumnSettingRule} from '../colsetting/columnsetting'; 
 
 export {InputHeader, InputHeaderContext, InputHeaderRow, InputHeaderRowContext, 
   InputRows, InputRow, InputRowContext, 

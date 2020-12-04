@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'; 
 import {InputTableContext} from './inputtable'; 
 import {InputRowContext} from './inputrows'; 
-import {} from './hook/useCrud'; 
+import {CrudFund} from '../hook/useCrud'; 
 
 
 // CREATE BTN ===================================
