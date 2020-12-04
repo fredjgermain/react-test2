@@ -1,18 +1,8 @@
 import React from 'react'; 
-import {InputArray, InputData, IOption} from './input/inputcommon'; 
-import InputSelect from './input/inputselect/inputselect'; 
+import {IColumnSettingRule, IDao, IOption, ITableHook}  from '../inputtable/colsetting/columnsetting'; 
 
-import { ITableHook } from './inputtable/inputtablehook'; 
-import {IFieldSettingRule, IForeignDao} from './inputtable/columsetting/columsetter';
-import Field from '../components/common/dao/field'; 
-
-
-/*export interface IColumnSettingRule { 
-  ifieldPredicate: (ifield:IField) => boolean; 
-  icolumnPredicate?: (tableHook:ITableHook, row?:number) => boolean; 
-  order?: number; 
-  buildRenderFunc: (ifield:IField, foreign:IForeignDao) => RenderFunc; 
-}*/
+import {InputArray, InputData, InputSelect} from '../input/inputcommon'; 
+import Field from '../mongoosedao/field'; 
 
 // IField Predicate ===============================
 const OnePrimitive = (ifield:IField) => !new Field(ifield).IsArray() && new Field(ifield).IsPrimitive(); 
@@ -28,6 +18,7 @@ const editable = (tableHook:ITableHook, row?:number) => {
   return tableHook.GetActiveHook(row) === 'update' || tableHook.GetActiveHook(row) === 'create'; 
 }; 
 
+
 // BuildRenderFunc =====================================
 const ReadMany = (ifield:IField, value:any) => { 
   const N = Array.isArray(value) ? value: []; 
@@ -41,34 +32,34 @@ const Display = (ifield:IField, value:any) => {
 }
 
 // PRIMITIVE --------------------------------------
-const ReadOnePrimitive = (ifield:IField, foreign:IForeignDao) => { 
+const ReadOnePrimitive = (ifield:IField, dao:IDao) => { 
   return (value:any, onSendValue:any) => { 
     return Display(ifield, value); 
 }}; 
 
-const EditOnePrimitive = (ifield:IField, foreign:IForeignDao) => {
+const EditOnePrimitive = (ifield:IField, dao:IDao) => {
   return (value:any, onSendValue:any) => { 
     return <InputData {...{value, onSendValue}} /> 
 }}; 
 
-const ReadManyPrimitive = (ifield:IField, foreign:IForeignDao) => {
+const ReadManyPrimitive = (ifield:IField, dao:IDao) => {
   return (value:any, onSendValue:any) => { 
     return ReadMany(ifield, value); 
 }}; 
 
-const EditManyPrimitive = (ifield:IField, foreign:IForeignDao) => {
+const EditManyPrimitive = (ifield:IField, dao:IDao) => {
   return (value:any, setValue:any):any => { 
     return <InputArray type={ifield.type} value={value} onSendValue={setValue} defaultValue={ifield.defaultValue} /> 
 }}; 
 
 
 // ENUM -----------------------------------------
-const ReadOneEnum = (ifield:IField, foreign:IForeignDao) => { 
+const ReadOneEnum = (ifield:IField, dao:IDao) => { 
   return (value:any, onSendValue:any) => { 
     return <span>{value}</span>; 
 }}; 
 
-const EditOneEnum = (ifield:IField, foreign:IForeignDao) => { 
+const EditOneEnum = (ifield:IField, dao:IDao) => { 
   const enums:any[] = ifield.options['enum'] ?? []; 
   const options = enums.map( o => {
     return {value:o, label:o} as IOption} 
@@ -77,12 +68,12 @@ const EditOneEnum = (ifield:IField, foreign:IForeignDao) => {
     return <InputSelect {...{value, onSendValue, options}} /> 
 }}; 
 
-const ReadManyEnum = (ifield:IField, foreign:IForeignDao) => {
+const ReadManyEnum = (ifield:IField, dao:IDao) => {
   return (value:any, onSendValue:any) => { 
     return ReadMany(ifield, value); 
 }}; 
 
-const EditManyEnum = (ifield:IField, foreign:IForeignDao) => { 
+const EditManyEnum = (ifield:IField, dao:IDao) => { 
   const enums:any[] = ifield.options['enum'] ?? []; 
   const options = enums.map( o => {
     return {value:o, label:o} as IOption} 
@@ -92,48 +83,51 @@ const EditManyEnum = (ifield:IField, foreign:IForeignDao) => {
 }}; 
 
 // FOREIGN --------------------------------------
-const ReadOneForeign = (ifield:IField, foreign:IForeignDao) => { 
+const ReadOneForeign = (ifield:IField, dao:IDao) => { 
   return (value:any, onSendValue:any):any => { 
-    const foreignValue:any = foreign.GetForeignValue(ifield, value); 
+    const foreignValue:any = dao.GetForeignValue(ifield, value); 
     return <span>{JSON.stringify(foreignValue)}</span>; 
   } 
 } 
 
-const EditOneForeign = (ifield:IField, foreign:IForeignDao) => { 
+const EditOneForeign = (ifield:IField, dao:IDao) => { 
   return (value:any, onSendValue:any) => { 
-    const options:IOption[] = foreign.GetForeignOptions(ifield); 
+    const options:IOption[] = dao.GetForeignOptions(ifield); 
     return <InputSelect {...{value, onSendValue, options}} /> 
 }}; 
 
-const ReadManyForeign = (ifield:IField, foreign:IForeignDao) => { 
+const ReadManyForeign = (ifield:IField, dao:IDao) => { 
   return (value:any, onSendValue:any) => { 
     return ReadMany(ifield, value); 
 }}; 
 
-const EditManyForeign = (ifield:IField, foreign:IForeignDao) => { 
+const EditManyForeign = (ifield:IField, dao:IDao) => { 
   return (value:any, onSendValue:any) => { 
-    const options:IOption[] = foreign.GetForeignOptions(ifield); 
+    const options:IOption[] = dao.GetForeignOptions(ifield); 
     return <InputSelect {...{value, onSendValue, options, isMulti:true}} /> 
 }}; 
 
 
 // Column Setting Rules -------------------------
-export const ColumnSettingRules:IFieldSettingRule[] = [ 
+const defOps = {order:0, show:true, sort:0}
+export const icolrules:IColumnSettingRule[] = [ 
+  
   // Primitive
-  {ifieldPredicate:OnePrimitive, buildRenderFunc: ReadOnePrimitive}, 
-  {ifieldPredicate:OnePrimitive, cellPredicate:editable, buildRenderFunc: EditOnePrimitive}, 
-  {ifieldPredicate:ManyPrimitive, buildRenderFunc: ReadManyPrimitive}, 
-  {ifieldPredicate:ManyPrimitive, cellPredicate:editable,buildRenderFunc: EditManyPrimitive}, 
+  {...defOps, ifieldPredicate:OnePrimitive, buildRenderer: ReadOnePrimitive}, 
+  {...defOps, ifieldPredicate:OnePrimitive, buildRenderer: EditOnePrimitive, predicate:editable}, 
+  {...defOps, ifieldPredicate:ManyPrimitive, buildRenderer: ReadManyPrimitive}, 
+  {...defOps, ifieldPredicate:ManyPrimitive, buildRenderer: EditManyPrimitive, predicate:editable}, 
 
   // Enum
-  {ifieldPredicate:OneEnum, buildRenderFunc: ReadOneEnum}, 
-  {ifieldPredicate:OneEnum, cellPredicate:editable, buildRenderFunc: EditOneEnum}, 
-  {ifieldPredicate:ManyEnum, buildRenderFunc: ReadManyEnum}, 
-  {ifieldPredicate:ManyEnum, cellPredicate:editable, buildRenderFunc: EditManyEnum}, 
+  {...defOps, ifieldPredicate:OneEnum, buildRenderer: ReadOneEnum}, 
+  {...defOps, ifieldPredicate:OneEnum, buildRenderer: EditOneEnum, predicate:editable}, 
+  {...defOps, ifieldPredicate:ManyEnum, buildRenderer: ReadManyEnum}, 
+  {...defOps, ifieldPredicate:ManyEnum, buildRenderer: EditManyEnum, predicate:editable}, 
 
   // Foreign
-  {ifieldPredicate:OneForeign, buildRenderFunc: ReadOneForeign}, 
-  {ifieldPredicate:OneForeign, cellPredicate:editable, buildRenderFunc: EditOneForeign}, 
-  {ifieldPredicate:ManyForeign, buildRenderFunc: ReadManyForeign}, 
-  {ifieldPredicate:ManyForeign, cellPredicate:editable, buildRenderFunc: EditManyForeign}, 
+  {...defOps, ifieldPredicate:OneForeign, buildRenderer: ReadOneForeign}, 
+  {...defOps, ifieldPredicate:OneForeign, buildRenderer: EditOneForeign, predicate:editable}, 
+  {...defOps, ifieldPredicate:ManyForeign, buildRenderer: ReadManyForeign}, 
+  {...defOps, ifieldPredicate:ManyForeign, buildRenderer: EditManyForeign, predicate:editable}, 
 ] 
+

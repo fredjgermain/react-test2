@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from 'react'; 
-import DAO from '../common/dao/dao'; 
+
+import {} from '../custompackages';
+import Dao from '../../mongoosedao/dao'; 
 import {useLoad} from '../../customhooks/useLoad'; 
-import {InputSelect, IOption} from '../common/custompackages'; 
+import {InputSelect, IOption} from '../custompackages'; 
 import AdminTable from './admintable'; 
 
 import '../common/table.css'; 
@@ -9,24 +11,25 @@ import '../common/table.css';
 
 
 interface IAdminContext { 
-  dao: DAO; 
+  dao: Dao; 
   activeCollection: ICollection; 
 } 
 export const AdminContext = React.createContext({} as IAdminContext); 
 // ADMIN SECTION =================================
 export default function AdminSection() { 
-  const dao = useMemo(() => new DAO(), []); 
+  const dao = useMemo(() => new Dao(), []); 
   const [selected, setSelected] = useState<string>(''); 
+  
   const {status, Reload} = useLoad(async () => { 
-    await dao.LoadCollections(['responses', 'questions', 'instructions', 'forms']); 
+    //await dao.LoadCollections(['responses', 'questions', 'instructions', 'forms']); 
   }); 
 
   // RENDER ------------------------------------- 
   if(!status.success) 
     return <LoadingBtn/>; 
 
-  const options:IOption[] = dao.collections.map( c => { 
-    return {value: c.icollection.accessor, label: c.icollection.label} 
+  const options:IOption[] = dao.iCollections.map( c => { 
+    return {value: c.accessor, label: c.label} 
   }); 
 
   const adminTable = selected[0] ? <AdminTable /> : <p>Please choose a collection from the selector above.</p>; 

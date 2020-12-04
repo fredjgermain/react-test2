@@ -1,5 +1,5 @@
 import React from 'react'; 
-import TestInputTable from './testinput/testInputTable'; 
+import TestInputTable from './testtable/testInputTable'; 
 /*import TestInput from './components/testinput/input/testInput'; 
 import TestInput2 from './components/testinput/input/testInput2'; 
 import AdminSection from './components/adminsection/adminsection'; */

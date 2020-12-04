@@ -2,7 +2,7 @@
 import {crud} from './crudaxios'; 
 import Collection from './collection'; 
 import Field from './field'; 
-import { IOption } from '../testinput/input/inputcommon'; 
+import {IOption} from '../input/inputcommon'; 
 
 export {Collection, Field}; 
 

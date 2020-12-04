@@ -1,28 +1,35 @@
 import React from 'react'; 
-import {ITableHook, useInputTableHook} from './inputtablehook'; 
-import {RenderFunc, IFieldSetting, IFieldSettingRule, IForeignDao, CrudFunc, ColumnSetter} from './columsetting/columsetter'; 
+import {ITableHook, useInputTable} from './hook/usetable'; 
 import {InputHeader, InputHeaderContext, InputHeaderRow, InputHeaderRowContext} from './inputtableheader'; 
 import {InputRows, InputRow, InputRowContext} from './inputrows'; 
 import {InputCells, InputCell} from './inputcells'; 
 
+import {useColumnSetting} from './hook/useColumnSetting'; 
+import {IColumnSetting, IColumnSettingRule} from './colsetting/columnsetting'; 
+
 export {InputHeader, InputHeaderContext, InputHeaderRow, InputHeaderRowContext, 
   InputRows, InputRow, InputRowContext, 
-  InputCells, InputCell, ColumnSetter 
+  InputCells, InputCell, 
 }; 
-export type {ITableHook, IFieldSetting as IColumnSetting, IFieldSettingRule, IForeignDao, CrudFunc, RenderFunc}; 
+export type {ITableHook, IColumnSetting, IColumnSettingRule}; 
 
 
 // INPUT TABLE ==================================
 interface IInputTableContext{ 
   tableHook:ITableHook; 
+  columnSettings: {
+    GetColumnSettings: (table?:ITableHook, row?:number) => IColumnSetting[]; 
+    FilterColumns: (columns:string[]) => void; 
+  } 
 } 
 export const InputTableContext = React.createContext({} as IInputTableContext); 
 interface IInputTable{ 
   entries: any[]; 
-  columnSettings: IFieldSetting[]; 
+  colsetting: IColumnSetting[]; 
 } 
-export default function InputTable({entries, columnSettings, children}: React.PropsWithChildren<IInputTable>) { 
-  const tableHook = useInputTableHook(entries, columnSettings); 
+export default function InputTable({entries, colsetting, children}: React.PropsWithChildren<IInputTable>) { 
+  const tableHook = useInputTable(entries); 
+  const columnSettings = useColumnSetting(colsetting); 
 
   // RENDER -------------------------------------
   const context = {tableHook, columnSettings} as IInputTableContext; 
