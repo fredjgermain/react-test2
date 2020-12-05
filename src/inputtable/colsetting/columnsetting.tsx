@@ -22,7 +22,7 @@ export interface IColumnSetting {
   order?: number; 
   sort?: number; 
   show?: boolean; 
-  predicate?: (table:ITableHook, row:number) => boolean; 
+  predicate?: (handle?:string) => boolean; 
   renderer: Renderer; 
 }
 
@@ -31,7 +31,7 @@ export interface IColumnSettingRule {
   order?: number; 
   sort?: number; 
   show: boolean; 
-  predicate?: (table:ITableHook, row:number) => boolean; 
+  predicate?: (handle?:string) => boolean; 
   buildRenderer: (ifield:IField, foreign:IDao) => Renderer; 
 } 
 

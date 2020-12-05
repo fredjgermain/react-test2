@@ -1,4 +1,4 @@
-import {useState} from 'react'; 
+import {useEffect, useState} from 'react'; 
 import {IOption} from '../../input/inputcommon'; 
 
 
@@ -23,9 +23,12 @@ export interface ICrudHook {
   Delete: CrudFund; 
 }
 // useCrud ======================================
-export function useCrud(dao:IDao, activeCollectionAccessor:string) { 
-  const icollection = dao.GetICollection(activeCollectionAccessor) as ICollection; 
-  const [entries, setEntries] = useState(icollection?.entries ?? []); 
+export function useCrud(icollection:ICollection) { 
+  const [entries, setEntries] = useState(icollection.entries); 
+
+  useEffect(() => { 
+    setEntries(icollection.entries); 
+  },[JSON.stringify(icollection.accessor)]) 
 
   // Build Crud methods 
   const Create = async (entry:IEntry):Promise<boolean> => { 

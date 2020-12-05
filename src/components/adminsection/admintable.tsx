@@ -1,50 +1,82 @@
 import React, {useContext} from 'react'; 
-/*import {AdminContext} from './adminsection'; 
-import TableSetter from '../common/tableSetter'; 
-import {fieldFormatMappers} from '../businesslogic/fieldformatList'; 
-import CrudTable from '../tablecomponent/crudtable'; 
-import CrudRow from '../tablecomponent/crudrow'; 
-//import CrudTBody from '../tablecomponent/crudtbody'; 
-import CrudHeader from '../tablecomponent/crudheader'; 
+import {AdminContext} from './adminsection'; 
 
-/* 
-- Pager 
-- CrudTable */
+import './table.css'; 
 
+// INPUT TABLE 
+import {InputTable, InputHeader, InputHeaderRow, 
+  InputRows, InputRow, InputCells, InputCell, 
+  UpdateDeleteBtn, CreateBtn} from '../custompackages'; 
+  
+// Page
+import {usePage, IPageHook} from '../custompackages'; 
+
+// Crud 
+import {useCrud} from '../custompackages'; 
+
+// Column setting rules 
+import {BuildColumnSetting, ColumnSetter, IColumnSetting} from '../custompackages'; 
+import {icolrules} from '../businesslogic/columnrules'; 
+
+
+// ADMIN TABLE ==================================
 export default function AdminTable() { 
-  /*const {dao, activeCollection} = useContext(AdminContext); 
+  const {dao, activeCollection} = useContext(AdminContext); 
+  const {entries, Create, Update, Delete} = useCrud(activeCollection); 
+  let iColumnSetting = BuildColumnSetting(dao, activeCollection.ifields, icolrules); 
 
-  // data
-  const datas = activeCollection.entries; 
-  // default Table Settings 
-  const tableSetter = new TableSetter(dao, activeCollection); 
-  // default column Settings 
-  const columnSettings = tableSetter.GetColumnSettings(); 
-  // field formats 
-  const fieldFormats = tableSetter.GetFieldsFormat(columnSettings, fieldFormatMappers); 
-  // default crud Settings
-  const crudSettings = tableSetter.GetCrudSettings(); 
-  const emptyEntry = dao.GetEmptyEntry(activeCollection); 
-  //console.log([fieldFormats, columnSettings, crudSettings]); 
+  const colModifier = (col:IColumnSetting) => { 
+    if(col.ifield.accessor[0] === '_') 
+      col.show = false; 
+  } 
+  ColumnSetter(iColumnSetting, colModifier); 
+
+
+  const {pageIndex, setPageIndex, from, to, pageIndexes} = usePage(entries, 5); 
+  const page = Array.from({length: to-from}, (v, k) => k+from); 
+
+  // CRUD functionality 
+  const createLabel = {action:'Create', confirm:'Confirm create', cancel:'Cancel create'}; 
+  const onCreate = Create; 
+  const updateLabel = {action:'Update', confirm:'Confirm update', cancel:'Cancel update'}; 
+  const onUpdate = Update; 
+  const deleteLabel = {action:'Delete', confirm:'Confirm delete', cancel:'Cancel delete'}; 
+  const onDelete = Delete; 
 
 
   // RENDER -------------------------------------
   return <div> 
-    <h4>{activeCollection.label}</h4> 
-    <CrudTable {...{datas, fieldFormats, columnSettings, crudSettings}} > 
-      <CrudHeader /> 
-      <tbody>
-        {datas.map( (r,i) => { 
-          return <CrudRow key={i} entry={r} /> 
-        })} 
+    <h4>Input table:</h4> 
+    <InputTable entries={entries} colsetting={iColumnSetting}> 
+      <thead> 
+        <InputHeaderRow> 
+          <InputHeader/><th>BTN</th> 
+        </InputHeaderRow> 
+      </thead> 
+      <tbody> 
+        <InputRows rows={page}> 
+          <InputCells/> 
+          <UpdateDeleteBtn {...{updateLabel, deleteLabel, onUpdate, onDelete}}/> 
+        </InputRows> 
       </tbody> 
       <tfoot> 
-        <CrudRow entry={emptyEntry} mode={'new'} /> 
+        <InputRow row={-1}> 
+          <InputCells/> 
+          <CreateBtn {...{createLabel, onCreate}}/> 
+        </InputRow> 
       </tfoot> 
-      
-    </CrudTable> 
-  </div>*/
-  return <div></div>; 
+    </InputTable> 
+    <Paging {...{pageIndex, setPageIndex, from, to, pageIndexes}}/> 
+  </div> 
 }
 
-// <CrudTBody {...{entries:datas}} /> */
+
+function Paging({from, to, pageIndex, setPageIndex, pageIndexes}:IPageHook) { 
+  return <div>
+    {pageIndexes.map( (p, i) => { 
+      return <button key={i} onClick={() => setPageIndex(i)} disabled={pageIndex===i} >
+          {i+1}
+        </button> 
+    })} 
+  </div>
+}

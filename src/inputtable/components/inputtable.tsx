@@ -18,7 +18,7 @@ export type {ITableHook, IColumnSetting, IColumnSettingRule};
 interface IInputTableContext{ 
   tableHook:ITableHook; 
   columnSettings: {
-    GetColumnSettings: (table?:ITableHook, row?:number) => IColumnSetting[]; 
+    GetColumnSettings: (handle?:string) => IColumnSetting[]; 
     FilterColumns: (columns:string[]) => void; 
   } 
 } 

@@ -18,9 +18,9 @@ import {icolrules} from './columnrules';
 
 // TEST INPUT TABLE
 export default function TestInputTable() { 
-  const activeCollectionAccessor = 'collection1'; 
-  const {entries, Create, Update, Delete} = useCrud(dao as IDao, activeCollectionAccessor); 
-  const {ifields} = dao.GetICollection('collection1') as ICollection; 
+  const activeCollection = dao.GetICollection('collection1') as ICollection; 
+  const {entries, Create, Update, Delete} = useCrud(activeCollection); 
+  const {ifields} = activeCollection; 
   const iColumnSetting = BuildColumnSetting(dao, ifields, icolrules); 
 
   const {pageIndex, setPageIndex, from, to, pageIndexes} = usePage(entries, 5); 
@@ -37,26 +37,26 @@ export default function TestInputTable() {
   // 
   return <div> 
     <h4>Input table:</h4> 
-    <InputTable entries={entries} colsetting={iColumnSetting} > 
-      <thead>
-        <InputHeaderRow>
-          <InputHeader /><th>BTN</th>
-        </InputHeaderRow>
-      </thead>
+    <InputTable entries={entries} colsetting={iColumnSetting}> 
+      <thead> 
+        <InputHeaderRow> 
+          <InputHeader/><th>BTN</th> 
+        </InputHeaderRow> 
+      </thead> 
       <tbody> 
         <InputRows rows={page}> 
-          <InputCells /> 
-          <UpdateDeleteBtn {...{updateLabel, deleteLabel, onUpdate, onDelete}}  />
+          <InputCells/> 
+          <UpdateDeleteBtn {...{updateLabel, deleteLabel, onUpdate, onDelete}}/> 
         </InputRows> 
       </tbody> 
       <tfoot> 
         <InputRow row={-1}> 
-          <InputCells /> 
-          <CreateBtn {...{createLabel, onCreate}} /> 
+          <InputCells/> 
+          <CreateBtn {...{createLabel, onCreate}}/> 
         </InputRow> 
       </tfoot> 
     </InputTable> 
-    <Paging {...{pageIndex, setPageIndex, from, to, pageIndexes}} />
+    <Paging {...{pageIndex, setPageIndex, from, to, pageIndexes}}/> 
   </div> 
 }
 

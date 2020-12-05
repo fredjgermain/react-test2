@@ -24,16 +24,13 @@ export interface IMongooseField {
   [key:string]:any; 
 } 
 
-
-
-
 export const collections:Collection[] = new Array<Collection>(); 
 
 // const collections:IMongooseCollection[] = (await crud.Read('collections')).data; 
-export async function LoadCollections(collectionsToFind:string[]):Promise<Collection[]> { 
+export async function LoadCollections(collectionsToFind:string[]):Promise<ICollection[]> { 
   const mongooseCollections = (await crud.Read('collections')).data as IMongooseCollection[]; 
   const foundCollections = mongooseCollections.filter( c => collectionsToFind.includes(c.accessor) ); 
-  const loadedCollections = new Array<Collection>(); 
+  const loadedCollections = new Array<ICollection>(); 
   for(let i=0; i<foundCollections.length; i++) { 
     const collection = await LoadCollection(foundCollections[i]); 
     loadedCollections.push(collection); 
@@ -41,7 +38,7 @@ export async function LoadCollections(collectionsToFind:string[]):Promise<Collec
   return loadedCollections; 
 } 
 
-async function LoadCollection(collection:IMongooseCollection):Promise<Collection> { 
+async function LoadCollection(collection:IMongooseCollection):Promise<ICollection> { 
   const icollection:ICollection = {} as ICollection; 
   icollection.accessor = collection.accessor; 
   icollection.label = collection.label; 
@@ -52,11 +49,7 @@ async function LoadCollection(collection:IMongooseCollection):Promise<Collection
   }); 
   icollection.ifields = ParseFields(mongooseFields); 
   icollection.entries = (await crud.Read(collection.accessor)).data; 
-  /* icollection.fields.forEach( f => { 
-    SetCellMode(f); 
-    //console.log(f.cellMode); 
-  }); */
-  return new Collection(icollection); 
+  return icollection; 
 } 
 
 function GetDefaultValue(type:string, options:any):any { 

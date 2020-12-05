@@ -1,14 +1,7 @@
-import React, { useState, useMemo } from 'react'; 
-
-import {} from '../custompackages';
-import Dao from '../../mongoosedao/dao'; 
-import {useLoad} from '../../customhooks/useLoad'; 
-import {InputSelect, IOption} from '../custompackages'; 
+import React, {useState, useMemo} from 'react'; 
+import {Dao, LoadCollections, useLoad, InputSelect, IOption} from '../custompackages'; 
 import AdminTable from './admintable'; 
-
-import '../common/table.css'; 
-//import "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css";
-
+//import "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"; 
 
 interface IAdminContext { 
   dao: Dao; 
@@ -21,19 +14,23 @@ export default function AdminSection() {
   const [selected, setSelected] = useState<string>(''); 
   
   const {status, Reload} = useLoad(async () => { 
-    //await dao.LoadCollections(['responses', 'questions', 'instructions', 'forms']); 
+    const loadedCollection = await LoadCollections(['responses', 'questions', 'instructions', 'forms']); 
+    dao.iCollections = loadedCollection; 
   }); 
-
   // RENDER ------------------------------------- 
   if(!status.success) 
     return <LoadingBtn/>; 
 
+  // options 
   const options:IOption[] = dao.iCollections.map( c => { 
     return {value: c.accessor, label: c.label} 
   }); 
 
-  const adminTable = selected[0] ? <AdminTable /> : <p>Please choose a collection from the selector above.</p>; 
+  // Context 
   const adminContext = {dao:dao, activeCollection:dao.GetICollection(selected)} as IAdminContext; 
+
+  // render 
+  const adminTable = selected ? <AdminTable /> : <p>Please choose a collection from the selector above.</p>; 
   return <AdminContext.Provider value={adminContext}> 
     <h2>Admin Section</h2> 
     <p>Choose a collection to create/read/update/delete items from it.</p> 
@@ -43,7 +40,7 @@ export default function AdminSection() {
 } 
 
 
-function LoadingBtn () { 
+function LoadingBtn() { 
   return <div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
       </link>

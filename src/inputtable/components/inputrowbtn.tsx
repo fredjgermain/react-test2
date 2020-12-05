@@ -1,8 +1,6 @@
 import React, { useContext } from 'react'; 
 import {InputTableContext} from './inputtable'; 
 import {InputRowContext} from './inputrows'; 
-import {CrudFund} from '../hook/useCrud'; 
-
 
 // CREATE BTN ===================================
 interface ICreateBtn { 
@@ -30,8 +28,6 @@ export function CreateBtn({createLabel, onCreate}:ICreateBtn) {
       <button onClick={() => {ActivateHook(mode, row)}}>{createLabel.action}</button> 
     </td> 
 } 
-
-
 
 // UPDATE DELETE BTN ============================
 interface IUpdateDeleteBtn { 
@@ -70,7 +66,6 @@ export function UpdateDeleteBtn({updateLabel, deleteLabel, onUpdate, onDelete}:I
       <button onClick={() => ActivateHook('delete', row)}>{deleteLabel.action}</button> 
     </td> 
 } 
-
 
 // INPUT ROW BTN ================================
 interface IInputRowBtn { 

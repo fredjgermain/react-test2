@@ -1,8 +1,7 @@
 import React from 'react'; 
-import {IColumnSettingRule, IDao, IOption, ITableHook}  from '../inputtable/colsetting/columnsetting'; 
-
-import {InputArray, InputData, InputSelect} from '../input/inputcommon'; 
-import Field from '../mongoosedao/field'; 
+import {IColumnSettingRule, IDao, IOption, ITableHook} from '../custompackages'; 
+import {InputArray, InputData, InputSelect} from '../custompackages'; 
+import {Field} from '../custompackages'; 
 
 // IField Predicate ===============================
 const OnePrimitive = (ifield:IField) => !new Field(ifield).IsArray() && new Field(ifield).IsPrimitive(); 
@@ -11,7 +10,6 @@ const OneForeign = (ifield:IField) => !new Field(ifield).IsArray() && new Field(
 const ManyPrimitive = (ifield:IField) => new Field(ifield).IsArray() && new Field(ifield).IsPrimitive(); 
 const ManyEnum = (ifield:IField) => new Field(ifield).IsArray() && new Field(ifield).IsEnum(); 
 const ManyForeign = (ifield:IField) => new Field(ifield).IsArray() && new Field(ifield).IsObjectID(); 
-const OneTestForeign = (ifield:IField) => ifield.accessor === '_id'; 
 
 // icolumn Predicate ======================================
 const editable = (handle?:string) => { 
@@ -132,4 +130,3 @@ export const icolrules:IColumnSettingRule[] = [
   {...defOps, ifieldPredicate:ManyForeign, buildRenderer: ReadManyForeign}, 
   {...defOps, ifieldPredicate:ManyForeign, buildRenderer: EditManyForeign, predicate:editable}, 
 ] 
-

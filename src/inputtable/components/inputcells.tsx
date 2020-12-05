@@ -12,11 +12,11 @@ interface IInputCells {
   //optionalColumnSettings?: I[]; 
 } 
 export function InputCells({}: React.PropsWithChildren<IInputCells>) { 
-  const {tableHook, columnSettings:{GetColumnSettings}} = useContext(InputTableContext); 
+  const {tableHook:{GetActiveHook}, columnSettings:{GetColumnSettings}} = useContext(InputTableContext); 
   const {row} = useContext(InputRowContext); 
 
   // pick the right column setting depending on activeRow and ModeHook 
-  const columnSettings = GetColumnSettings(tableHook, row ?? -1); 
+  const columnSettings = GetColumnSettings(GetActiveHook(row)); 
 
   // RENDER -------------------------------------
   return <InputCellsContext.Provider value={{}}> 
