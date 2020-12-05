@@ -1,5 +1,5 @@
 import React from 'react'; 
-import {IColumnSettingRule, IDao, IOption, ITableHook} from '../custompackages'; 
+import {IColumnSettingRule, IDao, ITableHook} from '../custompackages'; 
 import {InputArray, InputData, InputSelect} from '../custompackages'; 
 import {Field} from '../custompackages'; 
 

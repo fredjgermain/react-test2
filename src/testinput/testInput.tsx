@@ -1,5 +1,5 @@
 import React, {useState, useRef} from 'react'; 
-import {IInput, IOption, InputData, InputNumber, InputBool, 
+import {IInput, InputData, InputNumber, InputBool, 
   InputString, InputSelect, InputArray, EnumType} from '../input/inputcommon'; 
 //import InputTable, {IColumnSetting} from './inputtable/inputtable'; 
 /*import InputRows from './inputtable/inputrow'; 

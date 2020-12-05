@@ -22,6 +22,10 @@ interface IRow {
 
 interface IColumn {} 
 
+interface IOption { 
+  value: any; 
+  label: string; 
+} 
 
 interface ICollection {
   accessor:string; 

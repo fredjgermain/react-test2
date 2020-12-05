@@ -1,20 +1,7 @@
-import {IOption} from '../../input/inputcommon'; 
-import {ITableHook} from '../hook/usetable'; 
-
-export type {IOption, ITableHook}; 
+import {IDao} from '../hook/useCrud';
 
 // Interface Render Func ========================
 export type Renderer = (value:any, onSendValue:any) => any; 
-
-// IDao =========================================
-export interface IDao { 
-  Create: (accessor:string, entry:IEntry) => Promise<boolean>; 
-  Update: (accessor:string, entry:IEntry) => Promise<boolean>; 
-  Delete: (accessor:string, entry:IEntry) => Promise<boolean>; 
-  GetForeignOptions: (ifield:IField) => IOption[]; 
-  GetForeignValue: (ifield:IField, id:string) => any|undefined; 
-  GetICollection: (accessor:string) => ICollection|void; 
-} 
 
 // ColumnSetting ================================
 export interface IColumnSetting { 

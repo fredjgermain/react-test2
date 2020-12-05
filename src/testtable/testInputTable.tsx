@@ -19,7 +19,7 @@ import {icolrules} from './columnrules';
 // TEST INPUT TABLE
 export default function TestInputTable() { 
   const activeCollection = dao.GetICollection('collection1') as ICollection; 
-  const {entries, Create, Update, Delete} = useCrud(activeCollection); 
+  const {entries, Create, Update, Delete} = useCrud(dao, activeCollection); 
   const {ifields} = activeCollection; 
   const iColumnSetting = BuildColumnSetting(dao, ifields, icolrules); 
 

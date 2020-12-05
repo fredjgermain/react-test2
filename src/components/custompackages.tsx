@@ -1,5 +1,5 @@
 // Input
-import {IOption, InputArray, InputData, InputNumber, InputString, 
+import {InputArray, InputData, InputNumber, InputString, 
   InputSelect, InputBool} from '../input/inputcommon'; 
 
 // Table
@@ -27,7 +27,7 @@ export {InputTable, InputHeader, InputHeaderRow,
 export {BuildColumnSetting}
 
 // Types
-export type {IOption, IColumnSetting, IColumnSettingRule, IDao, ITableHook, IPageHook}; 
+export type {IColumnSetting, IColumnSettingRule, IDao, ITableHook, IPageHook}; 
 
 // Hooks
 export {useLoad, usePage, useCrud, useColumnSetting, ColumnSetter}; 

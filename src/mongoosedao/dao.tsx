@@ -2,7 +2,6 @@
 import {crud} from './crudaxios'; 
 import Collection from './collection'; 
 import Field from './field'; 
-import {IOption} from '../input/inputcommon'; 
 
 export {Collection, Field}; 
 
@@ -10,7 +9,7 @@ export {Collection, Field};
 // DataAcessObject ==============================
 export default class DataAccessObject { 
   public iCollections:ICollection[] = []; 
-  public response?:IResponse = {} as IResponse; 
+  //public response?:IResponse = {} as IResponse; 
 
   // Load Collections
   /*public async LoadCollections(collectionAccessors:string[]) { 
@@ -36,40 +35,38 @@ export default class DataAccessObject {
   } 
 
   // CREATE .....................................  
-  public async Create(accessor:string, entry:IEntry):Promise<boolean> { 
+  public async Create(accessor:string, entry:IEntry):Promise<IResponse> { 
+    const [response] = (await crud.Create(accessor, [entry])).data as IResponse[]; 
     const selectedCollection = this.GetCollection(accessor); 
-    if(!selectedCollection) 
-      return false; 
-    const responses = (await crud.Create(accessor, [entry])).data as IResponse[]; 
-    this.response = responses[0] ?? {} as IResponse; 
-    //console.log(this.response.data); 
-    if(this.response.success) 
-      selectedCollection.Create(this.response.data); 
-    return this.response.success; 
+    if(response.success && selectedCollection) 
+      selectedCollection.Create(response.data); 
+    return response; 
+  } 
+
+  public async Read(accessor:string, entry?:IEntry):Promise<IEntry[]> { 
+    //const results = (await crud.Read(accessor, [entry])).data as IResponse[]; 
+    //const selectedCollection = this.GetCollection(accessor); 
+    /*if(selectedCollection) 
+      selectedCollection.Create(response.data); */
+    return [] as IEntry[]; 
   } 
 
   // UPDATE .....................................
-  public async Update(accessor:string, entry:IEntry):Promise<boolean> { 
+  public async Update(accessor:string, entry:IEntry):Promise<IResponse> {     
+    const [response] = (await crud.Update(accessor, [entry])).data as IResponse[]; 
     const selectedCollection = this.GetCollection(accessor); 
-    if(!selectedCollection) 
-      return false; 
-    const responses = (await crud.Update(accessor, [entry])).data as IResponse[]; 
-    this.response = responses[0] ?? {} as IResponse; 
-    if(this.response.success) 
+    if(response.success && selectedCollection) 
       selectedCollection.Update(entry); 
-    return this.response.success; 
+    return response; 
   } 
 
   // DELETE .....................................
-  public async Delete(accessor:string, entry:IEntry):Promise<boolean> { 
+  public async Delete(accessor:string, entry:IEntry):Promise<IResponse> { 
+    const [response] = (await crud.Delete(accessor, [entry])).data as IResponse[]; 
     const selectedCollection = this.GetCollection(accessor); 
-    if(!selectedCollection) 
-      return false; 
-    const responses = (await crud.Delete(accessor, [entry])).data as IResponse[]; 
-    this.response = responses[0] ?? {} as IResponse; 
-    if(this.response.success) 
+    if(response.success && selectedCollection) 
       selectedCollection.Delete(entry); 
-    return this.response.success; 
+    return response; 
   } 
 
   // GET FOREIGN INFO -----------------------------

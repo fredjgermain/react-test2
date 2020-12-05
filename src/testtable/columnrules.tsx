@@ -1,5 +1,5 @@
 import React from 'react'; 
-import {IColumnSettingRule, IDao, IOption, ITableHook}  from '../inputtable/colsetting/columnsetting'; 
+import {IColumnSettingRule, IDao}  from '../inputtable/tablecommon'; 
 
 import {InputArray, InputData, InputSelect} from '../input/inputcommon'; 
 import Field from '../mongoosedao/field'; 

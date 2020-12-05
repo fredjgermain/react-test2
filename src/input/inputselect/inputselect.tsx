@@ -1,5 +1,5 @@
 import React, {useState} from 'react'; 
-import {IOption, IInput, useInputHook} from '../inputcommon'; 
+import {IInput, useInputHook} from '../inputcommon'; 
 
 import './inputselect.css'; 
 

@@ -33,11 +33,6 @@ export interface IInput<T> {
 } 
 
 
-export interface IOption { 
-  value: any; 
-  label: string; 
-} 
-
 
 export enum EnumType { 
   STRING = 'string', 

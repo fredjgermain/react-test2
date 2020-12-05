@@ -1,15 +1,10 @@
 import {useEffect, useState} from 'react'; 
-import {IOption} from '../../input/inputcommon'; 
-
-
-// CrudFunc =====================================
-export type CrudFund = (entry:any) => Promise<boolean>; 
 
 // IDao =========================================
 export interface IDao { 
-  Create: (accessor:string, entry:IEntry) => Promise<boolean>; 
-  Update: (accessor:string, entry:IEntry) => Promise<boolean>; 
-  Delete: (accessor:string, entry:IEntry) => Promise<boolean>; 
+  Create: (accessor:string, entry:IEntry) => Promise<IResponse>; 
+  Update: (accessor:string, entry:IEntry) => Promise<IResponse>; 
+  Delete: (accessor:string, entry:IEntry) => Promise<IResponse>; 
   GetForeignOptions: (ifield:IField) => IOption[]; 
   GetForeignValue: (ifield:IField, id:string) => any|undefined; 
   GetICollection: (accessor:string) => ICollection|void; 
@@ -18,13 +13,15 @@ export interface IDao {
 // ICRUDHOOK ------------------------------------
 export interface ICrudHook { 
   entries: IEntry[]; 
-  Create: CrudFund; 
-  Update: CrudFund; 
-  Delete: CrudFund; 
+  response: IResponse; 
+  Create: (entry:any) => Promise<boolean>; 
+  Update: (entry:any) => Promise<boolean>; 
+  Delete: (entry:any) => Promise<boolean>; 
 }
 // useCrud ======================================
-export function useCrud(icollection:ICollection) { 
+export function useCrud(dao:IDao, icollection:ICollection) { 
   const [entries, setEntries] = useState(icollection.entries); 
+  const [response, setResponse] = useState({} as IResponse); 
 
   useEffect(() => { 
     setEntries(icollection.entries); 
@@ -32,37 +29,29 @@ export function useCrud(icollection:ICollection) {
 
   // Build Crud methods 
   const Create = async (entry:IEntry):Promise<boolean> => { 
-    const copy = [...entries]; 
-    const index = copy.findIndex(e => e._id === entry._id); 
-    if(index >= 0) 
-      return false; 
-      copy.push(entry); 
-    setEntries(copy); 
-    return true; 
+    const response = await dao.Create(icollection.accessor, entry); 
+    if(response.success) 
+      setEntries(icollection.entries); // ?? will it update entries hook propertly ?? 
+    setResponse(response); 
+    return response.success; 
   } 
 
   const Update = async (entry:IEntry):Promise<boolean> => { 
-    const copy = [...entries]; 
-    const index = copy.findIndex(e => e._id === entry._id); 
-    if(index >= 0)  { 
-      copy[index] = entry; 
-      setEntries(copy); 
-      return true; 
-    } 
-    return false; 
+    const response = await dao.Update(icollection.accessor, entry); 
+    if(response.success) 
+      setEntries(icollection.entries); // ?? will it update entries hook propertly ?? 
+    setResponse(response); 
+    return response.success; 
   }
 
   const Delete = async (entry:IEntry):Promise<boolean> => { 
-    const copy = [...entries]; 
-    const index = copy.findIndex(e => e._id === entry._id); 
-    if(index >= 0)  { 
-      copy.splice(index, 1); 
-      setEntries(copy); 
-      return true; 
-    } 
-    return false; 
+    const response = await dao.Delete(icollection.accessor, entry); 
+    if(response.success) 
+      setEntries(icollection.entries); // ?? will it update entries hook propertly ?? 
+    setResponse(response); 
+    return response.success; 
   }
 
-  return {entries, Create, Update, Delete} as ICrudHook; 
+  return {entries, response, Create, Update, Delete} as ICrudHook; 
 } 
 

@@ -22,20 +22,9 @@ import {icolrules} from '../businesslogic/columnrules';
 // ADMIN TABLE ==================================
 export default function AdminTable() { 
   const {dao, activeCollection} = useContext(AdminContext); 
-  const {entries, Create, Update, Delete} = useCrud(activeCollection); 
-  let iColumnSetting = BuildColumnSetting(dao, activeCollection.ifields, icolrules); 
-
-  const colModifier = (col:IColumnSetting) => { 
-    if(col.ifield.accessor[0] === '_') 
-      col.show = false; 
-  } 
-  ColumnSetter(iColumnSetting, colModifier); 
-
-
-  const {pageIndex, setPageIndex, from, to, pageIndexes} = usePage(entries, 5); 
-  const page = Array.from({length: to-from}, (v, k) => k+from); 
 
   // CRUD functionality 
+  const {entries, response, Create, Update, Delete} = useCrud(dao, activeCollection); 
   const createLabel = {action:'Create', confirm:'Confirm create', cancel:'Cancel create'}; 
   const onCreate = Create; 
   const updateLabel = {action:'Update', confirm:'Confirm update', cancel:'Cancel update'}; 
@@ -43,10 +32,23 @@ export default function AdminTable() {
   const deleteLabel = {action:'Delete', confirm:'Confirm delete', cancel:'Cancel delete'}; 
   const onDelete = Delete; 
 
+  // column settings
+  const iColumnSetting = BuildColumnSetting(dao, activeCollection.ifields, icolrules); 
+  const colModifier = (col:IColumnSetting) => { 
+    if(col.ifield.accessor[0] === '_') 
+      col.show = false; 
+  } 
+  ColumnSetter(iColumnSetting, colModifier); 
+
+  // paging
+  const {pageIndex, setPageIndex, from, to, pageIndexes} = usePage(entries, 5); 
+  const page = Array.from({length: to-from}, (v, k) => k+from); 
+
 
   // RENDER -------------------------------------
   return <div> 
     <h4>Input table:</h4> 
+    <Response {...response} /> 
     <InputTable entries={entries} colsetting={iColumnSetting}> 
       <thead> 
         <InputHeaderRow> 
@@ -70,6 +72,9 @@ export default function AdminTable() {
   </div> 
 }
 
+function Response({actionType,success,data,err}:IResponse) { 
+  return <div>{actionType} was successful: {JSON.stringify(success)}</div>; 
+}
 
 function Paging({from, to, pageIndex, setPageIndex, pageIndexes}:IPageHook) { 
   return <div>

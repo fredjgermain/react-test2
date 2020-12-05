@@ -1,5 +1,5 @@
 import React, {useState} from 'react'; 
-import {IInput, IOption, InputData, InputNumber, InputBool, InputString, InputSelect, InputArray, EnumType} from '../input/inputcommon'; 
+import {IInput, InputData, InputNumber, InputBool, InputString, InputSelect, InputArray, EnumType} from '../input/inputcommon'; 
 import {usePage, IPageHook} from '../customhooks/usePage'; 
 
 export default function TestInput() { 

@@ -1,7 +1,8 @@
 import React, {useState, useMemo} from 'react'; 
-import {Dao, LoadCollections, useLoad, InputSelect, IOption} from '../custompackages'; 
+import {Dao, LoadCollections, useLoad, InputSelect} from '../custompackages'; 
 import AdminTable from './admintable'; 
 //import "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"; 
+
 
 interface IAdminContext { 
   dao: Dao; 
