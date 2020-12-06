@@ -8,7 +8,7 @@ import {InputTable, InputHeader, InputHeaderRow,
   InputRows, InputRow, InputCells, InputCell, 
   UpdateDeleteBtn, CreateBtn} from '../custompackages'; 
   
-// Page
+// Page 
 import {usePage, IPageHook} from '../custompackages'; 
 
 // Crud 
@@ -73,7 +73,12 @@ export default function AdminTable() {
 }
 
 function Response({actionType,success,data,err}:IResponse) { 
-  return <div>{actionType} was successful: {JSON.stringify(success)}</div>; 
+  const {dao, activeCollection} = useContext(AdminContext); 
+  if(success) 
+    return <div className='feedback_green'>{activeCollection.label} successful {actionType}</div> 
+  return <div className='feedback_red'>{err?.map( e => 
+      {return <div>{e}</div>} 
+    )}</div>; 
 }
 
 function Paging({from, to, pageIndex, setPageIndex, pageIndexes}:IPageHook) { 

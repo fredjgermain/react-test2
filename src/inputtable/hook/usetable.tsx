@@ -1,4 +1,4 @@
-import { useState } from 'react'; 
+import { useEffect, useState } from 'react'; 
 //import { IFieldSetting, CrudFunc } from "./columsetting/columsetter"; 
 
 
@@ -24,6 +24,11 @@ export function useInputTable(entries:IEntry[]):ITableHook {
   const [activeEntry, setActiveEntry] = useState<IEntry>({} as IEntry); 
   const [activeRow, setActiveRow] = useState(-1); 
   const [activeMode, setActiveMode] = useState('read'); 
+
+  useEffect(() => { 
+    if(activeMode != 'read' || activeRow != -1) 
+    ResetActiveHooks(); 
+  },[entries]); 
 
   const CrudAction = async (crudFunc:CrudFunc) => { 
     if(await crudFunc(activeEntry)) 
