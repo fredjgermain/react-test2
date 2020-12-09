@@ -42,8 +42,8 @@ export class Crud {
   } 
 } 
 
-const baseUrl = `http://localhost:8080/api/`; 
-//const baseUrl = `https://fjg-mongoose-heroku.herokuapp.com/api/`; 
+//const baseUrl = `http://localhost:8080/api/`; 
+const baseUrl = `https://fjg-mongoose-heroku.herokuapp.com/api/`; 
 const crud = new Crud(baseUrl); 
 
 export default Crud; 
