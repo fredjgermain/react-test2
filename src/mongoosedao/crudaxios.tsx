@@ -12,6 +12,10 @@ export class Crud {
     });
   } 
 
+  public async Access() { 
+    return await axios.get(this.baseUrl); 
+  } 
+
   public async Models(modelName:string) { 
     return await axios.get(this.baseUrl+'models/'+modelName); 
   } 
