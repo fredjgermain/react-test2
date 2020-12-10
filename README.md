@@ -1,70 +1,64 @@
-# Getting Started with Create React App
+# Project title: React-crud-mongoose-demo
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Summary: 
+This project is a demo of an admin section with CRUD (Create, Read, Update, Delete) functionalities to read/edit a set of mongoDb collections. The user may select a collection he wish to edit. The selected collection's datas are displayed in a table format allowing inline update, creation and deletion. The whole project is seperated into 2 parts; the front-end (LINK ...), and back-end (LINK ...). 
 
-## Available Scripts
+## Objectives:
+- Learn to use Typescript, mongoose and react. 
+- Learn to write custom react components and hooks with a good reusability and simplicity of use. 
+- The front-end is meant to adapt at runtime to most mongoose schema / business model. 
+- The back-end serves as a bridge between the react front-end and a MongoDb set. 
 
-In the project directory, you can run:
+## Front-End Description (LINK ...) 
+The Front-End part is written in Typescript and React functional components. The front-end uses reusable custom components and hooks. These components and hooks adapt at runtime to most mongoose schema and allow to create, read, update or delete any items from a selected collection. 
 
-### `npm start`
+Examples: 
+  updating or creating a field of type string will display an < input type="text" > 
+  updating or creating a field of type number will display an < input type="number" > 
+  updating or creating a field of type with an enum will display a drop down list of enum values rather than a < input ... > 
+  updating or creating a field of type objectid will display a drop down list of foreign values to select from. 
+This behavior adapts at runtime the display of datas according to their respective types. 
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Depedancies
+- npm install -g create-react-app 
+The option "-g" seems necessary 
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- create-react-app < my-app > 
+The Use of 'create-react-app' may seems identical to 'npx create-react-app', but my not work the same on deployment to heroku. 
+Push on git, then deploy on heroku. 
+This ought to create a template for the front-end project, ready without configuration to deployment and running on Heroku. 
 
-### `npm test`
+[For complete instructions](https://blog.heroku.com/deploying-react-with-zero-configuration).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### Axios and Typescript dependancies. 
+  axios
+  @types/node
+  @types/react
+  @types/axios
+  @types/react-dom
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Back-end part (LINK ...) 
+The back-end part is written in Typescript and uses Mongoose and an Express server. It allows CORS (CROSS-origin ressource sharing) for the front-end part. A mock data set is used for development and demo purposes, but is meant as "bridge" between the front-end part and a MongoDb data set. 
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Depedancies
+  @types/express 
+  @types/node 
+  express 
+  nodemon 
+  ts-node 
+  typescript
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+  * npm i @types/express @types/node express nodemon ts-node typescript
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Reference
+For complete instructions on how to [create react app ready for heroku deployment](https://blog.heroku.com/deploying-react-with-zero-configuration).
+Following these instruction will generate an README file such as "createreactappreadme.md". 
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+For complete instructions on how to [create a typescript-express server ready for heroku deployment](https://dev.to/hte305/simple-deploy-typescript-application-to-heroku-5b6g)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Contact
+Frédéric Jean-Germain
+fredjgermain@gmail.com
