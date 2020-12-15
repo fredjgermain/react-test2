@@ -6,7 +6,7 @@ export default class Collection {
 
   constructor(collection:ICollection) { 
     this.icollection = collection; 
-  } 
+  }
 
   // Get default Entry --------------------------
   public GetDefaultEntry():IEntry { 
