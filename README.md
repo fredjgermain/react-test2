@@ -1,4 +1,4 @@
-# Project title: React-crud-mongoose-demo
+# Project title: React-mongoose-demo
 
 ## Summary: 
 This project is a demo of an admin section with CRUD (Create, Read, Update, Delete) functionalities to read/edit a set of mongoDb collections. The user may select a collection he wish to edit. The selected collection's datas are displayed in a table format allowing inline update, creation and deletion. The whole project is seperated into 2 parts; the front-end (LINK ...), and back-end (LINK ...). 
@@ -36,6 +36,8 @@ This ought to create a template for the front-end project, ready without configu
   @types/react
   @types/axios
   @types/react-dom
+
+  npm i axios @types/node @types/react @types/axios
 
 
 ## Back-end part (LINK ...) 
