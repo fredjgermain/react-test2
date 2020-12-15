@@ -1,32 +1,40 @@
-# Project title: React-crud-mongoose-demo
+# React-crud-mongoose-demo
+
+## Contact
+Frédéric Jean-Germain
+fredjgermain@gmail.com
 
 ## Summary: 
-This project is a demo of an admin section with CRUD (Create, Read, Update, Delete) functionalities to read/edit a set of mongoDb collections. The user may select a collection he wish to edit. The selected collection's datas are displayed in a table format allowing inline update, creation and deletion. The whole project is seperated into 2 parts; the front-end (LINK ...), and back-end (LINK ...). 
+This project is a demo of a data entry section with CRUD functionalities (Create, Read, Update, Delete) allowing to read/edit a mongoDb data set. The user may select a collection to read or edit. The selected data collection is then displayed in a table format for readability and allowing inline update, creation and deletion of individual items. 
+
+The whole project is seperated into 2 parts; the front-end (in this git repo), and back-end (LINK ...). 
+This project is my first experience using React, MongoDb and Heroku and developping a complete project written in Typescript. 
 
 ## Objectives:
+- A front-end which can adapt at runtime to most mongoose schema / business model. 
+- A back-end serving as a bridge between the react front-end and a MongoDb data set. 
+More personal objectives:
 - Learn to use Typescript, mongoose and react. 
 - Learn to write custom react components and hooks with a good reusability and simplicity of use. 
-- The front-end is meant to adapt at runtime to most mongoose schema / business model. 
-- The back-end serves as a bridge between the react front-end and a MongoDb set. 
 
-## Front-End Description (LINK ...) 
-The Front-End part is written in Typescript and React functional components. The front-end uses reusable custom components and hooks. These components and hooks adapt at runtime to most mongoose schema and allow to create, read, update or delete any items from a selected collection. 
+## FRONT-END
+### Description 
+The Front-End part is written in Typescript and uses React functional components. Components are custom, reusable and written as functional components. Many customs hooks are also used. These components and hooks adapt at runtime to most mongoose schemas and their fields types and help create, read, update or delete any items from a data set. There's no "hard-coded" component to read or edit any specific schemas. 
+*Note: Further optimizations would be useful to minimize re-rendering and loading time, but the project is otherwise functional.* 
 
-Examples: 
-  updating or creating a field of type string will display an < input type="text" > 
-  updating or creating a field of type number will display an < input type="number" > 
-  updating or creating a field of type with an enum will display a drop down list of enum values rather than a < input ... > 
-  updating or creating a field of type objectid will display a drop down list of foreign values to select from. 
-This behavior adapts at runtime the display of datas according to their respective types. 
-
-### Depedancies
-- npm install -g create-react-app 
+### Dependancies and installs
+From the project directory execute the following instruction. This will facilitate the creation and subsequent deployment of the React project to heroku without configuration. 
+```
+npm install -g create-react-app 
+```
 The option "-g" seems necessary 
+```
+create-react-app < my-app > 
+```
+This will create a functioning React-template app ready for deployment on Heroku without changing the project's configurations. 
+Then push on git, deploy on Heroku and run the project. 
 
-- create-react-app < my-app > 
-The Use of 'create-react-app' may seems identical to 'npx create-react-app', but my not work the same on deployment to heroku. 
-Push on git, then deploy on heroku. 
-This ought to create a template for the front-end project, ready without configuration to deployment and running on Heroku. 
+*Note: The instructions *create-react-app* and *npx create-react-app* don't seem to produce the same configurations, which will affect later deployment to Heroku. To deploy without change configuration use *create-react-app <...>*.* 
 
 [For complete instructions](https://blog.heroku.com/deploying-react-with-zero-configuration).
 
@@ -37,11 +45,13 @@ This ought to create a template for the front-end project, ready without configu
   @types/axios
   @types/react-dom
 
+  npm i axios typescript @types/axios @types/node @types/react @types/react-dom
 
-## Back-end part (LINK ...) 
+
+## Back-end (LINK to git back-end part of the project) 
 The back-end part is written in Typescript and uses Mongoose and an Express server. It allows CORS (CROSS-origin ressource sharing) for the front-end part. A mock data set is used for development and demo purposes, but is meant as "bridge" between the front-end part and a MongoDb data set. 
 
-### Depedancies
+### Dependancies and installs
   @types/express 
   @types/node 
   express 
@@ -49,16 +59,13 @@ The back-end part is written in Typescript and uses Mongoose and an Express serv
   ts-node 
   typescript
 
-  * npm i @types/express @types/node express nodemon ts-node typescript
-
+```
+npm i @types/express @types/node express nodemon ts-node typescript
+```
 
 ## Reference
 For complete instructions on how to [create react app ready for heroku deployment](https://blog.heroku.com/deploying-react-with-zero-configuration).
-Following these instruction will generate an README file such as "createreactappreadme.md". 
+Following these instruction will generate an README.md file which I renamed "createreactappreadme.md".(Link ...) 
 
 For complete instructions on how to [create a typescript-express server ready for heroku deployment](https://dev.to/hte305/simple-deploy-typescript-application-to-heroku-5b6g)
 
-
-## Contact
-Frédéric Jean-Germain
-fredjgermain@gmail.com

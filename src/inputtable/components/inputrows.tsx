@@ -29,7 +29,7 @@ interface IInputRow {
   row?: number; 
   children?: React.ReactNode; 
 } 
-export function InputRow({row, children}:IInputRow) { 
+export function InputRow({row, children}:React.PropsWithChildren<IInputRow>) { 
   //const {tableHook:{entries}} = useContext(InputTableContext); 
 
   const context = {row} as IInputRowContext; 
